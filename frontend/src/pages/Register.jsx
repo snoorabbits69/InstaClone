@@ -45,7 +45,7 @@ const submit=async (values)=>{
   console.log(data.msg);
  }
  if(data.status==true){
-  console.log("sucess");
+  console.log("success");
   console.log(data.user);
  }
 }

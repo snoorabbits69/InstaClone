@@ -1,6 +1,9 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt=require("jsonwebtoken");
+const multer=require("multer");
+const path = require('path');
+
 module.exports.register = async (req, res, next) => {
   try{
   const {Fullname, Username, Email, Password } = req.body;
@@ -71,4 +74,21 @@ return res.json({ status: true, user: checkUser });
     console.error(e);
     return res.status(500).json({ msg: "Internal Server Error", status: false });
   }
+};
+const storage=multer.diskStorage({
+  destination:(req,file,cb)=>{
+    cb(null,"public/images");
+  },
+  filename:(req,file,cb)=>{
+    cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname));  }
+})
+const upload=multer({
+  storage:storage
+})
+module.exports.Profile = (req, res, next) => {
+
+  console.log(req.body);
+
+  // Send a response to acknowledge the file upload
+  res.status(200).json({ message: 'File uploaded successfully', status: true });
 };
