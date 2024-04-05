@@ -1,11 +1,12 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
-const jwt=require("jsonwebtoken");
+// const jwt=require("jsonwebtoken");
 const multer=require("multer");
 const path = require('path');
 
 module.exports.register = async (req, res, next) => {
   try{
+   
   const {Fullname, Username, Email, Password } = req.body;
 
   // Validate and sanitize the input data here
@@ -64,8 +65,7 @@ module.exports.login = async (req, res, next) => {
 else{
     // Remove the password field from the response
     delete checkUser.Password;
-    const token=jwt.sign({_id:checkUser._id},process.env.JTOKEN);
-  return res.json({tokenid:token,status:true})
+  
   
 }
 return res.json({ status: true, user: checkUser });
@@ -80,15 +80,19 @@ const storage=multer.diskStorage({
     cb(null,"public/images");
   },
   filename:(req,file,cb)=>{
-    cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname));  }
+    cb(null, file.fieldname + '_' + Date.now() + file.originalname);  }
 })
 const upload=multer({
   storage:storage
 })
-module.exports.Profile = (req, res, next) => {
-
-  console.log(req.body);
-
-  // Send a response to acknowledge the file upload
-  res.status(200).json({ message: 'File uploaded successfully', status: true });
-};
+module.exports.Profile =(req,res,next)=>{
+  try{
+  upload.single('file') (req,res,async()=>{
+  await User.create( {avatarImage:req.file.filename})
+    res.status(200).json({ message: 'File uploaded successfully', status: true });
+  })
+}
+catch(e){
+  console.log(e);
+}
+}
