@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const userSchema = mongoose.Schema({
   Fullname: {
     type: String,
@@ -17,19 +16,51 @@ const userSchema = mongoose.Schema({
    
     match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
   },
+  
   Password: {
     type: String,
     required: true,
     minlength: 8, // Use minlength for minimum length
   },
-  isAvatarImageSet: {
-    type: Boolean,
-    default: false,
-  },
   avatarImage: {
     type: String,
-    default: "",
+    default: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+
   },
+  Posts:{
+    type:Number,
+    default:0
+  },
+  followercount:{
+    type:Number,
+    default:0
+  },
+  followingcount:{
+    type:Number,
+    default:0
+  },
+followersname:{
+  type:[ {
+    id: String,
+    Username: String,
+    Fullname: String,
+    avatar: String
+  }],
+  default:[]
+},
+followingname:{
+  type:[{
+    id: String,
+    Username: String,
+    Fullname: String,
+    avatar: String
+  },],
+  
+  
+  default:[]
+}
+},{
+  timestamps:true
 });
 
 module.exports = mongoose.model("users", userSchema);

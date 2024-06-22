@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useReducer, useState } from 'react'
 import Logo1 from '../assets/logo.png'
 import Logo2 from '../assets/log2.png'
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,16 @@ import { loginRoute } from '../../utils/ApiRoutes';
 import{ToastContainer,toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import sideimg from '../assets/auth.png'
+import { useDispatch, useSelector } from 'react-redux';
+import {store} from "../Redux/Store"
+import { signInFailure, signInSuccess } from '../Redux/Slice/Userslice';
+import OAuth from '../Components/OAuth';
+axios.defaults.withCredentials = true;
 function Login() {
+  const state =useSelector((state)=>state.user);
+  const dispatch=useDispatch();
+console.log(state);
+
   const toastOptions = {
     position: "bottom-right",
     autoClose: 8000,
@@ -21,25 +30,20 @@ function Login() {
   };
   const Navigate=useNavigate();
   const [Logo,setLogo]=useState(Logo1);
-  const schema=yup.object().shape({
-    Username:yup.string().required("invalid username or password"),
-    Password:yup.string().min(6).required("invalid username or password"),
-});
-const {register,handleSubmit,formState:{errors}}=useForm({resolver:yupResolver(schema)});
-useEffect(()=>{
-  errors.Username?toast.error(errors.Username.message,toastOptions):" ";
-  errors.Password?toast.error(errors.Password.message,toastOptions):" ";
-   },[errors])
+
+const {register,handleSubmit,formState:{errors}}=useForm();
+
 const submit=async (values)=>{
 
   const{Username,Password}=values;
 
   const {data}=await axios.post(loginRoute,{Username,Password});
   if(data.status){
-    localStorage.setItem(data.tokenid,Username);
+   dispatch(signInSuccess(data.user))
     Navigate("/home");
   }
   if(!data.status){
+    dispatch(signInFailure());
 toast.error(data.msg,toastOptions);
 
   }
@@ -64,6 +68,7 @@ toast.error(data.msg,toastOptions);
   <button className="mx-12 w-60 h-8 text-white rounded mb-3 bg-blue-500 bg-opacity-80">Log in</button>
 </form>
    <div className="mx-10 w-60 text-center flex gap-3"><p className="bg-gray-500 border-b-2 w-32 h-[1px] relative top-3"/>OR<p className="bg-gray-500 border-b-2 w-32 h-[1px] relative top-3"/></div>
+   <OAuth/>
   
    </div>
    <div className="m-auto text-center py-6 border-solid border-2 w-80 h-20  bottom-56   ">

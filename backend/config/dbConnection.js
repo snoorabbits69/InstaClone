@@ -5,7 +5,7 @@ const connect=await mongoose.connect(process.env.MONGO_URL,{
     useNewUrlParser:true,
     useUnifiedTopology:true
 });
-console.log("connection sucessful",connect.connection.host,connect.connection.name)
+console.log("connection sucessfull",connect.connection.host,connect.connection.name)
     }
     catch(e){
 console.log(e)

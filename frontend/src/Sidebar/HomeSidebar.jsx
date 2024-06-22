@@ -1,93 +1,149 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from "../assets/logo.png";
 import { BiSolidHome, BiSearch, BiCompass, BiSolidVideos, BiLogoMessenger, BiHeart, BiMessageSquareAdd } from "react-icons/bi";
 import { CgMoreVerticalR } from "react-icons/cg";
 import { motion } from "framer-motion";
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import Search from '../Homepages/Search';
 import gsap from 'gsap';
 import Notifications from '../Homepages/Notifications';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { signOutSuccess } from '../Redux/Slice/Userslice';
+import axios from 'axios';
+import { logoutRoute } from '../../utils/ApiRoutes';
 export default function HomeSidebar() {
+  const state=useSelector((state)=>state.user);
+  console.log(state.currentUser.avatarImage);
+  const dispatch=useDispatch();
   const [showSearch, setShowSearch] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
-  const items = [
-    { icon: BiSolidHome, text: "Home" },
-    { icon: BiSearch, text: "Search" },
-    { icon: BiCompass, text: "Explore" },
-    { icon: BiSolidVideos, text: "Reels" },
-    { icon: BiLogoMessenger, text: "Message" },
-    { icon: BiHeart, text: "Notifications" },
-    { icon: BiMessageSquareAdd, text: "Create" },
-  ];
+// useEffect(()=>{
+//  console.log(window.innerWidth)
+// if(showSearch){
+//   let tl=gsap.timeline()
+// tl.to(".texts",{display:"none"}).to(".Bar",{width:'5rem'}).to("#Search",{display:"block",width:"24rem"})
+// }
+// else{
+//   let tl=gsap.timeline()
+// tl.to("#Search",{display:"none",width:"0rem"})
+// window.innerWidth>500?tl.to(".Bar",{width:'15rem'}).to(".texts",{display:"block"}):"";
+// }
 
-  const tl = gsap.timeline({
-    duration: 0.05
-  });
-
-  const toogleSection = (e) => {
-    const elem = document.getElementById(e);
-    elem.classList.toggle('active');
-    const res = elem.classList.contains("active");
-    const nextelem = document.getElementById(e === "Search" ? "Notifications" : "Search");
-    const nextres = nextelem.classList.contains("active");
-console.log(nextres);
-    tl.to('.texts', { display: 'none', duration: 0.1 })
-      .to('.Bar', { width: '5rem', duration: 0.2 })
-      .to(elem, { width: '24rem', duration: 0.3 });
-
-    if (res) {
-      tl.play();
-    } else {
-      tl.reverse();
-    }
-  };
+// },[showSearch,window.innerWidth])
 
   return (
-    <div className="Bar w-20 sm:w-60 border-r-2 border-black-500 h-full fixed">
+    <div className="fixed h-full sm:pr-2 w-fit sm:border-r-2 sm:border-b-0 Bar border-black-500 ">
       <section id="side">
-        <div className="fixed bg-green-500 h-screen w-0 ml-20 reveal" id="Search">
+        <div className="fixed hidden w-0 h-screen ml-20 reveal " id="Search">
           <Search />
         </div>
-        <div className="fixed bg-red-500 h-screen w-0 ml-20 reveal" id="Notifications">
+        <div className="fixed w-0 h-screen ml-20 bg-red-500 reveal" id="Notifications">
           <Notifications />
         </div>
       </section>
-      <img src={logo} className="w-36 mb-7  " />
-      <section className="px-2 text-3xl flex-col">
-        {items.map((item, i) => {
-          const IconComponent = item.icon;
-          if (item.text === "Search" || item.text === "Notifications") {
-            return (
-              <motion.div className="flex px-3 text-center pt-2 rounded-xl transition-all hover:bg-slate-100 hover:cursor-grab w-full " key={`${item.text}+${i}`} initial={{ scale: 1 }}
-                whileHover={{ scale: 1.02 }} transition={{ duration: 0.001, ease: "easeInOut" }} onClick={(e) => { toogleSection(item.text) }}>
-                <IconComponent className="mr-3 mb-5" />
-                <p className="text-base font-bold relative top-1 hidden sm:inline texts">{item.text}</p>
-              </motion.div>
-            );
-          } else {
-            return (
-              <Link to={item.text === "Home" || item.text === "Search" || item.text === "Notifications" || item.text === "Create" ? "/home" : ("/home" + "/" + item.text)} key={item.text}>
-                <motion.div className="flex px-3 text-center pt-2 rounded-xl transition-all hover:bg-slate-100 w-full hover:cursor-grab" key={i} initial={{ scale: 1 }}
-                  whileHover={{ scale: 1.02 }} transition={{ duration: 0.001, ease: "easeInOut" }}>
-                  <IconComponent className="mr-3 mb-5" />
-                  <p className="text-base font-bold relative top-1 hidden sm:inline texts">{item.text}</p>
-                </motion.div>
-              </Link>
-            );
-          }
-        })}
-        <Link to="/home/profile">
-          <motion.div className="mb-24 flex px-3 text-center pt-2 rounded-xl transition-all hover:bg-slate-200 w-full" initial={{ scale: 1 }} whileHover={{ scale: 1.05 }} transition={{ delay: 0.001, ease: 'easeInOut' }} ><BiSolidHome className="mr-3 mb-5" /><p className="text-base font-bold relative top-1 hidden sm:inline texts">Profile</p>
+      <img src={logo} className="hidden w-36 mb-7 sm:block " />
+      <section className="fixed bottom-0 flex w-screen h-12 px-2 text-2xl border-t-4 sm:relative sm:bottom-auto sm:text-3xl sm:w-auto sm:border-t-0 sm:flex-col sm:h-auto">
+      <Link to="/home">
+        <motion.div 
+          className="flex px-4 pt-2 text-center transition-all rounded-xl hover:bg-slate-100 hover:cursor-grab"
+          initial={{ scale: 1 }}
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.001, ease: "easeInOut" }}
+        >
+          <BiSolidHome className="mb-5 mr-3" />
+          <p className="relative hidden text-base font-bold top-1 sm:inline">Home</p>
+        </motion.div>
+      </Link>
+
+      <motion.div 
+        className="hidden px-3 pt-2 text-center transition-all sm:flex rounded-xl hover:bg-slate-100 hover:cursor-grab" 
+        initial={{ scale: 1 }}
+        whileHover={{ scale: 1.02 }}
+        transition={{ duration: 0.001, ease: "easeInOut" }}
+        onClick={() => { setShowSearch(!showSearch); }}
+      >
+        <BiSearch className="mb-5 mr-3" />
+        <p className="relative hidden text-base font-bold top-1 sm:inline">Search</p>
+      </motion.div>
+
+      <Link to="/explore">
+        <motion.div 
+          className="flex px-3 pt-2 text-center transition-all rounded-xl hover:bg-slate-100 hover:cursor-grab"
+          initial={{ scale: 1 }}
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.001, ease: "easeInOut" }}
+        >
+          <BiCompass className="mb-5 mr-3" />
+          <p className="relative hidden text-base font-bold top-1 sm:inline">Explore</p>
+        </motion.div>
+      </Link>
+
+      <Link to="/Reels">
+        <motion.div 
+          className="flex px-3 pt-2 text-center transition-all rounded-xl hover:bg-slate-100 hover:cursor-grab"
+          initial={{ scale: 1 }}
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.001, ease: "easeInOut" }}
+        >
+          <BiSolidVideos className="mb-5 mr-3" />
+          <p className="relative hidden text-base font-bold top-1 sm:inline">Reels</p>
+        </motion.div>
+      </Link>
+
+      <Link to="/message">
+        <motion.div 
+          className="flex px-3 pt-2 text-center transition-all rounded-xl hover:bg-slate-100 hover:cursor-grab"
+          initial={{ scale: 1 }}
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.001, ease: "easeInOut" }}
+        >
+          <BiLogoMessenger className="mb-5 mr-3" />
+          <p className="relative hidden text-base font-bold top-1 sm:inline">Message</p>
+        </motion.div>
+      </Link>
+
+      <motion.div 
+        className="hidden px-3 pt-2 text-center transition-all sm:flex rounded-xl hover:bg-slate-100 hover:cursor-grab" 
+        initial={{ scale: 1 }}
+        whileHover={{ scale: 1.02 }}
+        transition={{ duration: 0.001, ease: "easeInOut" }}
+        onClick={() => { setShowSearch(!showSearch); }}
+      >
+        <BiHeart className="mb-5 mr-3" />
+        <p className="relative hidden text-base font-bold top-1 sm:inline">Notifications</p>
+      </motion.div>
+
+      <Link to="/Create">
+        <motion.div 
+          className="flex px-3 pt-2 text-center transition-all rounded-xl hover:bg-slate-100 hover:cursor-grab"
+          initial={{ scale: 1 }}
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.001, ease: "easeInOut" }}
+        >
+          <BiMessageSquareAdd className="mb-5 mr-3" />
+          <p className="relative hidden text-base font-bold top-1 sm:inline">Create</p>
+        </motion.div>
+      </Link>
+     <Link to={`/profile/${state.currentUser.Username}`}>
+          <motion.div className="flex pt-2 pl-3 text-center transition-all sm:mb-24 rounded-xl hover:bg-slate-200" initial={{ scale: 1 }} whileHover={{ scale: 1.05 }} transition={{ delay: 0.001, ease: 'easeInOut' }} ><img className="mb-5 mr-3 rounded-full w-7 h-7 sm:w-8 sm:h-8" src={state.currentUser.avatarImage} /><p className="relative hidden text-base font-bold top-1 sm:inline texts">Profile</p>
           </motion.div>
         </Link>
-        <div className=" peer flex px-3 text-center pt-2 rounded-xl transition-all hover:bg-slate-200 w-full" id="settings"><CgMoreVerticalR className="mr-3 mb-5" /><p className="text-base font-bold relative top-1 hidden sm:inline texts">More</p></div>
-        <div className="peer-hover:block hidden  left-5 w-60 h-96 border-2 rounded-xl bg-white shadow-xl absolute bottom-20 text-base px-4">
+        <div className="hidden px-3 text-center transition-all bottom-6 sm:flex peer rounded-xl hover:bg-slate-200" onClick={()=>{
+     document.getElementById("settings").style.display=="block"? gsap.to("#settings",{display:"none",height:"3rem",width:"3rem",opacity:0}):  gsap.to("#settings",{display:"block",height:"15rem",width:"15rem",opacity:1});
+        }} >
+          <CgMoreVerticalR className="mb-5 mr-3 " /><p className="relative hidden text-base font-bold top-1 sm:inline texts">More</p></div>
+        <div className="absolute hidden px-4 text-base bg-white border-2 shadow-xl left-5 rounded-xl bottom-20" id="settings">
           <div>Reset Password</div>
           <div>Saved</div>
           <div>Dark mode</div>
-          <div>Log Out</div>
+          <button onClick={async()=>{
+           const {data}= await axios.get(logoutRoute);
+           console.log(data);
+           if(data.status){
+            dispatch(signOutSuccess());
+           }
+            }}>Log Out</button>
         </div>
       </section>
     </div>
