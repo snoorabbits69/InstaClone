@@ -9,8 +9,12 @@ import axios from "axios";
 import { registerRoute } from '../../utils/ApiRoutes';
 import { toast,ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
-function Login() {
+import { useDispatch } from 'react-redux';
+import { signInSuccess } from '../Redux/Slice/Userslice';
+axios.defaults.withCredentials = true;
+function Register() {
   const navigate=useNavigate();
+  const dispatch=useDispatch();
   const toastOptions = {
     position: "bottom-right",
     autoClose: 8000,
@@ -18,36 +22,26 @@ function Login() {
     draggable: true,
     theme: "dark",
   };
-  const schema=yup.object().shape({
-    Fullname:yup.string().required(),
-    Username:yup.string().required(),
-    Email:yup.string().email().required(),
-    Password:yup.string().min(8).required(),
-    Confirm:yup.string().oneOf([yup.ref("Password")],"confirm your password").required()
-});
-const {register,handleSubmit,formState:{errors}}=useForm({resolver:yupResolver(schema)});
+
+const {register,handleSubmit,formState:{errors}}=useForm();
     const Navigate=useNavigate();
  const [Logo,setLogo]=useState(Logo1);
- useEffect(()=>{
-errors.Username?toast.error(errors.Username.message,toastOptions):" ";
-errors.Fullname?toast.error(errors.Fullname.message,toastOptions):" ";
-errors.Email?toast.error(errors.Email.message,toastOptions):" ";
-errors.Password?toast.error(errors.Password.message,toastOptions):" ";
-errors.Confirm?toast.error(errors.Confirm.message,toastOptions):" ";
- },[errors])
+
 const submit=async (values)=>{
- 
+ console.log(values);
  const {Fullname,Username,Email,Password}=values;
 
  try{
  const {data}=await axios.post(registerRoute,{Fullname,Username,Email,Password});
-
+console.log(data.status);
  if(data.status==false){
   console.log("failed");
   console.log(data.msg);
  }
  if(data.status==true){
+
   console.log("success");
+  dispatch(signInSuccess(data.user));
 navigate("/Profile");
 
  }
@@ -85,4 +79,4 @@ Have a account? <button className="text-blue-400" onClick={()=>{Navigate("/login
   )
 }
 
-export default Login;
+export default Register;

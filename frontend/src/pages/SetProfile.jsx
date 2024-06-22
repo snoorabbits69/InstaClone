@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { uploadRoute } from '../../utils/ApiRoutes';
 import noProfile from "../assets/noprofile.png"
 export default function SetProfile() {
+  
     const [image,SetImage]=useState();
     const inputRef=useRef();
     const setAvatar=(event)=>{

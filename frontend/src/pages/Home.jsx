@@ -6,13 +6,16 @@ import {motion} from "framer-motion"
 import HomeSidebar from '../Sidebar/HomeSidebar';
 import {BrowserRouter as Router,Routes,Route} from "react-router-dom"
 import Search from '../Homepages/Search';
+import { useSelector } from 'react-redux';
 export default function Home() {
-  
+  const state=useSelector((state)=>state.user);
+  console.log(state.currentUser);
+
   
   return (
     <div>
      
-      <HomeSidebar/>
+      
     </div>
   )
 }
