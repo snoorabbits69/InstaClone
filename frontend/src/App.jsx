@@ -12,6 +12,7 @@ import Profile from './Homepages/Profile';
 import './App.css';
 import PrivateRoute from './Components/PrivateRoute';
 import { useSelector } from 'react-redux';
+import EditProfile from './Homepages/EditProfile';
 
 function App() {
   const state = useSelector((state) => state.user);
@@ -26,9 +27,11 @@ function App() {
          <Route path="explore" element={<Explore/>}></Route>
             <Route path="/message" element={<Message />} />
             <Route path="/reels" element={<Reels />} /> 
+        <Route path="/setprofile" element={<SetProfile/>} />
         </Route>
         
         <Route path="/profile/:username" element={<Profile />} />
+        <Route path="/editprofile" element={<EditProfile />} />
       </Routes>
     </Router>
   

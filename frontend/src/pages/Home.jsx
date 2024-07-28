@@ -7,12 +7,12 @@ import HomeSidebar from '../Sidebar/HomeSidebar';
 import {BrowserRouter as Router,Routes,Route} from "react-router-dom"
 import Search from '../Homepages/Search';
 import { useSelector } from 'react-redux';
+import GetPosts from '../hooks/GetPosts';
 export default function Home() {
   const state=useSelector((state)=>state.user);
-  console.log(state.currentUser);
-
-  
-  return (
+const {Post}=GetPosts("66858183a9eaf10f3ecefaf8")
+console.log(Post);
+return (
     <div>
      
       

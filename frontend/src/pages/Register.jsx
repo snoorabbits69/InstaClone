@@ -32,7 +32,7 @@ const submit=async (values)=>{
  const {Fullname,Username,Email,Password}=values;
 
  try{
- const {data}=await axios.post(registerRoute,{Fullname,Username,Email,Password});
+ const {data}=await axios.post(registerRoute,{Fullname,Username,Email,Password},{ withCredentials: true });
 console.log(data.status);
  if(data.status==false){
   console.log("failed");
@@ -42,8 +42,7 @@ console.log(data.status);
 
   console.log("success");
   dispatch(signInSuccess(data.user));
-navigate("/Profile");
-
+navigate("/setprofile");
  }
 }
 catch(e){
@@ -54,24 +53,24 @@ catch(e){
     <section className="flex flex-col gap-5 ">
    <div className=" border-solid border-2 m-auto w-96 h-[32rem]  flex-col mt-12   ">
     <div >
-    <img src={Logo} className=" w-56 my-0 mx-20    cursor-grab  transition-all hover:opacity-80" onMouseOverCapture={()=>{
+    <img src={Logo} className="w-56 mx-20 my-0 transition-all cursor-grab hover:opacity-80" onMouseOverCapture={()=>{
       setLogo(Logo2);
     }} onMouseOutCapture={()=>{setLogo(Logo1)}}/>
     </div>
     <form onSubmit={handleSubmit(submit)} className="relative bottom-4">
       
-   <input type="text" className="peer border-solid border-2 w-72 h-9 mx-12 mb-1 border-gray-300 rounded bg-gray-200 pl-3" id="Fullname" placeholder="Fullname" {...register("Fullname")}/> 
-   <input type="text" className="peer border-solid border-2 w-72 h-9 mx-12 mb-1 border-gray-300 rounded bg-gray-200 pl-3" id="Username" placeholder="Username" {...register("Username")}/> 
-   <input type="email" className=" border-solid border-2 w-72 h-9 mx-12 mb-1 border-gray-300 rounded bg-gray-200 pl-3" placeholder="Email" {...register("Email")}/> 
-   <input type="password" className=" border-solid border-2 w-72 h-9 mx-12 mb-3 border-gray-300 rounded bg-gray-200 pl-3" placeholder="Password" {...register("Password")}/> 
-   <input type="password" className=" border-solid border-2 w-72 h-9 mx-12 mb-3 border-gray-300 rounded bg-gray-200 pl-3" placeholder="Confirm Password" {...register("Confirm")}/> 
+   <input type="text" className="pl-3 mx-12 mb-1 bg-gray-200 border-2 border-gray-300 border-solid rounded peer w-72 h-9" id="Fullname" placeholder="Fullname" {...register("Fullname")}/> 
+   <input type="text" className="pl-3 mx-12 mb-1 bg-gray-200 border-2 border-gray-300 border-solid rounded peer w-72 h-9" id="Username" placeholder="Username" {...register("Username")}/> 
+   <input type="email" className="pl-3 mx-12 mb-1 bg-gray-200 border-2 border-gray-300 border-solid rounded w-72 h-9" placeholder="Email" {...register("Email")}/> 
+   <input type="password" className="pl-3 mx-12 mb-3 bg-gray-200 border-2 border-gray-300 border-solid rounded w-72 h-9" placeholder="Password" {...register("Password")}/> 
+   <input type="password" className="pl-3 mx-12 mb-3 bg-gray-200 border-2 border-gray-300 border-solid rounded w-72 h-9" placeholder="Confirm Password" {...register("Confirm")}/> 
   <p className="text-center text-[0.8rem] mx-12 mb-3">People who use our service may have uploaded your contact information to Instagram. Learn More<br/>
 
 By signing up, you agree to our Terms , Privacy Policy and Cookies Policy .</p>
-  <button className="mx-12 w-72 h-8 text-white rounded mb-3 bg-blue-500 bg-opacity-80">Sign up</button>
+  <button className="h-8 mx-12 mb-3 text-white bg-blue-500 rounded w-72 bg-opacity-80">Sign up</button>
   </form>
    </div>
-   <div className="m-auto  text-center py-4 border-solid border-2 w-96 h-16  bottom-28    ">
+   <div className="h-16 py-4 m-auto text-center border-2 border-solid w-96 bottom-28 ">
 Have a account? <button className="text-blue-400" onClick={()=>{Navigate("/login")}}>Sign in</button>
 </div>
 <ToastContainer/>

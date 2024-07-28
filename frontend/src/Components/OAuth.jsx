@@ -16,7 +16,6 @@ const navigate=useNavigate();
       const provider=new GoogleAuthProvider();
       const result=await signInWithPopup(auth,provider);
       const {displayName,email,photoURL}=result.user;
-      console.log(photoURL.replace("s96","s400"))
 const {data}=await axios.post(GoogleRoute,{Username:displayName,Email:email,avatarImage:photoURL.replace("s96","s400"),Fullname:result._tokenResponse.fullName});
 if(data.status){
     dispatch(signInSuccess(data.user));
@@ -29,7 +28,7 @@ else{
 }
   return (
     <button onClick={handle}>
-        <div className="flex  mt-5 mx-12 gap-5 align-middle">
+        <div className="flex gap-5 mx-12 mt-5 align-middle">
         <FaGoogle className="mt-1"/> Continue With Google
         </div>
     </button>

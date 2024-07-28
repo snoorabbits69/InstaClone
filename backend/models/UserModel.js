@@ -40,23 +40,11 @@ const userSchema = mongoose.Schema({
     default:0
   },
 followersname:{
-  type:[ {
-    id: String,
-    Username: String,
-    Fullname: String,
-    avatar: String
-  }],
+  type:[{id:String}],
   default:[]
 },
 followingname:{
-  type:[{
-    id: String,
-    Username: String,
-    Fullname: String,
-    avatar: String
-  },],
-  
-  
+  type:[{id:String}],  
   default:[]
 }
 },{

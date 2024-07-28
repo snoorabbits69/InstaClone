@@ -1,9 +1,10 @@
 
-const User = require("../models/userModel");
+const User = require("../models/UserModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require('path');
+const {generateToken}=require("../utils/GenerateJwt");
 const JWT_SECRET = process.env.JTOKEN;
 module.exports.register = async (req, res, next) => {
   try {
@@ -32,8 +33,8 @@ module.exports.register = async (req, res, next) => {
     });
 
     const { Password: _, ...rest } = createUser.toObject();
-    const token = jwt.sign(rest, JWT_SECRET);
-    res.cookie("uid", token, { httpOnly: true, secure: true })
+    generateToken(rest,res);
+
 
     return res.status(200).json({ status: true, user: rest });
   } catch (e) {
@@ -57,9 +58,8 @@ module.exports.login = async (req, res, next) => {
     }
 
     const { Password: _, ...rest } = checkUser.toObject();
-    const token = jwt.sign(rest, JWT_SECRET);
+    generateToken(rest,res);
 
-    res.cookie("uid", token, { httpOnly: true, secure: true })
 
     return res.status(200).json({ status: true, user: rest });
   } catch (e) {
@@ -76,9 +76,7 @@ module.exports.Google = async (req, res, next) => {
 
     if (checkUser) {
       const { Password: _, ...rest } = checkUser.toObject();
-      const token = jwt.sign(rest, JWT_SECRET);
-      console.log(token);
-      res.cookie("uid", token, { httpOnly: true, secure: true })
+      generateToken(rest,res);
       return res.status(200).json({ status: true, user: rest });
     } else {
       const generatePassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
@@ -93,8 +91,8 @@ module.exports.Google = async (req, res, next) => {
       });
 
       const { Password: _, ...rest } = createUser.toObject();
-      const token = jwt.sign(rest, JWT_SECRET);
-      res.cookie("uid", token, { httpOnly: true, secure: true })
+      generateToken(rest,res);
+
       return res.status(200).json({ status: true, user: rest });
     }
   } catch (e) {
@@ -111,3 +109,84 @@ module.exports.Logout = (req, res,next) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 };
+const nodemailer=require("nodemailer");
+const { reset } = require("nodemon");
+const updatetoken=process.env.Updatetoken;
+
+module.exports.getforgotpassword=(req,res,next)=>{
+try{
+res.render(path.join(__dirname,'../file/ForgetPassword.ejs'));
+}catch(e){
+  return res.json({ status: false, error: e.message });
+
+}
+}
+module.exports.postforgotpassword = async (req, res, next) => {
+  try {
+    const findUser = await User.findOne({ Email: req.body.Email });
+    if (!findUser) {
+      return res.json({ status: false, msg: "User doesn't exist" });
+    }
+
+const token=jwt.sign({Username:findUser.Username,Email:findUser.Email},updatetoken,{expiresIn:"15min"});
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.Email,
+        pass: process.env.PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.Email,
+      to: req.body.Email,
+      subject: 'Password Reset Request',
+      text: `Hello, please use the following link to reset your password:http://localhost:3000/api/auth/resetlink/${token} `,
+    };
+
+    const result = await transporter.sendMail(mailOptions);
+    res.send("reset link send to your Email");
+    // return res.json({ status: true,msg:"reset link send to your Email" });
+
+  } catch (e) {
+    console.error(e);
+    res.send("User doesnt exist");
+
+  }
+};
+module.exports.getresetlink=async(req,res,next)=>{
+  try{
+    const verify=jwt.verify(req.params.token,updatetoken);
+  if(!verify){
+    return res.json({status:false,msg:"Invalid"})
+  }
+  else{
+  const {Email}=jwt.decode(req.params.token);
+  const resetUser=await User.findOne({Email});
+res.render(path.join(__dirname,"../file/ResetPasssword.ejs"),{oldPassword:resetUser.Password});
+  }
+  }
+  catch(e){
+res.send("Server Error");
+  }
+}
+module.exports.postresetlink=async(req,res,next)=>{
+  try{
+    const verify=jwt.verify(req.params.token,updatetoken);
+  if(!verify){
+    return res.json({status:false,msg:"Invalid"})
+  }
+  else{
+  const {Email}=jwt.decode(req.params.token);
+const hashedPassword=await bcrypt.hash(req.body.Password,10);
+const update=await User.updateOne({Email},{Password:hashedPassword});
+  res.send("changed succesfully");
+  }
+  // return res.render(path.join(__dirname, '../file/forgotpassword.ejs'));
+}catch(e){
+  return res.json({status:false,error:e})
+
+}
+
+}
