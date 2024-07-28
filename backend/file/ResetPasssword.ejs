@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+      #btn{
+  background-color: rgb(95, 95, 255);
+height:40px;
+width:100px;
+color:white;
+}
+#Pass, #Confirm {
+  margin-bottom: 5px;
+  width: 200px;
+  height: 2rem;
+}
+    </style>
+</head>
+<body>
+    <p>Enter New Password</p>
+    <form action="" method="POST" id="passwordForm">
+  <input type="text" name="Password" placeholder="New Password" id="Pass"/><br>
+  <input type="text" placeholder="Confirm New Password"  id="Confirm"/><br>
+<input type="submit" value="submit"id="btn">
+</form>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+<script type="module">
+const oldPassword='<%= oldPassword %>'
+  console.log(oldPassword);
+ 
+  document.getElementById('passwordForm').addEventListener('submit', function(event) {
+            var pass = document.getElementById('Pass').value;
+            var confirmPass = document.getElementById('Confirm').value;
+            if(pass.length<8){
+              alert("The length of password needs to be greater than 8")
+              event.preventDefault();
+            }
+            if (pass !== confirmPass) {
+                alert('Passwords do not match');
+                event.preventDefault();
+            }
+
+        });
+</script>
+
+
+</html>

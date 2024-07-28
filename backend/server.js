@@ -2,8 +2,11 @@ const express=require("express");
 const path=require("path");
 const dotenv=require("dotenv").config();
 const cors=require("cors");
+const bodyParser=require("body-parser");
 const AuthRoutes=require("./routes/AuthRoutes");
 const UserRoutes=require("./routes/UserRoutes");
+const PostRoutes=require("./routes/PostRoutes")
+const CommentRoutes=require("./routes/CommentRoutes")
 const PORT=process.env.PORT;
 const {app,server,io}=require("./socket/socket");
 const dbConnect=require("./config/dbConnection");
@@ -13,11 +16,17 @@ const corsconfig={
     optionsSuccessStatus: 200 }
 app.use(cors(corsconfig));
 app.use(express.json());
+app.set('view engine', 'ejs');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
 dbConnect();
+const jwt=require("jsonwebtoken");
 app.use(express.static(path.resolve("./file")));
-console.log(io);
 app.use("/api/auth",AuthRoutes);
 app.use("/api/user",UserRoutes);
+app.use("/api/post",PostRoutes)
+app.use("/api",CommentRoutes);
+
 server.listen(PORT,()=>{
     console.log("Server running on ",PORT);
 })

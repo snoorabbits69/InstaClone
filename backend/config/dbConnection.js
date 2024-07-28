@@ -1,7 +1,7 @@
 const mongoose=require("mongoose");
 const dbConnect=async()=>{
     try{
-const connect=await mongoose.connect(process.env.MONGO_URL,{
+const connect=await mongoose.connect(process.env.MONGO_URL,{dbName:"InstaClone"},{
     useNewUrlParser:true,
     useUnifiedTopology:true
 });

@@ -9,18 +9,9 @@ const io=new Server(server,{
         methods:["GET","POST"]
     }
 })
-const userSocketMap={};
-module.exports.getRecieverSocketId=(recieverId)=>{
-    return userSocketMap[recieverId];
-}
+
 io.on("connection",(socket)=>{
     console.log(socket.id);
-    const userId = socket.handshake.query.userId;
-    console.log(userId);
-    if (userId != "undefined") 
-        {
-            userSocketMap[userId] = socket.id;
-        }
 
 })
 

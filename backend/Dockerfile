@@ -1,5 +1,22 @@
 FROM node:18
-COPY package.json package.json
-COPY package-lock.json package-lock.json
-COPY server.js server.js
-ENTRYPOINT [ "node","server.js" ]
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY server.js ./
+COPY config ./config
+COPY controllers ./controllers
+COPY file ./file
+COPY middleware ./middleware
+COPY models ./models
+COPY routes ./routes
+COPY socket ./socket
+COPY Serviceaccount.json ./
+COPY .env ./
+
+EXPOSE 3000
+
+CMD ["node", "server.js"]
