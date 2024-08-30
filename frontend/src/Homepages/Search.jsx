@@ -18,7 +18,7 @@ const handleInputChange = (event) => {
 </section>
 <section className="pt-5 rounded-lg w-80">
 {Users.User.map((user)=>{
-  return<button className='w-80'
+  return<button className='z-50 w-80'
    onClick={()=>{
     navigate(`/profile/${user.Username}`);
 if(window.innerWidth>500){

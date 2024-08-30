@@ -103,6 +103,7 @@ module.exports.removefollowers = async (req, res, next) => {
 
 module.exports.GetUsers=async(req,res,next)=>{
 try{
+  console.log(req.cookies);
     const finduser=await User.find({Username:{ $regex: `^${req.params.id}`}}); 
     return res.status(200).json({status:true,user:finduser});
 }
@@ -142,3 +143,29 @@ module.exports.getUserfromid=async(req,res,next)=>{
 
   }
 }
+module.exports.getRecommendation = async (req, res, next) => {
+  const limit = 5;
+  const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+
+  const start =(page-1)*limit;
+
+  try {
+    const currentUser = await User.findById(req.params.id);
+
+    if (!currentUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+const alreadyFollowing=currentUser.followingname.map((user)=>{
+  return user.id;
+})
+alreadyFollowing.push(currentUser._id)
+    const recommend = await User.find({ _id: { $nin:alreadyFollowing  } })
+      .skip(start)
+      .limit(limit);
+
+    return res.json({ Users: recommend });
+  } catch (e) {
+    console.error(e); // Log error for debugging
+    return res.status(500).json({ error: 'An error occurred while fetching recommendations' });
+  }
+};

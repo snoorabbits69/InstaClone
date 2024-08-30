@@ -13,6 +13,7 @@ import './App.css';
 import PrivateRoute from './Components/PrivateRoute';
 import { useSelector } from 'react-redux';
 import EditProfile from './Homepages/EditProfile';
+import Post from './pages/Post';
 
 function App() {
   const state = useSelector((state) => state.user);
@@ -29,7 +30,7 @@ function App() {
             <Route path="/reels" element={<Reels />} /> 
         <Route path="/setprofile" element={<SetProfile/>} />
         </Route>
-        
+        <Route path="/post/:postid" element={<Post/>}/>
         <Route path="/profile/:username" element={<Profile />} />
         <Route path="/editprofile" element={<EditProfile />} />
       </Routes>

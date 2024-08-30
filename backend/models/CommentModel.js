@@ -8,10 +8,10 @@ const CommentSchema = mongoose.Schema({
     },
     
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "users",
-        required: true
+        type:String,
+       
     },
+
     text: {
         type: String,
         required: true,
@@ -23,9 +23,11 @@ default:null
     },
     avatarImage: {
         type: String,
+        required:true
     },
     Username: {
-        type: String
+        type: String,
+        required:true
     },
     replies: [{
        type:mongoose.Schema.Types.ObjectId,
@@ -34,9 +36,14 @@ default:null
 }, { timestamps: true });
 
 CommentSchema.pre("find",(next)=>{
+    try{
 this.populate({path:"replies",
     populate:{path:"userId"}
 })
 next();
+    }
+    catch(e){
+       next();
+    }
 })
 module.exports = mongoose.model("Comment", CommentSchema);

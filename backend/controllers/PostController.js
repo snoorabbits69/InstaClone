@@ -130,4 +130,20 @@ module.exports.getPosts=async(req,res,next)=>{
     return res.json({error:e});
   }
   }
+  module.exports.GetPostFromId=async(req,res,next)=>{
+    console.log(req.params.id)
+    try{
+const findpost=await Post.findById(req.params.id);
+console.log(findpost)
+if(!findpost){
+return res.json({msg:"post doesnt exist"})
+}
+return res.json({post:findpost})
+
+
+    }
+    catch(e){
+return res.json({error:e})
+    }
+  }
   
