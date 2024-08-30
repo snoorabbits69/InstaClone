@@ -4,7 +4,7 @@ import { UploadPostRoute } from '../../utils/ApiRoutes';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useRef } from 'react';
-import PostImages from './create components/PostImages';
+import PostImages from './Create Component/PostImages';
 import { HiOutlineX } from "react-icons/hi";
 export default function Create({setShowCreate}) {
   const state = useSelector((state) => state.user);
@@ -16,7 +16,8 @@ const inputref=useRef(null);
     switch (arr) {
       case 1:
         return (
-          <section>
+          //need to make a seperate component out of this 
+          <section> 
 
 <div className="flex flex-col justify-center w-80     lg:w-[30rem] "    >
 
@@ -33,7 +34,7 @@ const inputref=useRef(null);
   </label>
   </div>
           </div>
-          <section className="fixed top-0 left-0 w-screen h-screen bg-gray-400 clip opacity-10" style={{zIndex:0}} onDrop={(e)=>{e.preventDefault();
+          <section className="fixed top-0 left-0 w-screen h-screen bg-gray-400 opacity-30 clip" style={{zIndex:0}} onDrop={(e)=>{e.preventDefault();
   const files = Array.from(e.dataTransfer.files);
   setImages(files);
 if(images){
@@ -48,7 +49,7 @@ if(images){
         );
       case 2:
         return  <section className="lg:w-[30rem] w-80  ">
-<PostImages images={images}/>
+<PostImages images={images} width={30}/>
 </section>
         
          
@@ -56,7 +57,7 @@ if(images){
         return     <>
         <div className="flex flex-col lg:flex lg:flex-row w-min">
           <section className="lg:w-[30rem] w-80 p-2">
-        <PostImages images={images} />
+        <PostImages images={images} width={30} />
         </section>
           
         <div className=" border-2 w-80 lg:relative absolute -bottom-12 lg:bottom-0  lg:h-[70%] ">
@@ -79,7 +80,9 @@ if(images){
     data.append('caption', formData.caption);
 
     try {
-      const response = await axios.post(UploadPostRoute(state.currentUser._id), data, {
+      const response = await axios.post(UploadPostRoute(state.currentUser._id),
+       data, {
+        withCredentials:true,
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -87,6 +90,7 @@ if(images){
       reset();
       setImages([]);
       setArr(1);
+      setShowCreate(false);
     } catch (error) {
       console.error('Error uploading post:', error);
     }

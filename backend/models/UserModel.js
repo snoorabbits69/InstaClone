@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { bool } = require("sharp");
 const userSchema = mongoose.Schema({
   Fullname: {
     type: String,
@@ -46,6 +47,16 @@ followersname:{
 followingname:{
   type:[{id:String}],  
   default:[]
+},
+Account: {
+  type: {
+    private: { type: Boolean, default: false },
+    Requests:{type:[{id:mongoose.Schema.Types.ObjectId}],default:[]}
+  },
+ default:{
+  private:false,
+Requests:[]
+ }
 }
 },{
   timestamps:true

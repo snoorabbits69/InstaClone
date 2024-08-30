@@ -1,5 +1,4 @@
 const host="http://localhost:3000";
-import GetUser from './../src/hooks/GetUser';
 export const registerRoute=`${host}/api/auth/register`;
 export const loginRoute=`${host}/api/auth/login`;
 export const logoutRoute=`${host}/api/auth/logout`;
@@ -13,4 +12,7 @@ export const GetUserfromIdRoute=(id)=>{return `${host}/api/user/getuserfromid/${
 export const ForgetPasswordRoute=`${host}/api/auth/forgotpassword`;
 export const UploadPostRoute=(id)=>`${host}/api/post/create/${id}`;
 export const GetPostRoute=(id)=>`${host}/api/post/getPosts/${id}`;
+export const GetPostfromIdRoute=(id)=>`${host}/api/post/getPost/${id}`;
+export const AddcommentRoute=(id)=>`${host}/api/comment/${id}`;
+
 

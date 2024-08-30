@@ -8,7 +8,9 @@ const [Loading,setLoading]=useState(true);
 useEffect(()=>{
 const getUser=async()=>{
     const api=GetUserfromIdRoute(id);
-    const {data}=await axios.get(api);
+    const {data}=await axios.get(api,{
+        withCredentials:true
+    });
     if(data.user){
         setUser(data.user);
         setLoading(false);

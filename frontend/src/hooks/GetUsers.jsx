@@ -13,7 +13,8 @@ export default function GetUsers(value) {
         const get=async()=>{
             try{
             const {data}=await axios.get(api,{
-                signal:controller.signal
+                signal:controller.signal,
+                withCredentials:true
             });
            setUser(data.user);
             }

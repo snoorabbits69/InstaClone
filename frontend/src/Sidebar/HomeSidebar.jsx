@@ -43,7 +43,7 @@ else if( !showSearch){
  
 
   return (
-    <div className="fixed z-50 h-full lg:w-60 lg:pr-2 lg:border-r-2 lg:border-b-0 Bar border-black-500"  >
+    <div className="fixed h-full lg:z-50 lg:w-60 lg:pr-2 lg:border-r-2 lg:border-b-0 Bar border-black-500"  >
        <div className="fixed hidden h-screen border-r-2 opacity-0 w-82 "  id="Search" > 
       <Search setShowSearch={setShowSearch}  /> 
         </div>

@@ -6,7 +6,7 @@ import { AddFollowerRoute, RemoveFollowerRoute } from '../../utils/ApiRoutes';
 export default function FollowButton({ currentUser, setcurrentUser }) {
   const state = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
-
+const req=currentUser.Account.Requests.some((req)=>req.id==state.currentUser._id)
   const handleFollowerControl = async () => {
     setLoading(true);
 
@@ -37,7 +37,7 @@ export default function FollowButton({ currentUser, setcurrentUser }) {
         <button>Edit profile</button>
       ) : (
         <button onClick={handleFollowerControl} disabled={loading}>
-          {loading ? 'Loading...' : (isFollowing ? 'Following' : 'Follow')}
+          {loading ? 'Loading...' : (isFollowing ? 'Following' :req?"Requested": 'Follow')}
         </button>
       )}
     </div>

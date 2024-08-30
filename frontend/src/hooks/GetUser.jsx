@@ -10,7 +10,9 @@ export default function GetUser(username) {
    useEffect(() => {
         const getUserData = async () => {
           try {
-            const { data } = await axios.get(getUserRoute(username));
+            const { data } = await axios.get(getUserRoute(username),{
+              withCredentials:true
+            });
             if(data.user){
             setcurrentUser(data.user);
             setLoading(false);
