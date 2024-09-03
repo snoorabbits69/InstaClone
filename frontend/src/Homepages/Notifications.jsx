@@ -2,8 +2,10 @@ import React from 'react'
 
 export default function Notifications() {
   return (
-    <div className="  bg-red-800 ml-20">
-
+    <div className="h-full bg-red-500 w-80">
+<section>
+  notif
+</section>
     </div>
   )
 }

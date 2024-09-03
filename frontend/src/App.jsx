@@ -8,11 +8,11 @@ import SetProfile from './pages/SetProfile';
 import Explore from './Homepages/Explore';
 import Reels from './Homepages/Reels';
 import Message from './Homepages/Message';
-import Profile from './Homepages/Profile';
+import Profile from './Homepages/Profile Component/Profile';
 import './App.css';
 import PrivateRoute from './Components/PrivateRoute';
 import { useSelector } from 'react-redux';
-import EditProfile from './Homepages/EditProfile';
+import EditProfile from './Homepages/Profile Component/EditProfile';
 import Post from './pages/Post';
 
 function App() {

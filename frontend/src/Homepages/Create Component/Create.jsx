@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { UploadPostRoute } from '../../utils/ApiRoutes';
+import { UploadPostRoute } from '../../../utils/ApiRoutes';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useRef } from 'react';
-import PostImages from './Create Component/PostImages';
+import PostImages from './PostImages';
 import { HiOutlineX } from "react-icons/hi";
 export default function Create({setShowCreate}) {
   const state = useSelector((state) => state.user);

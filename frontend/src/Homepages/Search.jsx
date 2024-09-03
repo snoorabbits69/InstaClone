@@ -10,9 +10,9 @@ const handleInputChange = (event) => {
   console.log(Users);
 }
   return (
-    <div className="flex flex-col w-full h-full rounded-xl " >
-<section>
-  <input type="text" className='h-10 mt-12 border-2 border-gray-400 lg:mx-8 w-80 rounded-xl' onChange={
+    <div className="flex flex-col w-full h-full rounded-xl search"  >
+<section className="search" >
+  <input type="text" className='h-10 mt-12 border-2 border-gray-400 lg:mx-8 w-80 rounded-xl search' onChange={
     (e)=>{handleInputChange(e)}}
     />
 </section>

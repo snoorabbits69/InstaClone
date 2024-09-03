@@ -17,7 +17,7 @@ export default function ProfilePost({id}) {
       return <div className="relative w-max h-28 lg:h-72" key={i} onClick={()=>{
       navigate(`/post/${img.id}`)
       }}>
-      <img src={img.url} className="w-24 h-28 lg:w-[18rem] transition-all md:h-64 border-2 border-black peer hover:opacity-50" />
+      <img src={img.url} className="w-24 h-28 lg:w-[18rem] transition-all md:h-64 border-2 border-black peer hover:opacity-50 hover:cursor-pointer" />
       <div className="flex justify-center ">
         <p className="absolute top-0 transition-all opacity-100 text peer-hover:block">{img.likes}</p>
         </div>

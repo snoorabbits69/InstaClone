@@ -16,8 +16,9 @@ io.on("connection", (socket) => {
     console.log("User " + socket.id + " connected");
 
     socket.on("get", (arg) => {
-        console.log(arg);
-        socket.broadcast.emit("recieve",arg);
+      socket.join(arg.id);
+      console.log(arg.id);
+      socket.to(arg.id).emit("recieve",arg);
      
     });
 

@@ -3,12 +3,10 @@ import axios from 'axios';
 import { useRef } from 'react';
 import { uploadRoute } from '../../utils/ApiRoutes';
 import noProfile from "../assets/noprofile.png"
-import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { signInSuccess } from '../Redux/Slice/Userslice';
 
 export default function SetProfile() {
-  const navigate=useNavigate();
     const [image,SetImage]=useState();
     const state=useSelector((state)=>state.user);
 const dispatch=useDispatch();
@@ -29,7 +27,7 @@ const dispatch=useDispatch();
     console.log(data);
     if(data.status){
 dispatch(signInSuccess(data.user));
-    navigate("/home");
+window.location.href="/home";
     }
   }
     }
