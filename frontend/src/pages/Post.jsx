@@ -18,7 +18,7 @@ console.log(User);
     <div className=' w-80 md:w-[35rem] ml-7  md:ml-20 mt-8 lg:mt-20 lg:ml-96  '>
     { !loading &&  <PostImages images={post.img} width={35} forpost={true}/>}
     </div>
-   <div className="relative mt-20 h-[32.5rem] bg-red-600 border-l-2 border-white   w-[25rem]    ">
+   <div className="relative mt-20 h-[32.5rem]  border-l-2 border-white   w-[25rem]    ">
     <section className="flex justify-evenly">
     <div className="flex w-full pr-4 border-b-2 border-white">
       <section>
@@ -28,6 +28,9 @@ console.log(User);
       <button className="">Edit</button>
  
     </section>
+    <div>
+   
+    </div>
     <section className="absolute bottom-0 w-full">
     <Addcomment postid={postid} />
     </section>

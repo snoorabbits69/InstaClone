@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 
-import FollowButton from '../Components/FollowButton';
-import FollowersBox from '../Components/FollowersBox';
-import GetUser from '../hooks/GetUser';
+import FollowButton from '../../Components/FollowButton';
+import FollowersBox from '../../Components/FollowersBox';
+import GetUser from '../../hooks/GetUser';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import GetPosts from '../hooks/GetPosts';
-import ProfilePost from './Profile Component/ProfilePost';
+import GetPosts from '../../hooks/GetPosts';
+import ProfilePost from './ProfilePost';
 import { useSelector } from 'react-redux';
 
 export default function Profile() {
@@ -40,10 +40,10 @@ setModel(true);
 
   return (
 
-<div className='ml-4 lg:ml-72 lg:ml-96'>
+<div className='ml-4 md:ml-72 lg:ml-96'>
     <div className="flex pt-10 pb-5 mb-20">
      {modal && <FollowersBox follower={Userdata.user} text={Userdata.text} setModel={setModel}/>}
-      <img src={currentUser.avatarImage} className='p-1 border-2 border-red-500 border-solid rounded-full w-14 h-14 lg:w-40 lg:h-40' alt={`${currentUser.Username}'s avatar`} />
+      <img src={currentUser.avatarImage} className='p-1 border-2 border-solid rounded-full w-14 h-14 lg:w-40 lg:h-40' alt={`${currentUser.Username}'s avatar`} />
       <section className="flex flex-col gap-3 ml-8 lg:ml-10 lg:gap-5 lg:mt-16">
         <div className="flex gap-2 lg:gap-5">
           <p className="lg:text-2xl">{currentUser.Username}</p>
