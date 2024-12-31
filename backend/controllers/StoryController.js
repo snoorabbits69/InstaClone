@@ -68,7 +68,6 @@ module.exports.deleteStory = async (req, res) => {
         return res.status(404).json({ error: "Story not found" });
       }
     } catch (e) {
-        console.log(e);
       return res.status(500).json({ error: "An error occurred during deletion" });
     }
   };

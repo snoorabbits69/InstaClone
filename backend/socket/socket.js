@@ -15,12 +15,9 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
     console.log("User " + socket.id + " connected");
 
-    socket.on("get", (arg) => {
-      socket.join(arg.id);
-      console.log(arg.id);
-      socket.to(arg.id).emit("recieve",arg);
-     
-    });
+socket.on("follow",(msg)=>{
+    console.log(msg);
+})
 
     socket.on("disconnect", () => {
         console.log(socket.id + " disconnected");

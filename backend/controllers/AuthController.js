@@ -44,6 +44,7 @@ module.exports.register = async (req, res, next) => {
 };
 
 module.exports.login = async (req, res, next) => {
+ 
   try {
     const { Username, Password } = req.body;
     const checkUser = await User.findOne({ Username });
@@ -110,7 +111,6 @@ module.exports.Logout = (req, res,next) => {
 	}
 };
 const nodemailer=require("nodemailer");
-const { reset } = require("nodemon");
 const updatetoken=process.env.Updatetoken;
 
 module.exports.getforgotpassword=(req,res,next)=>{
@@ -123,6 +123,7 @@ res.render(path.join(__dirname,'../file/ForgetPassword.ejs'));
 }
 module.exports.postforgotpassword = async (req, res, next) => {
   try {
+    console.log(req.body)
     const findUser = await User.findOne({ Email: req.body.Email });
     if (!findUser) {
       return res.json({ status: false, msg: "User doesn't exist" });

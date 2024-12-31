@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { AddcommentRoute } from '../../utils/ApiRoutes';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 
 export default function Addcomment({ postid }) {
-  console.log(postid);
   const state = useSelector((state) => state.user);
-  console.log(state.currentUser._id);
   const [comment, setcomment] = useState('');
-
+const inputref=useRef()
   let sendComment = async () => {
     if (comment) {
       try {
@@ -20,7 +18,7 @@ export default function Addcomment({ postid }) {
           Username: state.currentUser.Username,
           avatarImage: state.currentUser.avatarImage,
         });
-        console.log(data);
+        inputref.current.value=""
       } catch (error) {
         console.error(error);
       }
@@ -28,10 +26,10 @@ export default function Addcomment({ postid }) {
   };
 
   return (
-    <div className="flex justify-around">
-      <input
+    <div className="flex justify-around border-2 border-t-black">
+      <input ref={inputref}
         type="text"
-        className="w-[80%] outline-none"
+        className="w-[80%] border-black outline-none border-b-2 mb-1 "
         onChange={(e) => {
           setcomment(e.target.value);
         }}

@@ -7,7 +7,7 @@ const PostModel = require("../models/PostModel");
 const {upload}=require("../Multer/multer");
 module.exports.CreatePost = async (req, res, next) => {
 
-    const findUser = await User.findById(req.params.id);
+    const findUser = await User.findById(req.user._id);
     if (!findUser) {
       return res.status(500).json({ msg: "User doesn't exist" });
     }
@@ -43,7 +43,7 @@ try{
         await Promise.all(uploadPromises);
         const newPost = await Post.create({
 
-          postedBy: req.params.id,
+          postedBy: req.user._id,
           caption: req.body.caption,
           img: fileLinks,
         });
@@ -131,10 +131,8 @@ module.exports.getPosts=async(req,res,next)=>{
   }
   }
   module.exports.GetPostFromId=async(req,res,next)=>{
-    console.log(req.params.id)
     try{
 const findpost=await Post.findById(req.params.id);
-console.log(findpost)
 if(!findpost){
 return res.json({msg:"post doesnt exist"})
 }

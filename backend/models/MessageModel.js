@@ -1,17 +1,17 @@
-const { Timestamp } = require("mongodb");
+
 const mongoose=require("mongoose");
 const messageschema=mongoose.Schema({
-    SenderId:{
+    Sender:{
 type:mongoose.Schema.Types.ObjectId,
 ref:"users"
     },
-    RecieverId:{
+    Reciever:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"users"
 
     },
-    message:{
-type:String,
+    readBy:{
+type:mongoose.Schema.Types.ObjectId,
 required:true
     },
    

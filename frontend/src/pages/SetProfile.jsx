@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { uploadRoute } from '../../utils/ApiRoutes';
 import noProfile from "../assets/noprofile.png"
 import { useDispatch, useSelector } from 'react-redux';
-import { signInSuccess } from '../Redux/Slice/Userslice';
+import {  UpdateAvatarImage } from '../Redux/Slice/Userslice';
 
 export default function SetProfile() {
     const [image,SetImage]=useState();
@@ -26,7 +26,7 @@ const dispatch=useDispatch();
      const {data}=await axios.post(api,formdata);
     console.log(data);
     if(data.status){
-dispatch(signInSuccess(data.user));
+dispatch(UpdateAvatarImage(data.user.avatarImage));
 window.location.href="/home";
     }
   }
