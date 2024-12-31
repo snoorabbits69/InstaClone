@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext }  from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomeSidebar from './Sidebar/HomeSidebar';
 import Login from './pages/Login';
@@ -15,15 +15,19 @@ import { useSelector } from 'react-redux';
 import EditProfile from './Homepages/Profile Component/EditProfile';
 import Post from './pages/Post';
 
+
 function App() {
   const state = useSelector((state) => state.user);
+
   return (
+    <section className="h-auto text-black dark:text-white ">
     <Router>
       {state.currentUser ? <HomeSidebar /> : null}
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route element={<PrivateRoute />}>
+        <Route path="/" element={<PrivateRoute/>}/>
           <Route path="/home" element={<Home/>}>  </Route>
          <Route path="explore" element={<Explore/>}></Route>
             <Route path="/message" element={<Message />} />
@@ -35,7 +39,7 @@ function App() {
         <Route path="/editprofile" element={<EditProfile />} />
       </Routes>
     </Router>
-  
+    </section>
   );
 }
 

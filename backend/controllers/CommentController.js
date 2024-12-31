@@ -14,7 +14,6 @@ module.exports.Comment = async (req, res, next) => {
             Username: req.body.Username,
             avatarImage: req.body.avatarImage
         });
-        console.log(currentcomment);
         return res.status(201).json({ comment: currentcomment });
     } catch (e) {
         return res.status(500).json({ error: e });
@@ -35,7 +34,6 @@ module.exports.Reply = async (req, res, next) => {
             avatarImage: req.body.avatarImage,
             ParentComment: ParentComment._id
         });
-        console.log(currentcomment);
         return res.status(201).json({ comment: currentcomment });
     } catch (e) {
         return res.status(500).json({ error: e });
@@ -48,14 +46,14 @@ module.exports.DeleteComment = async (req, res, next) => {
 }
 
 module.exports.getComment = async (req, res, next) => {
+    console.log("calling ")
   const limit = 5;
   const page = parseInt(req.query.page) || 1;
   const start = (page - 1) * limit;
 const {postId}=req.params;
-console.log(postId)
   try {
       const findComment = await Comment.find({"postId":req.params.postId}).skip(start).limit(limit);
-         
+         console.log(findComment)
 
       return res.status(200).json({ comment: findComment });
   } catch (e) {
@@ -67,7 +65,6 @@ module.exports.getReplyComment = async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const start = (page - 1) * limit;
 const {postId}=req.params;
-console.log(postId)
   try {
       const replies = await Comment.find({ParentComment:req.params.parentid}).skip(start).limit(limit);
          

@@ -1,7 +1,9 @@
 const User = require("../models/UserModel");
 const {bucket} =require("../firebase/firebase")
 const {upload}=require("../Multer/multer");
+const bcrypt=require("bcrypt")
 const sharp=require("sharp");
+const { error } = require("console");
 module.exports.profile = async(req, res, next) => {
   const checkuser=await User.findById(req.params.id);
   upload.single('file')(req, res, async(err) => {
@@ -23,7 +25,6 @@ const blobstream=await fileUpload.createWriteStream().end(optimizedbuffer);
   if(delfile.slice(8).startsWith(`firebasestorage.googleapis.com/v0/b/${process.env.storageBucket}`)){
     const deletedfile=delfile.slice(delfile.lastIndexOf("/"),delfile.lastIndexOf("?")).slice(15);
 await bucket.file("UserProfile/"+deletedfile).delete();
-console.log(true);
   }
 
 }
@@ -33,12 +34,28 @@ catch(e){
 }
 checkuser.avatarImage=`https://firebasestorage.googleapis.com/v0/b/${process.env.storageBucket}/o/UserProfile%2F${filename}?alt=media`;
 await checkuser.save();
-console.log(checkuser);
 const {Password,...rest}=checkuser.toObject()
 return res.json({status:true,user:rest})
   });
 };
-
+module.exports.deleteprofile=async(req,res,next)=>{
+  try{
+let currentUser=await User.findById(req.params.id);
+const delfile=currentUser.avatarImage;
+  if(delfile.slice(8).startsWith(`firebasestorage.googleapis.com/v0/b/${process.env.storageBucket}`)){
+    const deletedfile=delfile.slice(delfile.lastIndexOf("/"),delfile.lastIndexOf("?")).slice(15);
+    currentUser.avatarImage="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+    await Promise.all([
+      bucket.file("UserProfile/" + deletedfile).delete(),
+      currentUser.save()
+    ]);
+  }
+  return res.json({User:currentUser})
+  }
+  catch(e){
+return res.json({error:e})
+  }
+}
 module.exports.addfollowers = async (req, res, next) => {
   if (req.params.id === req.body.id) {
     return res.json({ status: false, error: "Can't follow yourself" });
@@ -103,7 +120,6 @@ module.exports.removefollowers = async (req, res, next) => {
 
 module.exports.GetUsers=async(req,res,next)=>{
 try{
-  console.log(req.cookies);
     const finduser=await User.find({Username:{ $regex: `^${req.params.id}`}}); 
     return res.status(200).json({status:true,user:finduser});
 }
@@ -113,7 +129,6 @@ catch(e){
 }
 }
 module.exports.getUser = async (req, res, next) => {
-  console.log(req.params.username);
   try {
     const username = req.params.username; 
     const user = await User.findOne({ Username: username });
@@ -169,3 +184,102 @@ alreadyFollowing.push(currentUser._id)
     return res.status(500).json({ error: 'An error occurred while fetching recommendations' });
   }
 };
+module.exports.PrivateAccount=async(req,res,next)=>{
+  try{
+const currentUser=await User.findById(req.params.id)
+if(!currentUser){
+  return res.json({error:"User doesnt exist"})
+}
+currentUser.Account.private=!currentUser.Account.private;
+await currentUser.save()
+return res.json({user:currentUser})
+  }catch{
+return res.json({error:e})
+  }
+}
+module.exports.UpdateUsername=async(req,res,next)=>{
+try{
+  const UpdatingUser=await User.findById(req.params.id)
+  if(!UpdatingUser){
+return res.json({msg:"Invalid Userid"})
+  }
+  UpdatingUser.Username=req.body.Username
+  await UpdatingUser.save()
+  const {Password:_,...rest}=UpdatingUser.toObject()
+  return res.json({status:true,user:rest})
+}
+catch(e){
+return res.json({error:e})
+}
+}
+module.exports.UpdateFullname=async(req,res,next)=>{
+  try{
+    const UpdatingUser=await User.findById(req.params.id)
+    if(!UpdatingUser){
+  return res.json({msg:"Invalid Userid"})
+    }
+    UpdatingUser.Fullname=req.body.Fullname
+    await UpdatingUser.save()
+    const {Password:_,...rest}=UpdatingUser.toObject()
+    return res.json({status:true,user:rest})
+  }
+  catch(e){
+  return res.json({error:e})
+  }
+  }
+
+  module.exports.PasswordMiddleware=async(req,res,next)=>{
+    try{
+      const UpdatingUser=await User.findById(req.params.id)
+      if(!UpdatingUser){
+        return res.json({msg:"Invalid Userid"})
+          }
+          const check=await bcrypt.compare(UpdatingUser.Password,req.body.Password)
+          if(check){
+            next()
+          }
+          return res.json({msg:"wrong password",status:false})
+    }
+    catch(e){
+      return res.json({error:e})
+
+    }
+
+  }
+  module.exports.UpdatePassword=async(req,res,next)=>{
+    try{
+      const UpdatingUser=await User.findById(req.params.id)
+      
+      UpdatingUser.Password=await bcrypt.hash(req.body.newPassword,10)
+      await UpdatingUser.save()
+      const {Password:_,...rest}=UpdatingUser.toObject()
+      return res.json({status:true,user:rest})
+    }
+    catch(e){
+    return res.json({error:e})
+    }
+    }
+    module.exports.cancelRequest = async (req, res, next) => {
+      try {
+        const RequestedUser = await User.findById(req.params.id);
+        const requestingUser=await User.findById(req.body.id)
+        if (!RequestedUser) {
+          return res.status(404).json({ status: false, error: 'User not found' });
+        }
+    RequestedUser.Account.Requests= RequestedUser.Account.Requests.filter((request)=>{
+      if(request?.id!=req.body.id){
+        return request
+      }
+    })
+    await RequestedUser.save();
+        console.log(RequestedUser.Account.Requests)
+       
+  
+let {Password,...rest}=RequestedUser.toObject();
+   
+        return res.json({ status: true,user:rest});
+      } catch (e) {
+        return res.json({ status: false, error: e.message });
+      }
+    };
+    

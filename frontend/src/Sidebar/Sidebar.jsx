@@ -15,7 +15,6 @@ function Sidebar({ setShowSearch, showSearch, setShowCreate, sethidebar, hidebar
  }
  else{
     const handleClickOutside = (e) => {
-      console.log(!e.target.classList.contains("Notifications"));
       if (!e.target.classList.contains('search')) {
         setShowSearch(false);
         if ((location.pathname !== '/message' && !e.target.classList.contains('message')) && !e.target.classList.contains("Notifications")) {
@@ -23,7 +22,6 @@ function Sidebar({ setShowSearch, showSearch, setShowCreate, sethidebar, hidebar
         }
       }
    
-      console.log(!e.target.classList.contains('Notifications')) 
       
      
     };
@@ -37,7 +35,7 @@ function Sidebar({ setShowSearch, showSearch, setShowCreate, sethidebar, hidebar
   }, [showSearch,hidebar,location.pathname,showNotif]);
 
   const handleSearchClick = () => {
-    if (location.pathname !== '/message') {
+    if (location.pathname !== '/message' && window.innerWidth>800) {
       sethidebar(!hidebar);
     }
     setShowSearch(!showSearch);
@@ -59,7 +57,7 @@ function Sidebar({ setShowSearch, showSearch, setShowCreate, sethidebar, hidebar
   };
 
   return (
-    <section className="fixed bottom-0 flex w-screen h-12 px-2 text-2xl border-t-4 justify-evenly lg:w-auto lg:bottom-auto lg:text-3xl lg:border-t-0 lg:flex-col lg:h-auto">
+    <section className="fixed bottom-0 z-50 flex w-screen h-12 px-2 text-2xl border-t-4 justify-evenly lg:w-auto lg:bottom-auto lg:text-3xl lg:border-t-0 lg:flex-col lg:h-auto">
       <Link to="/home">
         <motion.div
           className="flex px-4 pt-2 text-center transition-all rounded-xl hover:bg-slate-100 hover:cursor-grab"
@@ -126,7 +124,6 @@ function Sidebar({ setShowSearch, showSearch, setShowCreate, sethidebar, hidebar
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.001, ease: 'easeInOut' }}
         onClick={()=>{
-          console.log("c")
           sethidebar(true)
         }}
       >

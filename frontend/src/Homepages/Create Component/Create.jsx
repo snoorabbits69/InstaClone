@@ -49,7 +49,7 @@ if(images){
         );
       case 2:
         return  <section className="lg:w-[30rem] w-80  ">
-<PostImages images={images} width={30}/>
+<PostImages images={images} />
 </section>
         
          
@@ -57,7 +57,7 @@ if(images){
         return     <>
         <div className="flex flex-col lg:flex lg:flex-row w-min">
           <section className="lg:w-[30rem] w-80 p-2">
-        <PostImages images={images} width={30} />
+        <PostImages images={images}  />
         </section>
           
         <div className=" border-2 w-80 lg:relative absolute -bottom-12 lg:bottom-0  lg:h-[70%] ">
@@ -80,7 +80,7 @@ if(images){
     data.append('caption', formData.caption);
 
     try {
-      const response = await axios.post(UploadPostRoute(state.currentUser._id),
+      const response = await axios.post(UploadPostRoute,
        data, {
         withCredentials:true,
         headers: {

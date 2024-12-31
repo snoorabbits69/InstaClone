@@ -34,6 +34,12 @@ const userSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+    UpdateAvatarImage:(state,action)=>{
+      state.currentUser.avatarImage=action.payload;
+    },
+    updatePrivateAccount:(state,action)=>{
+      state.currentUser.Account.private=!state.currentUser.Account.private
+      }
   },
 });
 
@@ -43,7 +49,9 @@ export const {
   signInFailure,
   signOutStart,
   signOutSuccess,
-  signOutFailure
+  signOutFailure,
+  UpdateAvatarImage,
+  updatePrivateAccount
 } = userSlice.actions;
 
 export default userSlice.reducer;

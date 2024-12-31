@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { GetPostRoute } from '../../utils/ApiRoutes';
 
 export default function GetPosts( id ) {
-    console.log(id);
     const [Post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);
 

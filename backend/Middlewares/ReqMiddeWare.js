@@ -1,6 +1,7 @@
 const User=require("../models/UserModel")
 module.exports.ReqMiddleWare = async (req, res, next) => {
     try {
+      console.log(req.body,req.params.id)
       const followingUser = await User.findById(req.params.id);
       if (!followingUser) {
         return res.status(404).send({ message: 'User not found' });
@@ -8,7 +9,7 @@ module.exports.ReqMiddleWare = async (req, res, next) => {
       if (followingUser.Account.private) {
         const requestingUser = await User.findById(req.body.id);
         const alreadyinrequest=followingUser.Account.Requests.some((request)=>{
-          return request.id.toString() ==req.body.id
+          return request?.id.toString() ==req.body.id
         })
        const {Password:_,...rest}=followingUser.toObject();
         if(alreadyinrequest){

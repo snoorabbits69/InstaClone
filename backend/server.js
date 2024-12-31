@@ -3,10 +3,12 @@ const path=require("path");
 const dotenv=require("dotenv").config();
 const cors=require("cors");
 const bodyParser=require("body-parser");
+const cookieParser=require("cookie-parser");
 const AuthRoutes=require("./routes/AuthRoutes");
 const UserRoutes=require("./routes/UserRoutes");
 const PostRoutes=require("./routes/PostRoutes")
 const CommentRoutes=require("./routes/CommentRoutes")
+const ChatRoutes=require("./routes/ChatRoutes")
 const PORT=process.env.PORT;
 const {app,server,io}=require("./socket/socket");
 const dbConnect=require("./config/dbConnection");
@@ -19,12 +21,14 @@ app.use(express.json());
 app.set('view engine', 'ejs');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(cookieParser())
 dbConnect();
 const jwt=require("jsonwebtoken");
 app.use(express.static(path.resolve("./file")));
 app.use("/api/auth",AuthRoutes);
 app.use("/api/user",UserRoutes);
 app.use("/api/post",PostRoutes)
+app.use("/api/chat",ChatRoutes)
 app.use("/api",CommentRoutes);
 
 server.listen(PORT,()=>{

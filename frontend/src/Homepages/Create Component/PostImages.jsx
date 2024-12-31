@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
-export default function PostImages({ images,width,forpost }) {
+export default function PostImages({ images,forpost }) {
   const [x, setX] = useState(0);
 
   const handleIncrement = (e) => {
@@ -28,7 +28,7 @@ else{
     <section className={"relative w-full  overflow-hidden Postblock "}>
       <div className="relative flex h-screen gap-2 transition-all duration-500 w-max" style={{ transform: `translateX(-${x}%)` }}>
         {images.map((imageURL, index) => (
-          <img src={forpost?imageURL:URL.createObjectURL(imageURL)} key={index} className={`block h-[70%] w-80 md:w-[${width}rem] pb-2`}  />
+          <img src={forpost?imageURL:URL.createObjectURL(imageURL)} key={index} className={`block h-[70%] w-80 md:w-[30rem] pb-2`}  />
         ))}
       </div>
 
