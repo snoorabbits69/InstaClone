@@ -7,7 +7,7 @@ import Home from './pages/Home';
 import SetProfile from './pages/SetProfile';
 import Explore from './Homepages/Explore';
 import Reels from './Homepages/Reels';
-import Message from './Homepages/Message';
+import Message from './Homepages/message/Message';
 import Profile from './Homepages/Profile Component/Profile';
 import './App.css';
 import PrivateRoute from './Components/PrivateRoute';
@@ -18,7 +18,7 @@ import Post from './pages/Post';
 
 function App() {
   const state = useSelector((state) => state.user);
-
+  
   return (
     <section className="h-auto text-black dark:text-white ">
     <Router>
