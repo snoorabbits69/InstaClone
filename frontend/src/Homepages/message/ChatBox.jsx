@@ -32,21 +32,7 @@ export default function ChatBox() {
               </div>
           </div>
           <div className="flex-grow w-full p-2 my-2 overflow-y-auto bg-gray-100 dark:bg-gray-900">
-              <div className="flex items-end w-3/4" >
-                  <img className="hidden w-8 h-8 m-3 rounded-full" src="https://cdn.pixabay.com/photo/2017/01/31/21/23/avatar-2027366_960_720.png" alt="avatar"/>  
-                  <div className="w-8 m-3 rounded-full"/>
-                  <div className="p-3 mx-3 my-1 bg-purple-300 rounded-bl-none dark:bg-gray-800 rounded-2xl sm:w-3/4 md:w-3/6">
-                      <div className="text-xs text-gray-600 dark:text-gray-200">
-                          Rey Jhon A. Baqurin
-                      </div>
-                      <div className="text-gray-700 dark:text-gray-200">
-                          gsegjsghjbdg bfb sbjbfsj fsksnf jsnfj snf nnfnsnfsnj
-                      </div>
-                      <div className="text-xs text-gray-400">
-                          1 day ago
-                      </div>
-                  </div>
-              </div>
+              
               <div className="flex items-end w-3/4">
                   <img className="w-8 h-8 m-3 rounded-full" src="https://cdn.pixabay.com/photo/2017/01/31/21/23/avatar-2027366_960_720.png" alt="avatar"/>  
                   <div className="p-3 mx-3 my-1 bg-purple-300 rounded-bl-none dark:bg-gray-800 rounded-2xl sm:w-3/4 md:w-3/6">
@@ -71,38 +57,9 @@ export default function ChatBox() {
                       </div>
                   </div>
               </div>
-              <div className="flex justify-end">
-                  <div className="flex items-end w-3/4 m-1 bg-purple-500 rounded-br-none dark:bg-gray-800 rounded-xl sm:w-3/4 md:w-auto">
-                      <div className="p-2">
-                          <div className="text-gray-200">
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                          </div>
-                      </div>
-                  </div>
-              </div>
-              <div className="flex justify-end">
-                  <div className="flex items-end w-3/4 max-w-xl m-1 bg-purple-500 rounded-br-none dark:bg-gray-800 rounded-xl sm:w-3/4 md:w-auto">
-                      <div className="p-2">
-                          <div className="text-gray-200 ">
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam
-                          </div>
-                      </div>
-                  </div>
-              </div>
-              <div className="flex items-end w-3/4">
-                  <img className="w-8 h-8 m-3 rounded-full" src="https://cdn.pixabay.com/photo/2017/01/31/21/23/avatar-2027366_960_720.png" alt="avatar"/>  
-                  <div className="p-3 mx-3 my-1 bg-purple-300 rounded-bl-none dark:bg-gray-800 rounded-2xl sm:w-3/4 md:w-3/6">
-                      <div className="hidden text-xs text-gray-100 dark:text-gray-200">
-                          Rey Jhon A. Baqurin
-                      </div>
-                      <div className="text-gray-700 dark:text-gray-200">
-                          Hello po ang pogi niyo :)
-                      </div>
-                      <div className="text-xs text-gray-400">
-                          just now
-                      </div>
-                  </div>
-              </div>
+             
+           
+            
           </div>
           <div className="p-3 bg-gray-100 rounded-tl-none rounded-tr-none h-15 rounded-xl dark:bg-gray-800">
               <div className="flex items-center">
