@@ -19,3 +19,4 @@ export const GetcommentRoute=(id,page)=>`${host}/api/comment/get/${id}?page=${pa
 export const LikePostRoute=(id)=>`${host}/api/post/likes/${id}`
 export const changeAccountTypeRoute=(id)=>`${host}/api/user/privateaccount/${id}`
 export const cancelFollowRequestRoute=(id)=>`${host}/api/user/cancelrequest/${id}`
+export const FetchChatRoutes=`${host}/api/chat`

@@ -91,6 +91,11 @@ if(images){
       setImages([]);
       setArr(1);
       setShowCreate(false);
+      if (window.location.pathname.startsWith("/profile")){
+location.reload()
+
+      }
+   
     } catch (error) {
       console.error('Error uploading post:', error);
     }

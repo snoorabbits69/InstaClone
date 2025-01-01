@@ -47,7 +47,7 @@ module.exports.fetchChat=async(req,res,next)=>{
             path:"latestMessage.Sender",
             select:"Fullname Username avatarImage"
         })
-        return res.status(200).json(chats)
+        return res.status(200).json({status:true,chat:chats})
     }catch(e){
 return res.status(500).json({status:false,error:e})
     }

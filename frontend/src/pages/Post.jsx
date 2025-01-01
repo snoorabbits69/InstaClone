@@ -28,7 +28,7 @@ navigate(`/profile/${User.Username}`)
     </div>
 
     {/* Post Images Section */}
-    <div className="w-80 md:w-[30rem]  lg:ml-96 border-y-2  border-y-black">
+    <div className="w-80 md:w-[30rem]  lg:ml-96">
       {!loading && <PostImages images={post.img}  forpost={true} />}
     </div>
   

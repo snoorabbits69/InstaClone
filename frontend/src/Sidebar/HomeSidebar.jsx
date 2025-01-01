@@ -80,7 +80,7 @@ const sidebarProps = {
   setShowCreate,
 };
   return (
-    <div className="fixed z-50 lg:h-full lg:w-60 lg:pr-2 lg:border-r-2 lg:border-b-0 Bar border-black-500"  >
+    <div className="fixed z-50 overflow-hidden lg:h-full lg:w-60 lg:pr-2 lg:border-r-2 lg:border-b-0 Bar border-black-500"  >
        <div className="fixed hidden h-screen border-r-2 opacity-0 w-82 "  id="Search" > 
       <Search setShowSearch={setShowSearch}  /> 
         </div>
@@ -89,7 +89,7 @@ const sidebarProps = {
   {/* <Notifications/>  */}
  {/* </div>  */}
  
-    { hidebar?      <FaInstagram className="mt-2 ml-5 text-4xl mb-14"/>:
+    { hidebar?      <FaInstagram className="hidden mt-2 ml-5 text-4xl lg:block mb-14"/>:
      <img src={logo} className="hidden w-36 mb-7 lg:block " />}
    {showCreate &&  <Create setShowCreate={setShowCreate}/>}
       <Sidebar {...sidebarProps}/> 
