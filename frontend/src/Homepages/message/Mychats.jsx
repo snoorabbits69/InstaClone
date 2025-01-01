@@ -1,23 +1,42 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Mychat from './Mychat'
+import { useDispatch, useSelector} from 'react-redux';
+import { FetchChatRoutes } from '../../../utils/ApiRoutes';
+import axios from 'axios';
+
 export default function Mychats() {
-    const data = [
-        {name:'Rey Jhon',time:'just now', message: 'Hey there! Are you finish creating the chat app?', active: true},
-        {name:'Cherry Ann',time:'12:00', message: 'Hello? Are you available tonight?'},
-        {name:'Lalaine',time:'yesterday', message: 'I\'m thingking of resigning'},
-        {name:'Princess',time:'1 day ago', message: 'I found a job :)'},
-        {name:'Charm',time:'1 day ago', message: 'Can you me some chocolates?'},
-        {name:'Garen',time:'1 day ago', message: 'I\'m the bravest of all kind'},
-      ]
+    const dispatch = useDispatch();
+    const state=useSelector((state)=>state.user)
+    const [sender,setsender]=useState([])
+  const fetchChats = async () => {
+    try {
+      const { data } = await axios.get(FetchChatRoutes);
+
+  setsender(data.chat)
+      dispatch({ type:'setChats', payload: Array.isArray(data.chat) ? data.chat : [data.chat] });
+    
+
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+useEffect(()=>{
+    fetchChats()
+   
+},[])
+ 
+
+
+
       return (
         <div className="p-1">
             {
-                data.map((item, index) => (
+                sender?.map((item, index) => (
                     <Mychat
-                        message={item.message}
-                        time={item.time} 
-                        name={item.name} 
-                        active={item.active}
+                        Username={item.Username}
+        avatarImage={item.avatarImage}
+                       Fullname={item.Fullname}
                     key={index}
                     />
                 ))
