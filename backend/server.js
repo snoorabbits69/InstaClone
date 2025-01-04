@@ -9,6 +9,7 @@ const UserRoutes=require("./routes/UserRoutes");
 const PostRoutes=require("./routes/PostRoutes")
 const CommentRoutes=require("./routes/CommentRoutes")
 const ChatRoutes=require("./routes/ChatRoutes")
+const MessageRoutes=require("./routes/MessageRoutes")
 const PORT=process.env.PORT;
 const {app,server,io}=require("./socket/socket");
 const dbConnect=require("./config/dbConnection");
@@ -29,6 +30,7 @@ app.use("/api/auth",AuthRoutes);
 app.use("/api/user",UserRoutes);
 app.use("/api/post",PostRoutes)
 app.use("/api/chat",ChatRoutes)
+app.use("/api/message",MessageRoutes)
 app.use("/api",CommentRoutes);
 
 server.listen(PORT,()=>{

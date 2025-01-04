@@ -11,17 +11,40 @@ const io = new Server(server, {
         methods: ["GET", "POST"]
     }
 });
-
+let onlineUsers=[];
 io.on("connection", (socket) => {
-    console.log("User " + socket.id + " connected");
-
+ onlineUsers.push(socket.id)
+io.emit("online",onlineUsers)
 socket.on("follow",(msg)=>{
     console.log(msg);
 })
+socket.on("join-chat",({user,room})=>{
+    console.log(room)
+    socket.join(room);
+  
+   
+})
+socket.on("typing",(room)=>{
+    socket.in(room).emit("typing")
+})
 
-    socket.on("disconnect", () => {
+    socket.on("new message", (newMessageRecieved) => {
+       let chat = newMessageRecieved.chat;
+    
+        if (!chat.users) return console.log("chat.users not defined");
+    
+        chat.users.forEach((user) => {
+          if (user._id == newMessageRecieved.sender._id) return;
+    
+          socket.in(user._id).emit("message recieved", newMessageRecieved);
+        });
+      });
+    
+      socket.on("disconnect", () => {
         console.log(socket.id + " disconnected");
-        
+        onlineUsers=onlineUsers.filter((user)=>{
+            user!=socket.id
+        })
     });
 });
 
