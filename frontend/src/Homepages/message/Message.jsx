@@ -1,26 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 import Mychats from './Mychats';
 import ChatBox from './ChatBox';
-import Search from '../Search';
-import { setUser } from '../../Redux/Slice/ChatSlice';
+import { useParams } from 'react-router-dom';
+
+
 
 
 
 
 export default function Message() {
-  const state = useSelector((state) => state.user);
-  let dispatch=useDispatch();
-useEffect(()=>{
-dispatch(setUser(state.currentUser))
-},[])
+ const params=useParams()
 
 
   return (
     <div className="">
     <div className="flex lg:ml-20 ">
-      
-        <div className="hidden h-screen p-2 border-r-2 w-80 dark:bg-gray-800 md:block">
+    <div className={`h-screen pl-2 border-r-2 w-screen md:w-80 dark:bg-gray-800 md:block ${params.user ? "hidden md:block" : "block"}`}>
             <div className="h-full overflow-y-auto">
                 <div className="p-3 text-xl font-extrabold text-gray-600 dark:text-gray-200">InstaClone</div>
                 <div className="flex p-3 search-chat">
@@ -36,7 +31,7 @@ dispatch(setUser(state.currentUser))
             </div>
         </div>               
         <div className="flex-grow h-screen p-2 rounded-md">
-            <ChatBox/>
+           {params.user?<ChatBox/>:""}
         </div>
     </div>
 </div>

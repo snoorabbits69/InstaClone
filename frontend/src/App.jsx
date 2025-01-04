@@ -14,6 +14,7 @@ import PrivateRoute from './Components/PrivateRoute';
 import { useSelector } from 'react-redux';
 import EditProfile from './Homepages/Profile Component/EditProfile';
 import Post from './pages/Post';
+import ChatBox from './Homepages/message/ChatBox';
 
 
 function App() {
@@ -30,7 +31,9 @@ function App() {
         <Route path="/" element={<PrivateRoute/>}/>
           <Route path="/home" element={<Home/>}>  </Route>
          <Route path="explore" element={<Explore/>}></Route>
-            <Route path="/message" element={<Message />} />
+            <Route path="/message" element={<Message />} >
+            <Route path=":user" element={ChatBox}/>
+            </Route>
             <Route path="/reels" element={<Reels />} /> 
         <Route path="/setprofile" element={<SetProfile/>} />
         </Route>

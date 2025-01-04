@@ -10,7 +10,7 @@ function Sidebar({ setShowSearch, showSearch, setShowCreate, sethidebar, hidebar
   const state = useSelector((state) => state.user);
 
   useEffect(() => {
- if(location.pathname=="/message"){
+ if(location.pathname.startsWith("/message")){
   sethidebar(true);
  }
  else{

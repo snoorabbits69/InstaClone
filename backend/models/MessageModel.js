@@ -5,16 +5,22 @@ const messageschema=mongoose.Schema({
 type:mongoose.Schema.Types.ObjectId,
 ref:"users"
     },
-    Reciever:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"users"
-
+    content:{
+        type:String
     },
+    chat: { type: mongoose.Schema.Types.ObjectId, ref: "chat" },
     readBy:{
 type:mongoose.Schema.Types.ObjectId,
-required:true
+
     },
-   
+   isDeleted:{
+    type:Boolean,
+    default:false
+   },
+   isFile:{
+    type:Boolean,
+    default:false
+   }
 }, {
     timestamps:true
 })

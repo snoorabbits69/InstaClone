@@ -1,4 +1,3 @@
-const { group } = require("console");
 const Chat=require("../models/ChatModel")
 const User=require("../models/UserModel")
 module.exports.accessChat = async (req, res, next) => {

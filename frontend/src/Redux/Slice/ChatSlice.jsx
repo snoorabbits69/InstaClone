@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   selectedChat: null,
-  user: null, // Initialize as null, to be set explicitly when user data is loaded
+  users: [], 
   notification: [],
   chats: [],
 };
@@ -15,8 +15,9 @@ const chatSlice = createSlice({
       state.selectedChat = action.payload; 
     },
     setUser: (state, action) => {
-      state.user = action.payload; 
-    },
+      state.users = [...state.users, action.payload];
+  },
+  
     setNotifications: (state, action) => {
       state.notification = action.payload; 
     },
