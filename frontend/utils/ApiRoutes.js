@@ -20,3 +20,8 @@ export const LikePostRoute=(id)=>`${host}/api/post/likes/${id}`
 export const changeAccountTypeRoute=(id)=>`${host}/api/user/privateaccount/${id}`
 export const cancelFollowRequestRoute=(id)=>`${host}/api/user/cancelrequest/${id}`
 export const FetchChatRoutes=(page)=>`${host}/api/chat?page=${page}`
+export const AccessChatRoutes=`${host}/api/chat`
+export const SendMessageRoute=`${host}/api/message`
+export const getMessagesRoute=(chatid)=>`${host}/api/message/${chatid}`
+export const getHomePagesRoute=(page)=>`${host}/api/post/gethomepost?page=${page}`
+export const CreateGroupRoute=`${host}/api/chat/creategroup`

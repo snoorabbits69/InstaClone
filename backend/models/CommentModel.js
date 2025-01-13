@@ -8,10 +8,11 @@ const CommentSchema = mongoose.Schema({
     },
     
     userId: {
-        type:String,
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"users",
+        required:true
        
     },
-
     text: {
         type: String,
         required: true,
@@ -21,29 +22,11 @@ type:mongoose.Schema.Types.ObjectId,
 ref:"Comment",
 default:null
     },
-    avatarImage: {
-        type: String,
-        required:true
-    },
-    Username: {
-        type: String,
-        required:true
-    },
     replies: [{
        type:mongoose.Schema.Types.ObjectId,
        ref:"Comment"
     }]
 }, { timestamps: true });
 
-CommentSchema.pre("find",(next)=>{
-    try{
-this.populate({path:"replies",
-    populate:{path:"userId"}
-})
-next();
-    }
-    catch(e){
-       next();
-    }
-})
+
 module.exports = mongoose.model("Comment", CommentSchema);

@@ -1,19 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import FollowButton from '../../Components/FollowButton';
 import FollowersBox from '../../Components/FollowersBox';
 import GetUser from '../../hooks/GetUser';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import ProfilePost from './ProfilePost';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
+import { AccessChatRoutes } from '../../../utils/ApiRoutes';
+import { chatStart } from '../../Redux/Slice/ChatSlice';
+import { Socket } from 'socket.io-client';
+import { Socketcontext } from '../../context/Socketcontext';
 
 export default function Profile() {
 const {username}=useParams();
 const state=useSelector((state)=>state.user)
+const dispatch=useDispatch();
+const navigate=useNavigate()
   const {currentUser,setcurrentUser}=GetUser(username);
-const myaccount=currentUser?._id===state.currentUser?._id;
+const myaccount=currentUser?._id==state.currentUser?._id;
 const Private=currentUser?.Account.private && !myaccount;
+
+const socket=useContext(Socketcontext)
 const [modal,setModel]=useState(false);
   const [Userdata,setUserdata]=useState({
     user:[],
@@ -46,6 +55,17 @@ setModel(true);
         <div className="flex gap-2 lg:gap-5">
           <p className="lg:text-2xl">{currentUser.Username}</p>
     {state.currentUser &&  <FollowButton currentUser={currentUser} setcurrentUser={setcurrentUser}  />}
+   { (!myaccount && !currentUser.Account?.private ) && <button className="px-2 py-1 bg-blue-400 border-2" onClick={ async()=>{
+const {data}=await axios.post(AccessChatRoutes,{Userid:currentUser._id},{
+  withCredentials:true
+})
+
+let user=data.users[0]==currentUser._id?data.users[0]:data.users[1]
+
+dispatch(chatStart(data))
+
+navigate(`/message/${currentUser?.Username}`)
+   }}>message</button>}
         </div>
         <div className="z-50 flex gap-3 text-sm lg:text-lg lg:gap-12">
           <p>{currentUser.Posts} Posts</p>

@@ -14,11 +14,7 @@ caption:{
 img:{
     type:[String]
 },
-likes:{
-type:[mongoose.Schema.Types.ObjectId],
-ref:"users",
-default:[]
-},
+likes:[{type:mongoose.Schema.Types.ObjectId,ref:"users"}],
 privateAccount:{
     type:Boolean,
 

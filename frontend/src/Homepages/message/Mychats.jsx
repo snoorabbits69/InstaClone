@@ -1,26 +1,43 @@
-import React, { useEffect, useState } from 'react'
-import Mychat from './Mychat'
-import { useDispatch, useSelector} from 'react-redux';
-import { FetchChatRoutes } from '../../../utils/ApiRoutes';
-import axios from 'axios';
+import React, { useContext, useEffect, useState } from 'react';
+import Mychat from './Mychat';
+import { useDispatch, useSelector } from 'react-redux';
+import { setChats } from '../../Redux/Slice/ChatSlice';
 import GetChats from '../../hooks/GetChats';
+import { Socketcontext } from '../../context/Socketcontext';
 
 export default function Mychats() {
-const state=useSelector((state)=>state.user)
-const chatstate=useSelector((state)=>state.chat)
-const dispatch=useDispatch()
-let {chats,loading}=GetChats(1)
+    const dispatch = useDispatch();
+    const state = useSelector((state) => state.user);
+    const chatstate = useSelector((state) => state.chat);
 
+    const [page, setPage] = useState(1);
 
+    const { chats, loading } = GetChats(page);
+    const socket=useContext(Socketcontext)
+   
 
+    useEffect(() => {
+        if (!loading && chats && chats.length > 0) {
+            dispatch(setChats(chats));
+        }
+    }, [chats]); 
 
-      return (
+ 
+   
+    
+
+    return (
         <div className="p-1">
-            {
-               loading?"Loading":chats.map((item, i) => (
-                    <Mychat chats={item} key={i}/>
+            {loading ? (
+                "Loading..."
+            ) : chatstate.chats.length > 0 ? (
+                chatstate.chats.map((item, i) => (
+                    <Mychat chats={item} key={i} />
                 ))
-            }
+            ) : (
+                "No chats available"
+            )}
         </div>
-    )
+    );
+    
 }

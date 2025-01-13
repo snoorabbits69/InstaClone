@@ -31,23 +31,27 @@ const submit=async (values)=>{
  console.log(values);
  const {Fullname,Username,Email,Password}=values;
 
- try{
- const {data}=await axios.post(registerRoute,{Fullname,Username,Email,Password},{ withCredentials: true });
-console.log(data.status);
- if(data.status==false){
-  console.log("failed");
-  console.log(data.msg);
- }
- if(data.status==true){
+ try {
+  const { data } = await axios.post(
+    registerRoute,
+    { Fullname, Username, Email, Password },
+    { withCredentials: true }
+  );
 
-  console.log("success");
-  dispatch(signInSuccess(data.user));
-navigate("/setprofile");
- }
+  if (data?.status) {
+    console.log("Success");
+    dispatch(signInSuccess(data.user));
+    navigate("/setprofile");
+  } else {
+    toast.error(data?.msg || "An unexpected error occurred", toastOptions);
+  }
+} catch (e) {
+  const errorMessage =
+    e.response?.data?.msg || "A network or server error occurred";
+  toast.error(errorMessage, toastOptions);
+  console.error("Error details:", e);
 }
-catch(e){
-  console.log(e);
-}
+
 }
   return (
     <section className="flex flex-col gap-5 ">

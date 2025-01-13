@@ -19,7 +19,6 @@ axios.defaults.withCredentials = true;
 function Login() {
   const state =useSelector((state)=>state.user);
   const dispatch=useDispatch();
-console.log(state);
 
   const toastOptions = {
     position: "bottom-right",
@@ -28,6 +27,8 @@ console.log(state);
     draggable: true,
     theme: "dark",
   };
+ 
+  
   const Navigate=useNavigate();
   const [Logo,setLogo]=useState(Logo1);
 
@@ -36,17 +37,28 @@ const {register,handleSubmit,formState:{errors}}=useForm();
 const submit=async (values)=>{
 
   const{Username,Password}=values;
-
-  const {data}=await axios.post(loginRoute,{Username,Password},{ withCredentials: true });
-  if(data.status){
-   dispatch(signInSuccess(data.user))
-    Navigate("/home");
-  }
-  if(!data.status){
+  try {
+    const { data } = await axios.post(
+      loginRoute,
+      { Username, Password },
+      { withCredentials: true }
+    );
+  
+    console.log(data);
+  
+    if (data.status) {
+      dispatch(signInSuccess(data.user));
+      Navigate("/home");
+    } else {
+      toast.error(data.msg, toastOptions);
+      dispatch(signInFailure());
+    }
+  } catch (error) {
+    const errorMsg = error.response?.data?.msg || "Something went wrong!";
+    toast.error(errorMsg, toastOptions);
     dispatch(signInFailure());
-toast.error(data.msg,toastOptions);
-
   }
+  
 }
   
 
@@ -80,6 +92,7 @@ toast.error(data.msg,toastOptions);
 Don't have a account? <button className="text-blue-400" onClick={()=>{Navigate("/register")}}>Sign up</button>
 </div>
    </div>
+   <ToastContainer/>
    </section>
   )
 }
