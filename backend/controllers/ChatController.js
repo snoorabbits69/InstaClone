@@ -1,11 +1,17 @@
 const Chat=require("../models/ChatModel")
 const User=require("../models/UserModel")
+
+let {upload}=require("../Multer/multer")
+const {bucket}=require("../firebase/firebase");
+const sharp=require('sharp');
+
+
 module.exports.accessChat = async (req, res, next) => {
     try {
         const { Userid } = req.body;
 
         if (!Userid) {
-            return res.sendStatus(400); // Bad request if no Userid is provided
+            return res.sendStatus(400); 
         }
 
         let isChat = await Chat.find({
@@ -16,7 +22,7 @@ module.exports.accessChat = async (req, res, next) => {
             ]
         }).populate("users", "-Password").populate("latestMessage");
 
-        console.log("isChat1", isChat);
+       
 
         isChat = await User.populate(isChat, {
             path: "latestMessage.sender",
@@ -48,57 +54,72 @@ module.exports.accessChat = async (req, res, next) => {
 
 module.exports.fetchChat = async (req, res, next) => {
     try {
+       
       const page = req.query.page || 1;
       const pageSize = req.query.pageSize || 20;
       const skip = (page - 1) * pageSize;
-  
       let chats = await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
-        .populate("users", "_id Fullname Username avatarImage")
-        .populate("groupAdmin", "-Password")
-        .populate("latestMessage")
-        .sort({ updatedAt: -1 })
-        .skip(skip)
-        .limit(pageSize);
-  
-      chats = await User.populate(chats, {
-        path: "latestMessage",
-        populate: {
-            path: "Sender",  
-            select: "Fullname Username avatarImage"  
-          }
-      });
-  console.log(chats)
-      return res.status(200).json({ status: true, chat: chats });
+      .populate("users", "_id Fullname Username avatarImage")
+      .populate("latestMessage")
+      .sort({ updatedAt: -1 })
+      .skip(skip)
+      .limit(pageSize);
+
+    chats = await User.populate(chats, {
+      path: "latestMessage",
+      populate: {
+          path: "Sender",  
+          select: "Fullname Username avatarImage"  
+        }
+    });
+
+    return res.status(200).json({ status: true, chat: chats });
+      console.log(skip)
+      
     } catch (e) {
       return res.status(500).json({ status: false, error: e });
     }
   };
   
 
-module.exports.createGroupChat=async(req,res,next)=>{
-    
-    if(!req.body.users || !req.body.name){
-return res.status(400).send({error:"incomplete fields"})
-    }
-    let users=JSON.parse(req.body.users)
-    console.log(users)
-  if(users.length<2){
-    return res.status(400).send({error:"needs more than 2 for a group chat"})
-  }
-    try{
-        const GroupChat=await Chat.create({
-            chatName:req.body.name,
-            users:users,
+module.exports.createGroupChat = async (req, res, next) => {
+  upload.single("file")(req, res, async (err) => {
+    try {
+      const filename = `${req.body.chatname}image${Date.now()}.webp`;
+      const optimizedBuffer = await sharp(req.file.buffer)
+        .resize(400, 800, { fit: "cover" })
+        .webp()
+        .toBuffer();
+
+      const fileUpload = bucket.file(`GroupchatImages/${filename}`);
+      const blobStream = fileUpload.createWriteStream();
+
+      blobStream.end(optimizedBuffer);
+
+      blobStream.on("finish",async () => {
+        
+  const GroupChat=await Chat.create({
+            chatName:req.body.chatname,
+            GroupChatimage:`https://firebasestorage.googleapis.com/v0/b/${process.env.storageBucket}/o/UserProfile%2F${filename}?alt=media`,
+            users:req.body.users,
             isGroupChat:true,
             groupAdmin:req.user._id
         })
         const FullGroupChat=await Chat.findOne({_id:GroupChat._id}).populate("users","_id Username Fullname avatarImage")
 res.status(200).json({status:true,chat:FullGroupChat})
+       
+      });
 
-    }catch(e){
-        return res.status(500).json({status:false,error:e})
+      blobStream.on("error", (err) => {
+        console.error(err);
+        return res.status(500).json({ status: false, error: "File upload failed" });
+      });
+    } catch (e) {
+      console.error(e);
+      return res.status(500).json({ status: false, error: "Internal Server Error" });
     }
-}
+  });
+};
 
 module.exports.renameGroup=async(req,res,next)=>{
     try{
@@ -155,3 +176,13 @@ module.exports.removeFromGroup=async(req,res,next)=>{
   
     
 }
+
+
+
+
+
+
+
+
+
+

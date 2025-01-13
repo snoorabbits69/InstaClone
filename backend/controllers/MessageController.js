@@ -5,10 +5,10 @@ const { upload } = require("../Multer/multer");
 
 module.exports.GetallMessages=async(req,res,next)=>{
 try{
-  
     const messages=await Message.find({chat:req.params.chatId})
     .populate("Sender","Fullname Username avatarImage")
     .populate("chat");
+   
     return res.json({status:true,messages:messages})
 }
 catch(e){
@@ -29,9 +29,11 @@ module.exports.sendMessage=async(req,res,next)=>{
           content:content,
           chat:chatId
         }
-        console.log(newmessage)
 let message=await Message.create(newmessage);
-message=await message.populate("Sender","Fullname Username avatarImage");
+message=await message.populate("Sender","_id Fullname Username avatarImage");
+let chat=await Chat.findById(chatId)
+chat.latestMessage=message._id;
+await chat.save();
 return res.status(200).json({status:true,message:message})
       }catch(e){
         return res.status(500).json({status:false,error:e})

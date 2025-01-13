@@ -7,14 +7,15 @@ module.exports.Comment = async (req, res, next) => {
         return res.status(404).json({ msg: "The post doesn't exist" });
     }
     try {
+        
         const currentcomment = await Comment.create({
             postId: req.params.postid,
-            userId: req.body.id,
+            userId: req.user._id,
             text: req.body.text,
-            Username: req.body.Username,
-            avatarImage: req.body.avatarImage
         });
-        return res.status(201).json({ comment: currentcomment });
+       let savedcomment=await Comment.findById(currentcomment._id).populate('userId',"Username Fullname _id avatarImage")
+
+        return res.status(201).json({ comment: savedcomment });
     } catch (e) {
         return res.status(500).json({ error: e });
     }
@@ -27,14 +28,14 @@ module.exports.Reply = async (req, res, next) => {
     }
     try {
         const currentcomment = await Comment.create({
-            postId: ParentComment.postid,
-            userId: req.body.id,
+            postId: ParentComment.postId,
+            userId: req.user._id,
             text: req.body.text,
-            Username: req.body.Username,
-            avatarImage: req.body.avatarImage,
-            ParentComment: ParentComment._id
+          
         });
-        return res.status(201).json({ comment: currentcomment });
+        let savedcomment=await Comment.findById(currentcomment._id).populate('userId',"Username Fullname _id avatarImage")
+
+        return res.status(201).json({ comment: savedcomment });
     } catch (e) {
         return res.status(500).json({ error: e });
     }
@@ -52,23 +53,20 @@ module.exports.getComment = async (req, res, next) => {
   const start = (page - 1) * limit;
 const {postId}=req.params;
   try {
-      const findComment = await Comment.find({"postId":req.params.postId}).skip(start).limit(limit);
-         console.log(findComment)
-
+      const findComment = await Comment.find({"postId":req.params.postId}).populate('userId',"Username avatarImage _id Fullname").skip(start).limit(limit);
       return res.status(200).json({ comment: findComment });
   } catch (e) {
       return res.status(500).json({ error: e.message || 'An unexpected error occurred' });
   }
 };
+
 module.exports.getReplyComment = async (req, res, next) => {
   const limit = 5;
   const page = parseInt(req.query.page) || 1;
   const start = (page - 1) * limit;
 const {postId}=req.params;
   try {
-      const replies = await Comment.find({ParentComment:req.params.parentid}).skip(start).limit(limit);
-         
-
+      const replies = await Comment.find({ParentComment:req.params.parentid}).populate('userId',"Username avatarImage _id Fullname").skip(start).limit(limit);
       return res.status(200).json({ replies: replies });
   } catch (e) {
       return res.status(500).json({ error: e.message || 'An unexpected error occurred' });

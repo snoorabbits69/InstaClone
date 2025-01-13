@@ -22,7 +22,10 @@ module.exports.register = async (req, res, next) => {
     if (emailCheck) {
       return res.status(400).json({ msg: 'Email in use', status: false });
     }
+if(Password.length<8){
+  return res.status(400).json({ msg: 'Password needs to be of at least 8 letters', status: false });
 
+}
     const hashedPassword = await bcrypt.hash(Password, 10);
 
     const createUser = await User.create({
@@ -44,9 +47,8 @@ module.exports.register = async (req, res, next) => {
 };
 
 module.exports.login = async (req, res, next) => {
- 
+ console.log(req.body)
   try {
-    console.log(req.body)
     const { Username, Password } = req.body;
     const checkUser = await User.findOne({ Username });
 

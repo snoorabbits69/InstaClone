@@ -13,6 +13,7 @@ module.exports.CreatePost = async (req, res, next) => {
     }
 try{
     upload.array('files', 5)(req, res, async (err) => {
+      console.log(req.files)
       if (err) {
         return res.status(500).json({ msg: "Error on file upload" });
       }
@@ -95,22 +96,28 @@ module.exports.DeletePost = async (req, res, next) => {
 
 module.exports.LikePost=async(req,res,next)=>{
   const Currentpost=await Post.findById(req.params.postid);
+  try{
   if(!Currentpost){
     return res.json({msg:"Post doesnt exist"});
   }
-  if(Currentpost.likes.some((id)=>id==req.body.id)){
+  if(Currentpost.likes.some((id)=>id==req.user._id)){
    Currentpost.likes=Currentpost.likes.filter((id)=>{
-    if(id!=req.body.id){
+    if(id!=req.user._id){
       return id;
     }
    })
    await Currentpost.save();
   }
   else{
-  Currentpost.likes.push(req.body.id);
+  Currentpost.likes.push(req.user._id);
   await Currentpost.save();
   }
-  return res.json({likes:Currentpost.likes});
+  return res.json({likes:Currentpost});
+}
+catch(e){
+  return res.json({error:e});
+
+}
   }
 
 
@@ -132,7 +139,7 @@ module.exports.getPosts=async(req,res,next)=>{
   }
   module.exports.GetPostFromId=async(req,res,next)=>{
     try{
-const findpost=await Post.findById(req.params.id);
+const findpost=await Post.findById(req.params.id).populate("postedBy","Username Fullname avatarImage _id")
 if(!findpost){
 return res.json({msg:"post doesnt exist"})
 }
@@ -145,3 +152,17 @@ return res.json({error:e})
     }
   }
   
+  module.exports.getHomePosts=async(req,res,next)=>{
+    try{
+      let limit=5;
+      let page=req.query.page ||1;
+      let end=limit*page;
+      let start=end-limit;
+      const Posts = await Post.find({postedBy:{$ne:req.user._id}}).populate("postedBy","Username Fullname avatarImage").limit(limit).skip(start);
+   
+return res.json({Posts:Posts,status:true})
+    }
+    catch(e){
+return res.json({error:e})
+    }
+  }

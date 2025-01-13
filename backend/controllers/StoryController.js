@@ -5,7 +5,6 @@ const sharp = require("sharp");
 
 module.exports.uploadStory = async (req, res, next) => {
     const expirationTime = new Date();
-    // expirationTime.setMinutes(expirationTime.getMinutes() + 400);
 
     upload.single('file')(req, res, async (err) => {
         if (err) {
@@ -30,7 +29,7 @@ module.exports.uploadStory = async (req, res, next) => {
                 expiresAt: expirationTime
             });
 
-            DeleteFile(filename); // Schedule file deletion
+            DeleteFile(filename); 
 
             return res.json({ story: newStory });
         } catch (e) {

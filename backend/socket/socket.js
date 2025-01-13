@@ -13,31 +13,32 @@ const io = new Server(server, {
 });
 let onlineUsers=[];
 io.on("connection", (socket) => {
- onlineUsers.push(socket.id)
-io.emit("online",onlineUsers)
+    socket.on("isonline",(id)=>{
+ onlineUsers.push(id)
+ 
+    })
+    
+    socket.emit("online",onlineUsers)
 socket.on("follow",(msg)=>{
-    console.log(msg);
+    
 })
 socket.on("join-chat",({user,room})=>{
-    console.log(room)
+   
+    console.log(room,user)
     socket.join(room);
   
    
 })
 socket.on("typing",(room)=>{
-    socket.in(room).emit("typing")
+    socket.in(room).emit("typing","typing")
+    console.log("typing");
 })
 
-    socket.on("new message", (newMessageRecieved) => {
-       let chat = newMessageRecieved.chat;
-    
-        if (!chat.users) return console.log("chat.users not defined");
-    
-        chat.users.forEach((user) => {
-          if (user._id == newMessageRecieved.sender._id) return;
-    
-          socket.in(user._id).emit("message recieved", newMessageRecieved);
-        });
+    socket.on("sendMessage", (newMessageRecieved) => {
+    console.log(newMessageRecieved)
+       
+      socket.to(newMessageRecieved.chat).emit("message recieved", newMessageRecieved);
+       
       });
     
       socket.on("disconnect", () => {

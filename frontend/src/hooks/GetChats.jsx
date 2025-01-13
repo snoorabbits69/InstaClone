@@ -7,14 +7,18 @@ let [chats,setchats]=useState()
 let [loading,setloading]=useState(true)
     useEffect(()=>{
 let fetchChats=async()=>{
-    console.log(FetchChatRoutes(page))
-   const {data}= await axios.get(FetchChatRoutes(1))
+    try{
+   const {data}= await axios.get(FetchChatRoutes(page))
  
    if(!data.status){
     return
    }
    setchats(data.chat)
    setloading(false)
+}catch(e){
+  
+    setloading(false)
+}
 }
 fetchChats()
     },[page])

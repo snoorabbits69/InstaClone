@@ -1,17 +1,21 @@
-import React from 'react';
+import React, {useRef,useEffect, useState} from 'react';
 import Mychats from './Mychats';
 import ChatBox from './ChatBox';
 import { useParams } from 'react-router-dom';
-
-
+import Addgroup from './Addgroup';
+import gsap from 'gsap';
 
 
 
 
 export default function Message() {
  const params=useParams()
+const [dialogstatus,setdialogstatus]=useState(false);
 
-
+useEffect(()=>{ 
+    gsap.from("#dialog",{scale:0})
+    gsap.to("#dialog",{scale:1,ease:"bounce.out"});
+    },[dialogstatus])
   return (
     <div className="">
     <div className="flex lg:ml-20 ">
@@ -26,9 +30,14 @@ export default function Message() {
                         </svg>
                     </div>
                 </div>
-                <button className="p-3 text-lg text-gray-600 border-2 rounded-full font-semibol dark:text-gray-200">Add Group +</button>
-              <Mychats/>
+                <button className="p-3 text-lg text-gray-600 border-2 rounded-full font-semibol dark:text-gray-200" onClick={()=>{
+               setdialogstatus(true)
+                }}>Add Group </button>
+              <Mychats />
             </div>
+            <dialog open={dialogstatus}   className="absolute text-red-600 top-10 right-[50%] text-md" id="dialog">
+                <Addgroup setdialogstatus={setdialogstatus} />
+            </dialog>
         </div>               
         <div className="flex-grow h-screen p-2 rounded-md">
            {params.user?<ChatBox/>:""}
