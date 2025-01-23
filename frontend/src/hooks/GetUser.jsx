@@ -1,25 +1,18 @@
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import { useEffect, useState } from 'react'
 import { getUserRoute } from '../../utils/ApiRoutes';
-import { useSelector } from 'react-redux';
+import apiRequest from '../Components/axios';
 export default function GetUser(username) {
-   const state=useSelector((state)=>state.user);
     const [currentUser, setcurrentUser]=useState(null);
     const [Loading, setLoading]=useState(true);
    useEffect(() => {
         const getUserData = async () => {
-          try {
-            const { data } = await axios.get(getUserRoute(username),{
-              withCredentials:true
-            });
+      
+            const { data } = await apiRequest('GET',getUserRoute(username))
             if(data.user){
             setcurrentUser(data.user);
             setLoading(false);
             }
-          } catch (error) {
-            console.error('Error fetching user data:', error);
-          }
+          
         };
     
         getUserData();

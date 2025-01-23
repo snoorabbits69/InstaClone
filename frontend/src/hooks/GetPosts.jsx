@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { GetPostRoute } from '../../utils/ApiRoutes';
+import apiRequest from '../Components/axios';
 
 export default function GetPosts( id ) {
     const [Post, setPost] = useState(null);
@@ -9,15 +10,13 @@ export default function GetPosts( id ) {
 
     useEffect(() => {
         const getPost = async () => {
-            try {
-                const { data } = await axios.get(GetPostRoute(id));
+          
+                const { data } = await apiRequest('GET',GetPostRoute)
                 if (data.status) {
                     setPost(data);
                     setLoading(false);
                 }
-            } catch (e) {
-                setLoading(false); // Set loading to false in case of an error as well
-            }
+            
         };
 
         getPost();

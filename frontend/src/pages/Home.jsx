@@ -1,12 +1,10 @@
-import React ,{useEffect, useState} from 'react';
-import PostImages from '../Homepages/Create Component/PostImages';
-import axios from 'axios';
+import {useEffect, useState} from 'react';
 import { getHomePagesRoute } from '../../utils/ApiRoutes';
 import PostCard from './Post/PostCard';
+import apiRequest from './../Components/axios';
 
 
 export default function Home() {
-let images=["https://picsum.photos/id/244/900/900","https://picsum.photos/id/244/900/900","https://picsum.photos/id/244/900/900","https://picsum.photos/id/244/900/900","https://picsum.photos/id/244/900/900"]
 
 let [page,setpage]=useState(1);
 let [posts,setposts]=useState([])
@@ -20,7 +18,7 @@ let [posts,setposts]=useState([])
      async function HomePosts() {
       try{
         console.log(getHomePagesRoute(page))
-const{data}=await axios.get(getHomePagesRoute(page),{withCredentials:true})
+const data=await apiRequest('GET',getHomePagesRoute(page))
 if(data.status){
   setposts((prev)=>[...prev,...data.Posts])
   console.log(data)
@@ -37,7 +35,7 @@ if(data.status){
  
 
     return (
-      <div className="flex flex-col md:ml-96" >
+      <div className="flex flex-col ml-4 md:ml-96" >
    
 
 {posts?.map((post,i)=>{

@@ -7,11 +7,40 @@ import PostImages from './PostImages';
 import { HiOutlineX } from "react-icons/hi";
 
 export default function Create({ setShowCreate }) {
-  const state = useSelector((state) => state.user);
   const [arr, setArr] = useState(1);
   const { handleSubmit, register, reset } = useForm();
   const [images, setImages] = useState([]);
-  const inputref = useRef(null);
+
+  const handleCloseCreate = () => {
+    setShowCreate(false);
+    setImages([]);
+  };
+
+  const handlePrev = () => {
+    setArr((prev) => Math.min(3, prev - 1));
+  };
+
+  const handleNext = () => {
+    setArr((prev) => Math.max(3, prev + 1));
+  };
+
+  const handleFileDrop = (e) => {
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files);
+    setImages((prev) => [...prev, ...files]);
+    if (files.length) {
+      setArr(2);
+    }
+  };
+
+  const handleFileDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleFileChange = (e) => {
+    setImages((prev) => [...prev, ...Array.from(e.target.files)]);
+    setArr(2);
+  };
 
   const current = () => {
     switch (arr) {
@@ -24,10 +53,7 @@ export default function Create({ setShowCreate }) {
                 id="inputfiles"
                 multiple
                 {...register('files')}
-                onChange={(e) => {
-                  setImages((prev) => [...prev, ...Array.from(e.target.files)]);
-                  setArr(2);
-                }}
+                onChange={handleFileChange}
                 className="hidden"
                 accept="image/*"
               />
@@ -46,17 +72,8 @@ export default function Create({ setShowCreate }) {
             <section
               className="fixed top-0 left-0 w-screen h-screen bg-gray-400 opacity-30 clip"
               style={{ zIndex: 0 }}
-              onDrop={(e) => {
-                e.preventDefault();
-                const files = Array.from(e.dataTransfer.files);
-                setImages((prev) => [...prev, ...files]);
-                if (files.length) {
-                  setArr(2);
-                }
-              }}
-              onDragOver={(e) => {
-                e.preventDefault();
-              }}
+              onDrop={handleFileDrop}
+              onDragOver={handleFileDragOver}
             ></section>
           </section>
         );
@@ -122,23 +139,16 @@ export default function Create({ setShowCreate }) {
     <div className="fixed flex justify-center w-screen h-screen pt-2 border-solid lg:pl-12">
       <button
         className="fixed z-50 right-4 top-4 md:text-3xl"
-        onClick={() => {
-          setShowCreate(false);
-          setImages([]);
-        }}
+        onClick={handleCloseCreate}
       >
         <HiOutlineX />
       </button>
-      <div className="relative border-2 h-[72%] w-80 mt-12 lg:mt-0 lg:w-max">
+      <div className="relative border-2 h-[72%] w-[20.6rem] mt-12 lg:mt-0 lg:w-max">
         {arr > 1 && (
           <div className="absolute flex justify-between w-full p-3 border-2 border-b-0 -top-12">
-            <button onClick={() => setArr((prev) => Math.min(3, prev - 1))}>
-              Prev
-            </button>
+            <button onClick={handlePrev}>Prev</button>
             {arr !== 3 && (
-              <button onClick={() => setArr((prev) => Math.max(3, prev + 1))}>
-                Next
-              </button>
+              <button onClick={handleNext}>Next</button>
             )}
           </div>
         )}

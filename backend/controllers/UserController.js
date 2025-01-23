@@ -50,7 +50,7 @@ const delfile=currentUser.avatarImage;
       currentUser.save()
     ]);
   }
-  return res.json({User:currentUser})
+  return res.json({status:true,user:currentUser})
   }
   catch(e){
 return res.json({error:e})
@@ -199,7 +199,7 @@ return res.json({error:e})
 }
 module.exports.UpdateUsername=async(req,res,next)=>{
 try{
-  const UpdatingUser=await User.findById(req.params.id)
+  const UpdatingUser=await User.findById(req.user._id)
   if(!UpdatingUser){
 return res.json({msg:"Invalid Userid"})
   }
@@ -214,7 +214,7 @@ return res.json({error:e})
 }
 module.exports.UpdateFullname=async(req,res,next)=>{
   try{
-    const UpdatingUser=await User.findById(req.params.id)
+    const UpdatingUser=await User.findById(req.user._id)
     if(!UpdatingUser){
   return res.json({msg:"Invalid Userid"})
     }
@@ -248,12 +248,17 @@ module.exports.UpdateFullname=async(req,res,next)=>{
   }
   module.exports.UpdatePassword=async(req,res,next)=>{
     try{
-      const UpdatingUser=await User.findById(req.params.id)
-      
+      const UpdatingUser=await User.findById(req.user._id)
+      let oldPassword=await bcrypt.compare(req.body.Password,UpdatingUser.Password)
+      if(oldPassword){
       UpdatingUser.Password=await bcrypt.hash(req.body.newPassword,10)
       await UpdatingUser.save()
       const {Password:_,...rest}=UpdatingUser.toObject()
       return res.json({status:true,user:rest})
+      }
+      else{
+        return res.json({error:"enter valid old password"})
+      }
     }
     catch(e){
     return res.json({error:e})

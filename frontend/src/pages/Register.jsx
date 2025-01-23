@@ -1,28 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Logo1 from '../assets/logo.png'
 import Logo2 from '../assets/log2.png'
 import {useNavigate} from "react-router-dom"
 import {useForm} from "react-hook-form";
-import * as yup from "yup";
-import {yupResolver} from "@hookform/resolvers/yup";
-import axios from "axios";
 import { registerRoute } from '../../utils/ApiRoutes';
-import { toast,ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'
 import { useDispatch } from 'react-redux';
 import { signInSuccess } from '../Redux/Slice/Userslice';
+import apiRequest from './../Components/axios';
 axios.defaults.withCredentials = true;
 function Register() {
   const navigate=useNavigate();
   const dispatch=useDispatch();
-  const toastOptions = {
-    position: "bottom-right",
-    autoClose: 8000,
-    pauseOnHover: true,
-    draggable: true,
-    theme: "dark",
-  };
-
 const {register,handleSubmit,formState:{errors}}=useForm();
     const Navigate=useNavigate();
  const [Logo,setLogo]=useState(Logo1);
@@ -30,27 +18,20 @@ const {register,handleSubmit,formState:{errors}}=useForm();
 const submit=async (values)=>{
  console.log(values);
  const {Fullname,Username,Email,Password}=values;
-
- try {
-  const { data } = await axios.post(
-    registerRoute,
-    { Fullname, Username, Email, Password },
-    { withCredentials: true }
-  );
-
+ if(Fullname=="" || Username=="" ||Email==""||Password==""){
+  alert("fill out all fields");
+  }
+  const data=await apiRequest('POST',registerRoute,{
+    Username:Username,
+    Password:Password,
+    Email:Email,
+  Fullname:Fullname
+  })
   if (data?.status) {
     console.log("Success");
     dispatch(signInSuccess(data.user));
     navigate("/setprofile");
-  } else {
-    toast.error(data?.msg || "An unexpected error occurred", toastOptions);
-  }
-} catch (e) {
-  const errorMessage =
-    e.response?.data?.msg || "A network or server error occurred";
-  toast.error(errorMessage, toastOptions);
-  console.error("Error details:", e);
-}
+  } 
 
 }
   return (
@@ -77,7 +58,6 @@ By signing up, you agree to our Terms , Privacy Policy and Cookies Policy .</p>
    <div className="h-16 py-4 m-auto text-center border-2 border-solid w-96 bottom-28 ">
 Have a account? <button className="text-blue-400" onClick={()=>{Navigate("/login")}}>Sign in</button>
 </div>
-<ToastContainer/>
    </section>
   )
 }

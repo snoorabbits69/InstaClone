@@ -3,7 +3,7 @@ import { AddcommentRoute } from '../../utils/ApiRoutes';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 
-export default function Addcomment({ postid,setAllcomments }) {
+export default function Addcomment({ postid }) {
   const state = useSelector((state) => state.user);
   const [comment, setcomment] = useState('');
 const inputref=useRef()
@@ -18,7 +18,7 @@ const inputref=useRef()
           Username: state.currentUser.Username,
           avatarImage: state.currentUser.avatarImage,
         });
-      setAllcomments((prev)=>[...prev,data.comment])
+        console.log(data)
         inputref.current.value=""
       } catch (error) {
         console.error(error);
@@ -27,7 +27,7 @@ const inputref=useRef()
   };
 
   return (
-    <div className="flex justify-around border-2 border-t-black">
+    <div className="flex justify-around border-2 ">
       <input ref={inputref}
         type="text"
         className="w-[80%] border-black outline-none border-b-2 mb-1 "

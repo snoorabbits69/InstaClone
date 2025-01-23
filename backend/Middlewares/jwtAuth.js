@@ -24,13 +24,10 @@ req.headers.cookie.split(";").reduce((acc,cookie)=>{
       return res.status(401).json({ error: "Token missing or not provided" });
     }
 
-    // Verify the token
     const verified = jwt.verify(token, JWT_SECRET);
 
-    // Attach the verified user data to the request
     req.user = verified;
 
-    // Proceed to the next middleware or route handler
     next();
   } catch (e) {
     console.error("JWT verification error:", e.message);

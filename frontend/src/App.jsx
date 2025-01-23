@@ -15,15 +15,21 @@ import { useSelector } from 'react-redux';
 import EditProfile from './Homepages/Profile Component/EditProfile';
 import Post from './pages/Post';
 import ChatBox from './Homepages/message/ChatBox';
+import VideoCall from './Homepages/message/VideoCall';
 
-
+import { ToastContainer } from 'react-toastify';
 function App() {
   const state = useSelector((state) => state.user);
+  
+  
+ 
+
+  const shouldRenderSidebar = !location.pathname.startsWith("/video");
   
   return (
     <section className="h-auto text-black dark:text-white ">
     <Router>
-      {state.currentUser ? <HomeSidebar /> : null}
+      {state.currentUser ?shouldRenderSidebar && <HomeSidebar />: null}
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -34,6 +40,7 @@ function App() {
             <Route path="/message" element={<Message />} >
             <Route path=":user" element={ChatBox}/>
             </Route>
+            <Route path='/video/:id' element={<VideoCall/>}/>
             <Route path="/reels" element={<Reels />} /> 
         <Route path="/setprofile" element={<SetProfile/>} />
         </Route>
@@ -42,6 +49,7 @@ function App() {
         <Route path="/editprofile" element={<EditProfile />} />
       </Routes>
     </Router>
+    <ToastContainer/>
     </section>
   );
 }

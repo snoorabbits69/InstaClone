@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import PostImages from '../../Homepages/Create Component/PostImages'
 import Likes from './Likes'
 export default function PostCard({loading,post,setcommentbox}) {
-    console.log(post.img)
+   
     return (
         loading?"loading":
-    <div className="flex flex-col w-max md:w-[30rem] " >
+    <div className="flex flex-col w-[25rem] md:w-[30rem] " >
            
     <div className="p-4">
       <div className="max-w-md bg-white border rounded-sm">
@@ -16,7 +16,7 @@ export default function PostCard({loading,post,setcommentbox}) {
             <span className="block text-xs text-gray-600">{post?.createdAt}</span>
           </div>
         </div>
-        <div className="w-full ">
+        <div className="w-full " onDoubleClick={()=>{console.log('liked this post')}}>
         {!loading && <PostImages images={post.img}  forpost={true} />}
         </div>
         <div className='mx-4 mt-3 mb-2 '>

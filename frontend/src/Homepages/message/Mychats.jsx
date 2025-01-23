@@ -13,18 +13,18 @@ export default function Mychats() {
     const [page, setPage] = useState(1);
 
     const { chats, loading } = GetChats(page);
-    const socket=useContext(Socketcontext)
-   
+    const socket = useContext(Socketcontext);
 
     useEffect(() => {
         if (!loading && chats && chats.length > 0) {
-            dispatch(setChats(chats));
+            const sortedChats = [...chats].sort(
+                (a, b) => new Date(b?.latestMessage?.createdAt) - new Date(a?.latestMessage?.createdAt)
+            );
+            
+            dispatch(setChats(sortedChats));
+            
         }
-    }, [chats]); 
-
- 
-   
-    
+    }, [chats, loading, dispatch]);
 
     return (
         <div className="p-1">
@@ -39,5 +39,4 @@ export default function Mychats() {
             )}
         </div>
     );
-    
 }

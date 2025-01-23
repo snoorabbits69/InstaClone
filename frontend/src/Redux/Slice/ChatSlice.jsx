@@ -31,17 +31,23 @@ const chatSlice = createSlice({
  addChat:(state,action)=>{
 state.chats=state.chats.push(action.payload)
  },
-    UpdateChats: (state, action) => {
-      
-      let updatedchats=state.chats.map((chat)=>{
-        if(chat._id===action.payload.id){
-          
-          chat.latestMessage=action.payload.latestMessage
-        }
-        return chat
-      })
-     state.chats=updatedchats
-    }
+ UpdateChats: (state, action) => {
+  let updatedChats = state.chats.map((chat) => {
+      if (chat._id === action.payload.id) {
+          chat.latestMessage = action.payload.latestMessage;
+      }
+      return chat;
+  });
+
+  updatedChats.sort((a, b) => {
+      const dateA = new Date(a.latestMessage?.createdAt || 0);
+      const dateB = new Date(b.latestMessage?.createdAt || 0);
+      return dateB - dateA;
+  });
+
+  state.chats = updatedChats;
+}
+
     
   },
 });

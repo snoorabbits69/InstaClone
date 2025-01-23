@@ -48,7 +48,7 @@ module.exports.DeleteComment = async (req, res, next) => {
 
 module.exports.getComment = async (req, res, next) => {
     console.log("calling ")
-  const limit = 5;
+  const limit = 10;
   const page = parseInt(req.query.page) || 1;
   const start = (page - 1) * limit;
 const {postId}=req.params;

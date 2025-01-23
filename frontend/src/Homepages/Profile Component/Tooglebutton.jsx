@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updatePrivateAccount } from '../../Redux/Slice/Userslice';
-import axios from 'axios';
 import { changeAccountTypeRoute } from '../../../utils/ApiRoutes';
+import apiRequest from './../../Components/axios';
 
 
 const Togglebutton = () => {
@@ -12,15 +12,11 @@ const Togglebutton = () => {
 
   const handleCheckboxChange = async() => {
     setIsChecked(!isChecked);
-    try{
-  const {data}=await axios.patch(changeAccountTypeRoute(state.currentUser._id))
-    }catch(e)
-    {
-      console.log(e)
-      return;
-   
-    }
+  
+  const data=await apiRequest('patch',changeAccountTypeRoute(state.currentUser._id))
+   if(data.status){
 dispatch(updatePrivateAccount())
+   }
   }
 
   return (

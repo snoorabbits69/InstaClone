@@ -4,14 +4,13 @@ import FollowButton from '../../Components/FollowButton';
 import FollowersBox from '../../Components/FollowersBox';
 import GetUser from '../../hooks/GetUser';
 import { useState } from 'react';
-import { useParams, Navigate, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import ProfilePost from './ProfilePost';
 import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
 import { AccessChatRoutes } from '../../../utils/ApiRoutes';
 import { chatStart } from '../../Redux/Slice/ChatSlice';
-import { Socket } from 'socket.io-client';
-import { Socketcontext } from '../../context/Socketcontext';
+import apiRequest from './../../Components/axios';
+
 
 export default function Profile() {
 const {username}=useParams();
@@ -21,8 +20,6 @@ const navigate=useNavigate()
   const {currentUser,setcurrentUser}=GetUser(username);
 const myaccount=currentUser?._id==state.currentUser?._id;
 const Private=currentUser?.Account.private && !myaccount;
-
-const socket=useContext(Socketcontext)
 const [modal,setModel]=useState(false);
   const [Userdata,setUserdata]=useState({
     user:[],
@@ -56,11 +53,8 @@ setModel(true);
           <p className="lg:text-2xl">{currentUser.Username}</p>
     {state.currentUser &&  <FollowButton currentUser={currentUser} setcurrentUser={setcurrentUser}  />}
    { (!myaccount && !currentUser.Account?.private ) && <button className="px-2 py-1 bg-blue-400 border-2" onClick={ async()=>{
-const {data}=await axios.post(AccessChatRoutes,{Userid:currentUser._id},{
-  withCredentials:true
-})
+const data=await apiRequest('POST',AccessChatRoutes,{Userid:currentUser._id})
 
-let user=data.users[0]==currentUser._id?data.users[0]:data.users[1]
 
 dispatch(chatStart(data))
 
@@ -78,12 +72,7 @@ navigate(`/message/${currentUser?.Username}`)
     <section className="lg:w-[75%] w-[90%] grid-cols-3 grid gap-2 " >
  
     <ProfilePost id={currentUser._id}/>
-   {/* <div className="w-auto bg-green-500 border-2 border-black h-28 lg:h-72"></div>
-   <div className="w-auto bg-green-500 border-2 border-black h-28 lg:h-72"></div>
-   <div className="w-auto bg-green-500 border-2 border-black h-28 lg:h-72"></div>
-   <div className="w-auto bg-green-500 border-2 border-black h-28 lg:h-72"></div>
-   <div className="w-auto bg-green-500 border-2 border-black h-28 lg:h-72"></div>
-   <div className="w-auto bg-green-500 border-2 border-black h-28 lg:h-72"></div> */}
+  
     </section>
   }
     </div>

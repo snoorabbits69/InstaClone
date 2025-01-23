@@ -82,44 +82,85 @@ module.exports.fetchChat = async (req, res, next) => {
   };
   
 
-module.exports.createGroupChat = async (req, res, next) => {
-  upload.single("file")(req, res, async (err) => {
-    try {
-      const filename = `${req.body.chatname}image${Date.now()}.webp`;
-      const optimizedBuffer = await sharp(req.file.buffer)
-        .resize(400, 800, { fit: "cover" })
-        .webp()
-        .toBuffer();
-
-      const fileUpload = bucket.file(`GroupchatImages/${filename}`);
-      const blobStream = fileUpload.createWriteStream();
-
-      blobStream.end(optimizedBuffer);
-
-      blobStream.on("finish",async () => {
-        
-  const GroupChat=await Chat.create({
-            chatName:req.body.chatname,
-            GroupChatimage:`https://firebasestorage.googleapis.com/v0/b/${process.env.storageBucket}/o/UserProfile%2F${filename}?alt=media`,
-            users:req.body.users,
-            isGroupChat:true,
-            groupAdmin:req.user._id
-        })
-        const FullGroupChat=await Chat.findOne({_id:GroupChat._id}).populate("users","_id Username Fullname avatarImage")
-res.status(200).json({status:true,chat:FullGroupChat})
-       
-      });
-
-      blobStream.on("error", (err) => {
-        console.error(err);
+  module.exports.createGroupChat = async (req, res, next) => {
+    upload.single("file")(req, res, async (err) => {
+      if (err) {
         return res.status(500).json({ status: false, error: "File upload failed" });
-      });
-    } catch (e) {
-      console.error(e);
-      return res.status(500).json({ status: false, error: "Internal Server Error" });
-    }
-  });
-};
+      }
+  console.log(req.body)
+      try {
+        let Users;
+        if (typeof req.body.users === "string") {
+          Users = req.body.users.split(',')
+        } else {
+          Users = req.body.users; 
+        }
+  
+        if (!Array.isArray(Users) || Users.length < 2) {
+          return res.status(400).json({ error: "Need at least 2 users" });
+        }
+  Users.push(req.user._id)
+        console.log(Users);
+        console.log(Users.length);
+  
+        if (req.file) {
+          const filename = `${req.body.chatname}image${Date.now()}.webp`;
+          const optimizedBuffer = await sharp(req.file.buffer)
+            .resize(400, 800, { fit: "cover" })
+            .webp()
+            .toBuffer();
+  
+          const fileUpload = bucket.file(`GroupchatImages/${filename}`);
+          const blobStream = fileUpload.createWriteStream();
+  
+          blobStream.end(optimizedBuffer);
+  
+          blobStream.on("finish", async () => {
+            const groupChatImageUrl = `https://firebasestorage.googleapis.com/v0/b/${process.env.storageBucket}/o/GroupchatImages%2F${filename}?alt=media`;
+  
+            const GroupChat = await Chat.create({
+              chatName: req.body.chatname,
+              GroupChatimage: groupChatImageUrl,
+              users: Users,
+              isGroupChat: true,
+              groupAdmin: req.user._id,
+            });
+  
+            const FullGroupChat = await Chat.findOne({ _id: GroupChat._id }).populate(
+              "users",
+              "_id Username Fullname avatarImage"
+            );
+  
+            return res.status(200).json({ status: true, chat: FullGroupChat });
+          });
+  
+          blobStream.on("error", (uploadError) => {
+            console.error(uploadError);
+            return res.status(500).json({ status: false, error: "File upload failed" });
+          });
+        } else {
+          const GroupChat = await Chat.create({
+            chatName: req.body.chatname,
+            users: Users,
+            isGroupChat: true,
+            groupAdmin: req.user._id,
+          });
+  
+          const FullGroupChat = await Chat.findOne({ _id: GroupChat._id }).populate(
+            "users",
+            "_id Username Fullname avatarImage"
+          );
+  
+          return res.status(200).json({ status: true, chat: FullGroupChat });
+        }
+      } catch (error) {
+        console.error(error);
+        return res.status(500).json({ status: false, error: "Internal Server Error" });
+      }
+    });
+  };
+  
+  
 
 module.exports.renameGroup=async(req,res,next)=>{
     try{

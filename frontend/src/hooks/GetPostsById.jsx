@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import  {GetPostfromIdRoute} from "../../utils/ApiRoutes"
+import apiRequest from '../Components/axios';
 export default function GetPostsById(postid) {
     let [post,setpost]=useState([]);
     let [loading,setloading]=useState(true);
@@ -8,16 +9,12 @@ export default function GetPostsById(postid) {
         const route= GetPostfromIdRoute(postid);
         
 const getPost=async()=>{
-    try{
-const {data}=await axios.get(route,{ withCredentials: true });
+
+const data=await apiRequest('GET',route)
 if(data.post){
     setpost(data.post);
     setloading(false)
-}
-    }
-    catch(e){
-        console.error(e);
-    }
+} 
 }
 getPost();
     },[postid])

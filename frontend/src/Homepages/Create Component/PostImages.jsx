@@ -29,7 +29,7 @@ else{
     <section className={"relative overflow-hidden Postblock "}>
       <div className="relative flex gap-2 transition-all duration-500 w-max" style={{ transform: `translateX(-${x}%)` }}>
         {images.map((imageURL, index) => (
-          <img src={forpost?imageURL:URL.createObjectURL(imageURL)} key={index} className={ "block h-[30rem]  md:w-[30rem] pb-2"}  />
+          <img src={forpost?imageURL:URL.createObjectURL(imageURL)} key={index} className={ "block h-[30rem] w-[25rem]  md:w-[30rem] pb-2"}  />
         ))}
       </div>
 
