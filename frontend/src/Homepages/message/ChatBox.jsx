@@ -1,35 +1,35 @@
-import React, { useContext, useEffect, useMemo, useRef,useState } from 'react'
+import React, { useContext, useEffect, useMemo,useRef,useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import {  useNavigate, useParams } from 'react-router-dom'
 import { Socketcontext } from './../../context/Socketcontext';
-import { AccessChatRoutes, SendMessageRoute } from '../../../utils/ApiRoutes';
-import axios from 'axios';
+import { SendMessageRoute } from '../../../utils/ApiRoutes';
 import { addChat, UpdateChats } from '../../Redux/Slice/ChatSlice';
 import GetMessages from '../../hooks/GetMessages';
-import { current } from '@reduxjs/toolkit';
+import { FaVideo } from "react-icons/fa6";
+import apiRequest from '../../Components/axios';
 
 export default function ChatBox() {
-   
-    const {user}=useParams()
+  
    let [input,setinput]=useState("")
  const navigate=useNavigate()
+ const [showusers,setshowusers]=useState(false)
  const state=useSelector((state)=>state.user)
 const chatState=useSelector((state)=>state.chat)
+let inputref=useRef()
 if(!chatState.selectedChat){
     navigate("/message")
 }
+else{
 const {_id,isGroupChat,GroupChatimage,chatName}=chatState.selectedChat;
 
-const Users = 
-chatState.selectedChat.users.filter((user) => user._id !== state.currentUser._id) || [];
+const Users = chatState.selectedChat.users.filter((user) => user._id !== state.currentUser._id) || [];
 
-const dispatch=useDispatch()
+const dispatch=useDispatch();
 const {socket}=useContext(Socketcontext)
 let Currentchatmsg=GetMessages(_id)
 
 let [messages,setmessages]=useState([])
 useMemo(()=>{
-
     if(!Currentchatmsg.loading){
 setmessages(Currentchatmsg.messages)
 }
@@ -39,21 +39,21 @@ useEffect(()=>{
     let allmsg=document.getElementById("Allmsg")
     allmsg.scrollTop = allmsg.scrollHeight;
 },[messages])
-
-async function sendmessage(){
+let  sendmessage=async()=>{
     if(input!=""){
-const {data}=await axios.post(SendMessageRoute,{chatId:_id,content:input},{withCredentials:true})
+       inputref.current.readOnly=true;
+const data=await apiRequest('POST',SendMessageRoute,{chatId:_id,content:input},{withCredentials:true})
 if(data.status){
 setmessages((prev)=>[...prev,data.message])
 dispatch(UpdateChats({id:_id,latestMessage:data.message}))
 socket.emit("sendMessage",data.message)
 setinput("")
+inputref.current.readOnly=false;
 }
     }
 
 }
 useEffect(()=>{
-   
 
     const handleMessageReceived = (data) => {
         
@@ -64,18 +64,18 @@ useEffect(()=>{
 
         setmessages((prev) => [...prev, data]);
     };
-  
-    console.log(chatState.chats)
+  console.log(messages[0])
     socket.on("message recieved",handleMessageReceived)
     return () => {
         socket.off("message recieved", handleMessageReceived);
     };
 },[socket])
+
     return (
       <div className="flex flex-col flex-grow h-full">
           <div className="w-full p-1 rounded-bl-none rounded-br-none shadow-md h-15 dark:bg-gray-800 rounded-xl">
               <div className="flex items-center p-2 align-middle">
-                  <div className="p-2 mr-1 text-black rounded-full hover:bg-purple-500" onClick={()=>{navigate("/message")}}>
+                  <div className="p-2 mr-1 text-black rounded-full hover:bg-blue-100" onClick={()=>{navigate("/message")}}>
                       <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                       </svg>
@@ -92,11 +92,19 @@ useEffect(()=>{
                           </div>
                       </div>
                   </div>
-                  <div className="p-2 text-black rounded-full cursor-pointer hover:bg-purple-500">
+                  <button onClick={()=>{
+                    window.open(`/video/${chatState.selectedChat._id}`,'_blank',{width:window.innerWidth,height:window.innerHeight})
+                  }}>
+                 <FaVideo className='mr-4 text-3xl'/>
+                  </button>
+                  <button className="z-50 p-2 text-black rounded-full cursor-pointer hover:bg-blue-100" onClick={()=>{
+                    setshowusers(!showusers)
+                  }}>
                       <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                       </svg>
-                  </div>
+                  </button>
+
               </div>
           </div>
           <div className="flex-grow w-full p-2 my-1 overflow-y-auto bg-gray-100 dark:bg-gray-900" id="Allmsg">
@@ -114,8 +122,7 @@ useEffect(()=>{
                       <div className="text-gray-700 dark:text-gray-200">
                        {msg.content}
                       </div>
-                      <div className="text-xs text-gray-400">
-                          1 day ago
+                      <div className="text-xs text-black">
                       </div>
                   </div>
               </div>
@@ -143,15 +150,24 @@ useEffect(()=>{
                       </svg>
                   </div>
                   <div className="flex flex-grow p-2 ">
-                      <input className="flex-grow p-5 text-sm text-gray-700 bg-gray-100 input dark:text-gray-200 focus:outline-none dark:bg-gray-800 rounded-l-md" type="text" placeholder="Type your message ..."
+                      <input className="flex-grow p-5 text-sm text-gray-700 bg-gray-100 input dark:text-gray-200 focus:outline-none dark:bg-gray-800 rounded-l-md"
+                      ref={inputref}
+                      type="text" placeholder="Type your message ..."
                       onChange={(e)=>{
                         setinput(e.target.value)
                         socket.emit("typing",_id)
                       }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          sendmessage();
+                          e.preventDefault(); 
+                        }
+                      }}
+                      
                      value={input}
                       />
                       <button className="flex items-center justify-center pr-3 text-gray-400 bg-gray-100 dark:bg-gray-800 dark:text-gray-200 rounded-r-md"
-                      
+                    
                       onClick={sendmessage}
                     
                  
@@ -167,4 +183,6 @@ useEffect(()=>{
       </div>
   )
   
+
+}
 }

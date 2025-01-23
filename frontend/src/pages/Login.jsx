@@ -1,32 +1,18 @@
-import { useReducer, useState } from 'react'
+import { useState } from 'react'
 import Logo1 from '../assets/logo.png'
 import Logo2 from '../assets/log2.png'
 import { useNavigate } from 'react-router-dom';
 import {useForm} from "react-hook-form";
-import * as yup from "yup";
-import {yupResolver} from "@hookform/resolvers/yup";
-import axios from 'axios';
-import { useEffect } from 'react';
 import { ForgetPasswordRoute, loginRoute } from '../../utils/ApiRoutes';
-import{ToastContainer,toast} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'
+
 import sideimg from '../assets/auth.png'
-import { useDispatch, useSelector } from 'react-redux';
-import {store} from "../Redux/Store"
+import { useDispatch } from 'react-redux';
 import { signInFailure, signInSuccess } from '../Redux/Slice/Userslice';
 import OAuth from '../Components/OAuth';
-axios.defaults.withCredentials = true;
+import apiRequest from '../Components/axios';
 function Login() {
-  const state =useSelector((state)=>state.user);
   const dispatch=useDispatch();
 
-  const toastOptions = {
-    position: "bottom-right",
-    autoClose: 8000,
-    pauseOnHover: true,
-    draggable: true,
-    theme: "dark",
-  };
  
   
   const Navigate=useNavigate();
@@ -35,30 +21,22 @@ function Login() {
 const {register,handleSubmit,formState:{errors}}=useForm();
 
 const submit=async (values)=>{
-
   const{Username,Password}=values;
-  try {
-    const { data } = await axios.post(
-      loginRoute,
-      { Username, Password },
-      { withCredentials: true }
-    );
+  if(Username=="" || Password==""){
+    alert("fill all the fields")
+    return;
+  }
   
-    console.log(data);
-  
+const data=await apiRequest('POST',loginRoute,{
+  Username:Username,
+  Password:Password
+})
     if (data.status) {
       dispatch(signInSuccess(data.user));
       Navigate("/home");
     } else {
-      toast.error(data.msg, toastOptions);
       dispatch(signInFailure());
     }
-  } catch (error) {
-    const errorMsg = error.response?.data?.msg || "Something went wrong!";
-    toast.error(errorMsg, toastOptions);
-    dispatch(signInFailure());
-  }
-  
 }
   
 
@@ -92,7 +70,7 @@ const submit=async (values)=>{
 Don't have a account? <button className="text-blue-400" onClick={()=>{Navigate("/register")}}>Sign up</button>
 </div>
    </div>
-   <ToastContainer/>
+ 
    </section>
   )
 }

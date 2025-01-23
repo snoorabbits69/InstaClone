@@ -13,6 +13,7 @@ export default function Post() {
 const {post,loading}=GetPostsById(postid);
 let [commentbox,setcommentbox]=useState(false)
 const {User}=GetUserfromId(post?.postedBy)
+let [page,setpage]=useState(1)
 let navigate=useNavigate()
 console.log(commentbox,setcommentbox)
 useEffect(() => {
@@ -40,10 +41,17 @@ return(
     <button className='fixed right-0 mr-2 ' onClick={()=>{
         setcommentbox(false)
     }} >close</button>
-   <h1 className='mt-5 text-center'> Comments:</h1>
-    <Comments postid={post._id}  />
+   <h1 className='mt-5 overflow-scroll text-center '> Comments:</h1>
+ <div className='w-full overflow-hidden overflow-y-scroll border-2 h-[80%]' onScroll={(e)=>{
+  const {scrollTop,scrollHeight,clientHeight}=e.target;
+  if (scrollHeight - scrollTop <= clientHeight + 50) {
+ setpage(page++)
+  }
+ }}>
+    <Comments postid={post._id} page={page} />
+    </div>
 
-    <input type='text' className="border-b-2 border-black border-solid outline-none " placeholder='add comment'/>
+    <Addcomment postid={post._id}/>
   </div>
 </div>
 

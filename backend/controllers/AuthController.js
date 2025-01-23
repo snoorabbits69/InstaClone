@@ -10,20 +10,20 @@ module.exports.register = async (req, res, next) => {
   try {
     const { Fullname, Username, Email, Password } = req.body;
     if (!Fullname || !Username || !Email || !Password) {
-      return res.status(400).json({ msg: 'Invalid request data', status: false });
+      return res.status(400).json({ error: 'Invalid request data', status: false });
     }
     const userCheck = await User.findOne({ Username });
     const emailCheck = await User.findOne({ Email });
 
     if (userCheck) {
-      return res.status(400).json({ msg: 'User already exists', status: false });
+      return res.status(400).json({ error: 'User already exists', status: false });
     }
 
     if (emailCheck) {
-      return res.status(400).json({ msg: 'Email in use', status: false });
+      return res.status(400).json({ error: 'Email in use', status: false });
     }
 if(Password.length<8){
-  return res.status(400).json({ msg: 'Password needs to be of at least 8 letters', status: false });
+  return res.status(400).json({ error: 'Password needs to be of at least 8 letters', status: false });
 
 }
     const hashedPassword = await bcrypt.hash(Password, 10);
@@ -42,7 +42,7 @@ if(Password.length<8){
     return res.status(200).json({ status: true, user: rest });
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ msg: "Internal server error", status: false });
+    return res.status(500).json({ error: "Internal server error", status: false });
   }
 };
 
@@ -53,12 +53,12 @@ module.exports.login = async (req, res, next) => {
     const checkUser = await User.findOne({ Username });
 
     if (!checkUser) {
-      return res.status(400).json({ msg: "Incorrect username or password", status: false });
+      return res.status(400).json({ error: "Incorrect username or password", status: false });
     }
 
     const checkPassword = await bcrypt.compare(Password, checkUser.Password);
     if (!checkPassword) {
-      return res.status(400).json({ msg: "Incorrect password", status: false });
+      return res.status(400).json({ error: "Incorrect password", status: false });
     }
 
     const { Password: _, ...rest } = checkUser.toObject();
@@ -67,8 +67,7 @@ module.exports.login = async (req, res, next) => {
 
     return res.status(200).json({ status: true, user: rest });
   } catch (e) {
-    console.error(e);
-    return res.status(500).json({ msg: "Internal Server Error", status: false });
+    return res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
 
@@ -101,7 +100,7 @@ module.exports.Google = async (req, res, next) => {
     }
   } catch (e) {
     console.error(e);
-    return res.status(500).json({ msg: "Internal Server Error", status: false });
+    return res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
 module.exports.Logout = (req, res,next) => {
@@ -129,7 +128,7 @@ module.exports.postforgotpassword = async (req, res, next) => {
     console.log(req.body)
     const findUser = await User.findOne({ Email: req.body.Email });
     if (!findUser) {
-      return res.json({ status: false, msg: "User doesn't exist" });
+      return res.json({ status: false, error: "User doesn't exist" });
     }
 
 const token=jwt.sign({Username:findUser.Username,Email:findUser.Email},updatetoken,{expiresIn:"15min"});
@@ -151,7 +150,7 @@ const token=jwt.sign({Username:findUser.Username,Email:findUser.Email},updatetok
 
     const result = await transporter.sendMail(mailOptions);
     res.send("reset link send to your Email");
-    // return res.json({ status: true,msg:"reset link send to your Email" });
+    // return res.json({ status: true,error:"reset link send to your Email" });
 
   } catch (e) {
     console.error(e);
@@ -163,7 +162,7 @@ module.exports.getresetlink=async(req,res,next)=>{
   try{
     const verify=jwt.verify(req.params.token,updatetoken);
   if(!verify){
-    return res.json({status:false,msg:"Invalid"})
+    return res.json({status:false,error:"Invalid"})
   }
   else{
   const {Email}=jwt.decode(req.params.token);
@@ -179,7 +178,7 @@ module.exports.postresetlink=async(req,res,next)=>{
   try{
     const verify=jwt.verify(req.params.token,updatetoken);
   if(!verify){
-    return res.json({status:false,msg:"Invalid"})
+    return res.json({status:false,error:"Invalid"})
   }
   else{
   const {Email}=jwt.decode(req.params.token);

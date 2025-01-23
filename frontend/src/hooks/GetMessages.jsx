@@ -1,6 +1,6 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import { getMessagesRoute } from '../../utils/ApiRoutes';
+import apiRequest from '../Components/axios';
 
 export default function GetMessages(chatid) {
    
@@ -8,16 +8,10 @@ export default function GetMessages(chatid) {
  const [messages,setmessages]=useState([]);
  useEffect(()=>{
     async function GetMsgs() {
-        
-try{
-    const {data}=await axios.get(getMessagesRoute(chatid))
-
+    const data=await apiRequest('GET',getMessagesRoute(chatid))
 if(data.status){
     setmessages(data.messages);
     setLoading(false);
-}
-}catch(e){
-    console.error(e);
 }
     }
     GetMsgs();

@@ -2,12 +2,13 @@
 import React, { useEffect, useState } from 'react'
 import GetComments from '../../hooks/GetComments';
 
-export default function Comments({postid}) {
-    const {comments,loading} = GetComments(postid, 1);
+export default function Comments({postid,page}) {
+    const {comments,loading} = GetComments(postid, page);
 const [Allcomments,setAllcomments]=useState([])
     useEffect(()=>{
-setAllcomments(comments)
-    },[comments])
+        
+setAllcomments((prev)=>[...prev,...comments])
+    },[comments,page])
 
     if(loading){
         return <section>Loading comments...</section>
@@ -16,7 +17,7 @@ setAllcomments(comments)
   return (
     <div>
         {Allcomments.length>0?Allcomments.map((comment,id)=>{
-            return <div key={id}>{comment.text}</div>
+            return <div className='mb-10' key={id}>{comment.text}</div>
         }):"No comments"}
     </div>
   )

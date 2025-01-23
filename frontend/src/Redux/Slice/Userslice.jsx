@@ -37,6 +37,12 @@ const userSlice = createSlice({
     UpdateAvatarImage:(state,action)=>{
       state.currentUser.avatarImage=action.payload;
     },
+    updateUserName:(state,action)=>{
+state.currentUser.Username=action.payload
+    },
+    updateFullName:(state,action)=>{
+      state.currentUser.Fullname=action.payload
+          },
     updatePrivateAccount:(state,action)=>{
       state.currentUser.Account.private=!state.currentUser.Account.private
       }
@@ -51,7 +57,9 @@ export const {
   signOutSuccess,
   signOutFailure,
   UpdateAvatarImage,
-  updatePrivateAccount
+  updatePrivateAccount,
+  updateUserName,
+  updateFullName
 } = userSlice.actions;
 
 export default userSlice.reducer;

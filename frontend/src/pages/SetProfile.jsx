@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import axios from 'axios';
 import { useRef } from 'react';
 import { uploadRoute } from '../../utils/ApiRoutes';
 import noProfile from "../assets/noprofile.png"
 import { useDispatch, useSelector } from 'react-redux';
 import {  UpdateAvatarImage } from '../Redux/Slice/Userslice';
+import apiRequest from '../Components/axios';
 
 export default function SetProfile() {
     const [image,SetImage]=useState();
@@ -23,7 +23,7 @@ const dispatch=useDispatch();
         formdata.append('file',image);
         console.log(formdata);
         const api=uploadRoute(state.currentUser._id)
-     const {data}=await axios.post(api,formdata);
+     const data=await apiRequest('POST',api,formdata);
     console.log(data);
     if(data.status){
 dispatch(UpdateAvatarImage(data.user.avatarImage));

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { SearchRoute } from '../../utils/ApiRoutes';
 
@@ -19,7 +19,7 @@ export default function GetUsers(value) {
            setUser(data.user);
             }
             catch(e){
-                // console.log(e);
+                console.log(e);
             }
         }
         get();

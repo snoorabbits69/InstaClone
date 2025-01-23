@@ -20,7 +20,7 @@ io.on("connection", (socket) => {
     
     socket.emit("online",onlineUsers)
 socket.on("follow",(msg)=>{
-    
+     
 })
 socket.on("join-chat",({user,room})=>{
    
@@ -28,6 +28,10 @@ socket.on("join-chat",({user,room})=>{
     socket.join(room);
   
    
+})
+socket.on('user:call',({room,offer})=>{
+    console.log(room,offer)
+io.to(room).emit('incoming:call',offer)
 })
 socket.on("typing",(room)=>{
     socket.in(room).emit("typing","typing")
