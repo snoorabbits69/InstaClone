@@ -74,6 +74,7 @@ const dispatch=useDispatch();
       //   },
       // });
 const data=await apiRequest('POST',CreateGroupRoute,Newgroup)
+console.log(data)
     if(data.status){
       dispatch(addChat(data.chat))
       setdialogstatus(false)
@@ -154,7 +155,7 @@ const data=await apiRequest('POST',CreateGroupRoute,Newgroup)
                       </div>
                       <input
                         type="checkbox"
-                        checked={chatdata.users.some((curruser) => curruser.id === user._id)}
+                        checked={chatdata?.users?.some((curruser) => curruser.id === user._id)}
                         onChange={(e) => handleCheckboxChange(e, user)}
                         className="mb-4 ml-2"
                       />

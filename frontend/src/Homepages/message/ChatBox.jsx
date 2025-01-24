@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useMemo,useRef,useState } from 'react'
+import { useContext, useEffect, useMemo,useRef,useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {  useNavigate, useParams } from 'react-router-dom'
+import {  useNavigate } from 'react-router-dom'
 import { Socketcontext } from './../../context/Socketcontext';
 import { SendMessageRoute } from '../../../utils/ApiRoutes';
 import { addChat, UpdateChats } from '../../Redux/Slice/ChatSlice';
@@ -16,6 +16,9 @@ export default function ChatBox() {
  const state=useSelector((state)=>state.user)
 const chatState=useSelector((state)=>state.chat)
 let inputref=useRef()
+const dispatch=useDispatch();
+const {socket}=useContext(Socketcontext)
+let [loading,setloading]=useState(false)
 if(!chatState.selectedChat){
     navigate("/message")
 }
@@ -24,8 +27,7 @@ const {_id,isGroupChat,GroupChatimage,chatName}=chatState.selectedChat;
 
 const Users = chatState.selectedChat.users.filter((user) => user._id !== state.currentUser._id) || [];
 
-const dispatch=useDispatch();
-const {socket}=useContext(Socketcontext)
+
 let Currentchatmsg=GetMessages(_id)
 
 let [messages,setmessages]=useState([])
@@ -40,14 +42,17 @@ useEffect(()=>{
     allmsg.scrollTop = allmsg.scrollHeight;
 },[messages])
 let  sendmessage=async()=>{
+    if(loading){return ;}
+    setloading(true)
     if(input!=""){
        inputref.current.readOnly=true;
-const data=await apiRequest('POST',SendMessageRoute,{chatId:_id,content:input},{withCredentials:true})
+const data=await apiRequest('POST',SendMessageRoute,{chatId:_id,content:input},)
 if(data.status){
 setmessages((prev)=>[...prev,data.message])
 dispatch(UpdateChats({id:_id,latestMessage:data.message}))
 socket.emit("sendMessage",data.message)
 setinput("")
+setloading(false)
 inputref.current.readOnly=false;
 }
     }

@@ -1,8 +1,9 @@
-import React, { useContext, useEffect } from 'react';
+import  { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addChat, chatStart, UpdateChats } from '../../Redux/Slice/ChatSlice';
 import { Socketcontext } from '../../context/Socketcontext';
+import CalcDate from './../../Components/CalcDate';
 
 export default function MyChat( {chats} ) {
    
@@ -57,25 +58,7 @@ useEffect(()=>{
             socket.off('incoming:call',handleincomingcall);
      }
 },[])
-function getDate(date) {
-    if (!date) {
-        return "";
-    }
 
-    let currentDate = new Date();
-    let msgDate = new Date(date);
-    let sendTime = Math.floor((currentDate - msgDate) / 1000); 
-
-    if (sendTime < 60) {
-        return "Just now"; 
-    } else if (sendTime < 3600) {
-        return Math.floor(sendTime / 60) + 'm ago'; 
-    } else if (sendTime < 86400) {
-        return Math.floor(sendTime / 3600) + 'hrs ago'; 
-    } else {
-        return Math.floor(sendTime / 86400) + 'days ago'; 
-    }
-}
 
     return (
         <div className={"p-1 m-1 rounded-md conversation-item dark:bg-gray-700 hover:bg-gray-200"} onClick={()=>{
@@ -89,7 +72,7 @@ function getDate(date) {
                 <div className="flex-grow p-2">
                     <div className="flex justify-between text-md">
                         <div className="text-sm font-medium text-gray-700 dark:text-gray-200">{chats.isGroupChat?chats.chatName:Fullname}</div>
-                        <div className="text-xs text-gray-400 dark:text-gray-300">{getDate(chats?.latestMessage?.createdAt)}</div>
+                        <div className="text-xs text-gray-400 dark:text-gray-300"><CalcDate date={chats?.latestMessage?.createdAt}/></div>
                     </div>
                     <div className="w-40 text-sm text-gray-500 truncate dark:text-gray-400">
                       {chats.latestMessage?chats.latestMessage?.content:""}

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 export default function PostImages({ images,forpost }) {
-  console.log(images)
   const [x, setX] = useState(0);
 
   const handleIncrement = (e) => {

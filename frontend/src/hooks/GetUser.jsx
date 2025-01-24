@@ -7,8 +7,8 @@ export default function GetUser(username) {
    useEffect(() => {
         const getUserData = async () => {
       
-            const { data } = await apiRequest('GET',getUserRoute(username))
-            if(data.user){
+            const  data  = await apiRequest('GET',getUserRoute(username))
+            if(data?.user){
             setcurrentUser(data.user);
             setLoading(false);
             }

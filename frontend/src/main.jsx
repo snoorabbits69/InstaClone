@@ -8,7 +8,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import Socketcontextprovider from './context/Socketcontext.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  // <React.StrictMode>
  
     <Provider store={store}>
     <Socketcontextprovider>
@@ -18,6 +18,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </Socketcontextprovider>
     </Provider>
    
-  </React.StrictMode>,
+  // </React.StrictMode>,
 )
 

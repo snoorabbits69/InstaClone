@@ -1,6 +1,4 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import  { useEffect, useState } from 'react';
 import { GetPostRoute } from '../../utils/ApiRoutes';
 import apiRequest from '../Components/axios';
 
@@ -11,7 +9,8 @@ export default function GetPosts( id ) {
     useEffect(() => {
         const getPost = async () => {
           
-                const { data } = await apiRequest('GET',GetPostRoute)
+                const  data  = await apiRequest('GET',GetPostRoute(id))
+                console.log()
                 if (data.status) {
                     setPost(data);
                     setLoading(false);

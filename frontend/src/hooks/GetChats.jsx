@@ -8,7 +8,7 @@ let [loading,setloading]=useState(true)
     useEffect(()=>{
 let fetchChats=async()=>{
    const data= await apiRequest('GET',FetchChatRoutes(page))
-   if(!data.status){
+   if(data.status){
     setchats(data.chat)
 setloading(false)
 }

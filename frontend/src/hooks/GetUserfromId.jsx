@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import { GetUserfromIdRoute } from '../../utils/ApiRoutes';
-import axios from 'axios';
 import apiRequest from '../Components/axios';
 
 export default function GetUserfromId(id) {

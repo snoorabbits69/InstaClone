@@ -29,7 +29,9 @@ const chatSlice = createSlice({
       state.chats = [...state.chats, ...newChats];
     },
  addChat:(state,action)=>{
-state.chats=state.chats.push(action.payload)
+  let newchats=[...state.chats]
+ newchats.push(action.payload)
+ state.chats=newchats
  },
  UpdateChats: (state, action) => {
   let updatedChats = state.chats.map((chat) => {
