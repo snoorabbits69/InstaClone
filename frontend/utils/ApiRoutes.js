@@ -14,11 +14,13 @@ export const UploadPostRoute=`/api/post/create`;
 export const GetPostRoute=(id)=>`/api/post/getPosts/${id}`;
 export const GetPostfromIdRoute=(id)=>`/api/post/getPost/${id}`;
 export const AddcommentRoute=(id)=>`/api/comment/${id}`;
+export const replyCommentRoute=(id)=>`/api/reply/${id}`
+export const DeleteCommentRoute=(id)=>`/api/deletecomment/${id}`
 export const RemoveProfilePicRoute=(id)=>`/api/user/deleteProfilePic/${id}`;
 export const GetcommentRoute=(id,page)=>`/api/comment/get/${id}?page=${page}`;
 export const LikePostRoute=(id)=>`/api/post/likes/${id}`
 export const changeAccountTypeRoute=(id)=>`/api/user/privateaccount/${id}`
-export const cancelFollowRequestRoute=(id)=>`/api/user/cancelrequest/${id}`
+export const CancelFollowRequestRoute=(id)=>`/api/user/cancelrequest/${id}`
 export const FetchChatRoutes=(page)=>`/api/chat?page=${page}`
 export const AccessChatRoutes=`/api/chat`
 export const SendMessageRoute=`/api/message`

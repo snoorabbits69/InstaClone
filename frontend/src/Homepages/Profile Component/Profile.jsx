@@ -1,4 +1,3 @@
-import React, { useContext, useEffect } from 'react';
 
 import FollowButton from '../../Components/FollowButton';
 import FollowersBox from '../../Components/FollowersBox';

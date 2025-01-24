@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import GetUserfromId from './../hooks/GetUserfromId';
-import FollowButton from '../Components/FollowButton';
 
 export default function Notifications() {
   const state=useSelector((state)=>state.user)

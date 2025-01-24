@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { GetcommentRoute } from '../../utils/ApiRoutes';
 import apiRequest from './../Components/axios';
@@ -11,7 +10,8 @@ export default function GetComments(postid, page) {
         const apiroute = GetcommentRoute(postid, page);
         const fetchComments = async () => {
       
-                const { data } = await apiRequest('GET',apiroute);
+                const  data  = await apiRequest('GET',apiroute);
+                console.log(data)
                 if(data.status){
                 setComments(data.comment);
             setLoading(false);    

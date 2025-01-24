@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updatePrivateAccount } from '../../Redux/Slice/Userslice';
 import { changeAccountTypeRoute } from '../../../utils/ApiRoutes';

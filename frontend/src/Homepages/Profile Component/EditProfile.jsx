@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react';
+import  { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { UpdateFullNameRoute, UpdatePasswordRoute, UpdateUsernameRoute, uploadRoute } from '../../../utils/ApiRoutes';
 import { RemoveProfilePicRoute } from '../../../utils/ApiRoutes';
-import { UpdateAvatarImage, updateUserName } from '../../Redux/Slice/Userslice';
+import { UpdateAvatarImage, updateFullName, updateUserName } from '../../Redux/Slice/Userslice';
 import Togglebutton from './Tooglebutton';
 import Darkmode from './Darkmode';
 import{toast} from 'react-toastify';
@@ -30,7 +30,7 @@ export default function EditProfile() {
             const formData = new FormData();
             formData.append('file', e.target.files[0]);
             const api = uploadRoute(state.currentUser._id);
-            const { data } = await apiRequest('POST',api, formData);
+            const data = await apiRequest('POST',api, formData);
 
             if (data.status) {
                 dispatch(UpdateAvatarImage(data.user.avatarImage));
@@ -42,7 +42,7 @@ export default function EditProfile() {
     const handleUpdateUsername = async () => {
         if (username) {
             try {
-                const { data } = await apiRequest('PUT',UpdateUsernameRoute, { Username: username });
+                const data = await apiRequest('PUT',UpdateUsernameRoute, { Username: username });
                 if (data.status) {
                     dispatch(updateUserName(username));
                 }
@@ -57,7 +57,7 @@ export default function EditProfile() {
             try {
                 const data = await apiRequest('PUT',UpdateFullNameRoute, { Fullname: fullname });
                 if (data.status) {
-                    dispatch(updateUserName(fullname));
+                    dispatch(updateFullName(fullname));
                 }
             } catch (error) {
                 console.error(error);

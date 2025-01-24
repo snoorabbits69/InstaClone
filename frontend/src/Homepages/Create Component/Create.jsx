@@ -1,10 +1,9 @@
-import React, { useState, useRef } from 'react';
+import  { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { UploadPostRoute } from '../../../utils/ApiRoutes';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
 import PostImages from './PostImages';
 import { HiOutlineX } from "react-icons/hi";
+import apiRequest from '../../Components/axios';
 
 export default function Create({ setShowCreate }) {
   const [arr, setArr] = useState(1);
@@ -117,12 +116,7 @@ export default function Create({ setShowCreate }) {
     data.append('caption', formData.caption);
 
     try {
-      const response = await axios.post(UploadPostRoute, data, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await apiRequest('POST',UploadPostRoute, data);
       reset();
       setImages([]);
       setArr(1);

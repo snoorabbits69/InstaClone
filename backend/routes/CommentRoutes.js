@@ -4,7 +4,7 @@ const router=express.Router();
 const jwtAuth=require("../Middlewares/jwtAuth")
 router.post("/comment/:postid",jwtAuth,Comment);
 router.post("/reply/:parentid",jwtAuth,Reply);
-router.delete("/deletecomment/:postid",jwtAuth,DeleteComment);
+router.delete("/deletecomment/:commentId",jwtAuth,DeleteComment);
 router.get("/comment/get/:postId",getComment);
-router.get("/comment/getReplies/:parentid",getReplyComment);
+// router.get("/comment/getReplies/:parentid",getReplyComment);
 module.exports=router;

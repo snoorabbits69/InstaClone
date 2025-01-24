@@ -31,7 +31,6 @@ const Userdata=({id,setModel})=>{
 }
 export default function FollowersBox({ follower, text, setModel }) {
     const [localUsers, setLocalUsers] = useState(follower);
-    const navigate = useNavigate();
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
@@ -40,8 +39,8 @@ export default function FollowersBox({ follower, text, setModel }) {
                     <RxCross2 className="text-xl" />
                 </button>
                 <div className="flex-col pt-6">
-               {localUsers.length > 0 ? localUsers.map((data) => (
-              <Userdata id={data.id} setModel={setModel}/>
+               {localUsers.length > 0 ? localUsers.map((data,i) => (
+              <Userdata key={i} id={data.id} setModel={setModel}/>
                 )) : (
                     <p className="m-auto text-xl">{text}</p>
                 )}

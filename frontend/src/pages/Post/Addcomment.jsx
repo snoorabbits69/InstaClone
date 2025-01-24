@@ -1,33 +1,39 @@
-import React, { useRef, useState } from 'react';
-import { AddcommentRoute } from '../../utils/ApiRoutes';
-import axios from 'axios';
+import { useEffect, useRef, useState } from 'react';
+import { AddcommentRoute } from '../../../utils/ApiRoutes';
 import { useSelector } from 'react-redux';
+import apiRequest from '../../Components/axios';
 
-export default function Addcomment({ postid }) {
+export default function Addcomment({ postid,setAllComments,parentId }) {
   const state = useSelector((state) => state.user);
   const [comment, setcomment] = useState('');
 const inputref=useRef()
+
   let sendComment = async () => {
+   let commentroute=parentId?"":AddcommentRoute(postid);
     if (comment) {
-      try {
-        let commentroute = AddcommentRoute(postid);
-        const { data } = await axios.post(commentroute, {
+   
+      
+        const  data  = await apiRequest('POST',commentroute, {
           postId: postid,
           userId: state.currentUser._id,
           text: comment,
           Username: state.currentUser.Username,
           avatarImage: state.currentUser.avatarImage,
         });
-        console.log(data)
+        setAllComments((prev)=>[...prev,data.comment])
+
         inputref.current.value=""
-      } catch (error) {
-        console.error(error);
-      }
-    }
+      } 
+    
   };
 
   return (
-    <div className="flex justify-around border-2 ">
+    <div className="flex justify-around border-1 "  onKeyDown={(e) => {
+      if (e.key === "Enter") {
+      sendComment();
+        e.preventDefault(); 
+      }
+    }}>
       <input ref={inputref}
         type="text"
         className="w-[80%] border-black outline-none border-b-2 mb-1 "

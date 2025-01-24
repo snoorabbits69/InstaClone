@@ -2,7 +2,7 @@ import React from 'react'
 import { CgMoreVerticalR } from "react-icons/cg";
 import gsap from 'gsap';
 import { logoutRoute } from '../../utils/ApiRoutes';
-import axios from 'axios';
+import apiRequest from '../Components/axios';
 import { signOutSuccess } from '../Redux/Slice/Userslice';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -22,7 +22,7 @@ export default function Logout() {
              <div>Saved</div>
              <div>Dark mode</div>
              <button onClick={async()=>{
-              const {data}= await axios.get(logoutRoute);
+              const data= await apiRequest('GET',logoutRoute);
               if(data.status){
                dispatch(signOutSuccess());
                navigate("/login");

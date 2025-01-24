@@ -1,6 +1,8 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { logoutRoute } from "../../utils/ApiRoutes";
+import { useNavigate } from "react-router-dom";
 
 const apiClient = axios.create({
   baseURL: "http://localhost:3000",
@@ -32,12 +34,12 @@ const apiRequest = async (method, endpoint, data = null) => {
       config.headers["Content-Type"] = "application/json";
     }
 
-    console.log(config);
     const response = await apiClient(config);
     return response.data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.error) {
+    if (error.response) {
       toast.error(error.response.data.error, toastOptions);
+
     } else {
       toast.error("An error occurred", toastOptions);
     }

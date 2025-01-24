@@ -1,4 +1,3 @@
-import React from 'react'
 import GetPosts from '../../hooks/GetPosts';
 import { useNavigate } from 'react-router-dom';
 export default function ProfilePost({id}) {

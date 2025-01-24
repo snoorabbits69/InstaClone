@@ -5,6 +5,7 @@ import { IoChatboxOutline } from "react-icons/io5";
 import { FaHeart } from 'react-icons/fa6';
 import { useSelector } from 'react-redux';
 import { LikePostRoute } from '../../../utils/ApiRoutes';
+import apiRequest from '../../Components/axios';
 
 export default function Likes({ post,setcommentbox }) {
   const { currentUser } = useSelector((state) => state.user);
@@ -14,14 +15,10 @@ useMemo(()=>{
 setIsLiked(post.likes?.includes(currentUser._id))
 },[post])
   const handleLike = async () => {
-    try {
-      const { data } = await axios.post(LikePostRoute(post._id));
+      const  data  = await apiRequest('POST',LikePostRoute(post._id))
       console.log(data);
       setIsLiked(!isLiked); 
-    } catch (error) {
-      console.error("Error liking the post:", error);
-     
-    }
+    
   };
 
 return(

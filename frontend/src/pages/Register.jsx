@@ -7,7 +7,6 @@ import { registerRoute } from '../../utils/ApiRoutes';
 import { useDispatch } from 'react-redux';
 import { signInSuccess } from '../Redux/Slice/Userslice';
 import apiRequest from './../Components/axios';
-axios.defaults.withCredentials = true;
 function Register() {
   const navigate=useNavigate();
   const dispatch=useDispatch();

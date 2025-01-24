@@ -1,4 +1,4 @@
-import React, {useRef,useEffect, useState} from 'react';
+import {useRef,useEffect, useState} from 'react';
 import Mychats from './Mychats';
 import ChatBox from './ChatBox';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -52,7 +52,7 @@ setInputValue(e.target.value)
   return <button className='z-50 w-72'
    onClick={async ()=>{
   
-    const {data}=await apiRequest('post',AccessChatRoutes,{Userid:user._id})
+    const data=await apiRequest('post',AccessChatRoutes,{Userid:user._id})
       console.log(data)
       let messagingUser=data.users[0]==user._id?data.users[0]:data.users[1]
       dispatch(chatStart(data))
