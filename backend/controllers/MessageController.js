@@ -2,14 +2,39 @@ const Chat=require("../models/ChatModel")
 const User=require("../models/UserModel")
 const Message=require("../models/MessageModel");
 const { upload } = require("../Multer/multer");
+const {client}=require("../config/RedisConnection")
 
+async function invalidateCache(chatId){
+  try{
+const key=await client.keys( `messages:${chatId}`);
+if(key){
+  await client.del(key)
+}
+  }catch(e){
+    console.log(e)
+  }
+}
 module.exports.GetallMessages=async(req,res,next)=>{
 try{
+  
+    let cacheKey=`messages:${req.params.chatId}`
+ let data
+ try{
+     data=await client.get(cacheKey);
+ }catch(e){
+  console.log(e)
+ }
+    if(data){
+      return res.json({status:true,messages: JSON.parse(data)})
+
+    }
+    else{
     const messages=await Message.find({chat:req.params.chatId})
     .populate("Sender","Fullname Username avatarImage")
     .populate("chat");
-   
+    client.setEx(cacheKey,180,JSON.stringify(messages))
     return res.json({status:true,messages:messages})
+    }
 }
 catch(e){
     return res.status(500).json({status:false,error:e})
@@ -34,6 +59,7 @@ message=await message.populate("Sender","_id Fullname Username avatarImage");
 let chat=await Chat.findById(chatId)
 chat.latestMessage=message._id;
 await chat.save();
+await invalidateCache(chat._id)
 return res.status(200).json({status:true,message:message})
       }catch(e){
         return res.status(500).json({status:false,error:e})
@@ -61,6 +87,7 @@ module.exports.DeleteMessage = async (req, res, next) => {
       CurrentMessage.isDeleted = true;
 
       await CurrentMessage.save();
+      await invalidateCache(CurrentMessage.chatId)
 
       return res.json({ status: true, message: CurrentMessage });
 

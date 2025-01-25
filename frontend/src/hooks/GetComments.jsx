@@ -11,7 +11,7 @@ export default function GetComments(postid, page) {
         const fetchComments = async () => {
       
                 const  data  = await apiRequest('GET',apiroute);
-                console.log(data)
+               
                 if(data.status){
                 setComments(data.comment);
             setLoading(false);    

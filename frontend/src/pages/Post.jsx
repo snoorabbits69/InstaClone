@@ -10,7 +10,6 @@ const {post,loading}=GetPostsById(postid);
 let [commentbox,setcommentbox]=useState(false)
 
 let scrollcontainerref=useRef(null);
-console.log(commentbox,setcommentbox)
 useEffect(() => {
     const tl = gsap.timeline();
 

@@ -7,7 +7,7 @@ export default function Comments({ postid, parentref }) {
   const [page, setPage] = useState(1);
   const { comments, loading } = GetComments(postid, page);
   const [allComments, setAllComments] = useState([]);
-
+   const [parentId,setparentId]=useState();
   useEffect(() => {
     if (comments.length <= 0 || loading) return;
 
@@ -51,13 +51,13 @@ export default function Comments({ postid, parentref }) {
   return (
     <div>
       {allComments.length > 0 ? 
-            <Comment comment={allComments} setAllComments={setAllComments} />
+            <Comment comment={allComments} setAllComments={setAllComments} setparentId={setparentId}/>
          : (
         <section>No comments</section>
       )}
       
       <div className="fixed left-0 w-full bottom-10">
-        <Addcomment postid={postid} setAllComments={setAllComments} />
+        <Addcomment postid={postid} setAllComments={setAllComments} parentId={parentId} />
       </div>
     </div>
   );
