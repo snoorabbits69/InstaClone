@@ -8,8 +8,8 @@ import { DeleteCommentRoute } from '../../../utils/ApiRoutes';
 
 function RenderComment({ comment, navigate,id }) {
   return (
-    <>
-      <div className="flex gap-4">
+    <section className='m-4'>
+      <div className="flex gap-4 ">
         <button
           className="flex gap-2"
           title={comment?.userId?.Username || 'Anonymous'}
@@ -29,20 +29,25 @@ function RenderComment({ comment, navigate,id }) {
         </div>
       </div>
       {!comment?.isDeleted &&
-      <div className="flex gap-2 text-sm text-gray-500">
+      <div className="flex gap-2 text-sm text-gray-500 justify-stretch">
         <CalcDate date={comment?.createdAt} />
-        <button>reply</button>
+        <div className='flex gap-2 '>
+      <button onClick={()=>{
+        console.log(comment._id)
+      }}>reply</button>
       { id==comment.userId._id && <button onClick={async()=>{
 const data=await apiRequest('DELETE',DeleteCommentRoute(comment?._id))
 
       }}>delete</button> }
       </div>
+      </div>
 }
-    </>
+
+    </section>
   );
 }
 
-export default function Comment({ comment }) {
+export default function Comment({ comment}) {
   const state=useSelector((state)=>state.user)
   const navigate = useNavigate();
   const [showReplies, setShowReplies] = useState(false);
@@ -62,12 +67,12 @@ export default function Comment({ comment }) {
 
   return (
     <>
-      {comment._id && <RenderComment comment={comment} navigate={navigate} id={state?.currentUser._id}  />}
+      {comment._id && <RenderComment comment={comment} navigate={navigate} id={state?.currentUser._id}   />}
      
       {showReplies && (
-        <div className="ml-8">
+        <div >
           {comment.replies.map((reply) => (
-            <div key={reply._id}>
+            <div key={reply._id} className='ml-4'>
               <Comment comment={reply} />
             </div>
           ))}

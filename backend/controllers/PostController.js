@@ -158,7 +158,7 @@ return res.json({error:e})
       let page=req.query.page ||1;
       let end=limit*page;
       let start=end-limit;
-      const Posts = await Post.find({postedBy:{$ne:req.user._id}}).populate("postedBy","Username Fullname avatarImage").limit(limit).skip(start);
+      const Posts = await Post.find({postedBy:{$ne:req.user._id}}).limit(limit).skip(start).populate("postedBy","Username Fullname avatarImage")
    
 return res.json({Posts:Posts,status:true})
     }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AddcommentRoute } from '../../../utils/ApiRoutes';
+import { AddcommentRoute, replyCommentRoute } from '../../../utils/ApiRoutes';
 import { useSelector } from 'react-redux';
 import apiRequest from '../../Components/axios';
 
@@ -9,7 +9,7 @@ export default function Addcomment({ postid,setAllComments,parentId }) {
 const inputref=useRef()
 
   let sendComment = async () => {
-   let commentroute=parentId?"":AddcommentRoute(postid);
+   let commentroute=parentId?replyCommentRoute(parentId):AddcommentRoute(postid);
     if (comment) {
    
       

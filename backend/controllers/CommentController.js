@@ -1,6 +1,17 @@
 const Post = require("../models/PostModel");
 const Comment = require("../models/CommentModel");
-
+const {client}=require("../config/RedisConnection")
+async function invalidatePostCache(postId) {
+    try {
+        const keys = await client.keys(`comments:${postId}:page:*`);
+        if (keys.length > 0) {
+            await client.del(keys);
+            console.log(`Cache invalidated for post ${postId}`);
+        }
+    } catch (error) {
+        console.error("Error invalidating cache:", error);
+    }
+}
 module.exports.Comment = async (req, res, next) => {
     const findPost = await Post.findById(req.params.postid);
     if (!findPost) {
@@ -14,7 +25,7 @@ module.exports.Comment = async (req, res, next) => {
             text: req.body.text,
         });
        let savedcomment=await Comment.findById(currentcomment._id).populate('userId',"Username Fullname _id avatarImage")
-
+         await invalidatePostCache(req.params.postid)
         return res.status(201).json({ comment: savedcomment });
     } catch (e) {
         return res.status(500).json({ error: e });
@@ -51,6 +62,7 @@ module.exports.Reply = async (req, res, next) => {
             "userId",
             "Username Fullname _id avatarImage"
         );
+        await invalidatePostCache(parentComment.postId)
 
         return res.status(201).json({ comment: savedComment });
     } catch (error) {
@@ -71,6 +83,8 @@ module.exports.DeleteComment = async (req, res, next) => {
             findComment.isDeleted = true;
             findComment.text = "The comment has been deleted";
             await findComment.save();
+            await invalidatePostCache(findComment.postId)
+
             return res.status(200).json({ status: true, comment: findComment }); 
         }
     } catch (e) {
@@ -79,28 +93,63 @@ module.exports.DeleteComment = async (req, res, next) => {
 };
 
 
+
+  
 module.exports.getComment = async (req, res, next) => {
-    console.log("calling ")
-  const limit = 10;
-  const page = parseInt(req.query.page) || 1;
-  const start = (page - 1) * limit;
-const {postId}=req.params;
-  try {
-      const findComment = await Comment.find({"postId":postId,parentComment:null})
-      .populate('userId',"Username avatarImage _id Fullname")
-       .populate({
+ 
+    const limit = 10;
+    const page = parseInt(req.query.page) || 1;
+    const start = (page - 1) * limit;
+    const { postId } = req.params;
+  
+    try {
+        const cacheKey=`comments:${postId}:page:${page}`
+       let data;
+       try{
+       data==await client.get(cacheKey)
+       }catch(e){
+        console.log(e)
+       }
+    if(data){
+        return res.status(200).json({ status: true, comment: JSON.parse(data) })
+    }
+    else{
+      const populated = {
         path: 'replies',
         populate: {
           path: 'userId',
           select: 'Username avatarImage _id Fullname',
         },
-      }).skip(start).limit(limit);
-     
-      return res.status(200).json({status:true, comment: findComment });
-  } catch (e) {
+      };
+  
+      let findComments = await Comment.find({ "postId": postId, parentComment: null })
+        .skip(start)
+        .limit(limit).populate('userId', 'Username avatarImage _id Fullname')
+  
+      const populateRepliesRecursively = async (comments) => {
+        for (let comment of comments) {
+          await Comment.populate(comment, populated);
+          
+          if (comment.replies && comment.replies.length > 0) {
+            await populateRepliesRecursively(comment.replies);
+          }
+        }
+      };
+  
+      await populateRepliesRecursively(findComments);
+      client.setEx(cacheKey, 600, JSON.stringify(findComments)); 
+      return res.status(200).json({ status: true, comment: findComments });
+    }
+    } catch (e) {
       return res.status(500).json({ error: e.message || 'An unexpected error occurred' });
-  }
-};
+    }
+  };
+  
+
+
+
+
+
 
 // module.exports.getReplyComment = async (req, res, next) => {
 //   const limit = 5;

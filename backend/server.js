@@ -13,6 +13,7 @@ const MessageRoutes=require("./routes/MessageRoutes")
 const PORT=process.env.PORT;
 const {app,server,io}=require("./socket/socket");
 const dbConnect=require("./config/dbConnection");
+const {redisConnect}=require('./config/RedisConnection')
 const corsconfig={
     origin: 'http://localhost:5173', 
     credentials: true, 
@@ -24,6 +25,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(cookieParser())
 dbConnect();
+redisConnect();
 const jwt=require("jsonwebtoken");
 app.use(express.static(path.resolve("./file")));
 app.use("/api/auth",AuthRoutes);

@@ -59,11 +59,10 @@ module.exports.fetchChat = async (req, res, next) => {
       const pageSize = req.query.pageSize || 20;
       const skip = (page - 1) * pageSize;
       let chats = await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
-      .populate("users", "_id Fullname Username avatarImage")
+      .skip(skip)
+      .limit(pageSize).populate("users", "_id Fullname Username avatarImage")
       .populate("latestMessage")
       .sort({ updatedAt: -1 })
-      .skip(skip)
-      .limit(pageSize);
 
     chats = await User.populate(chats, {
       path: "latestMessage",
