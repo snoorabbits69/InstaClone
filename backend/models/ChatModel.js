@@ -1,4 +1,4 @@
-const mongoose=require("mongoose");
+import mongoose from "mongoose"
 const chatschema=mongoose.Schema({
     chatName:{type:String,trim:true},
     isGroupChat:{type:Boolean,default:false},
@@ -17,4 +17,4 @@ const chatschema=mongoose.Schema({
 },{
     timestamps:true
 })
-module.exports=mongoose.model("chat",chatschema)
+export default mongoose.model("chat",chatschema)

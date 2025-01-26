@@ -1,10 +1,11 @@
-const express=require("express");
-const {Comment,DeleteComment, Reply, getComment, getReplyComment}=require('../controllers/CommentController');
+import express from "express";
+import {setComment,DeleteComment, Reply, getComment} from '../controllers/CommentController.js';
+import jwtAuth from "../Middlewares/jwtAuth.js";
+
 const router=express.Router();
-const jwtAuth=require("../Middlewares/jwtAuth")
-router.post("/comment/:postid",jwtAuth,Comment);
+router.post("/comment/:postid",jwtAuth,setComment);
 router.post("/reply/:parentid",jwtAuth,Reply);
 router.delete("/deletecomment/:commentId",jwtAuth,DeleteComment);
 router.get("/comment/get/:postId",getComment);
 // router.get("/comment/getReplies/:parentid",getReplyComment);
-module.exports=router;
+export default router;

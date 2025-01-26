@@ -1,7 +1,9 @@
-const express=require("express");
-const { uploadStory,deleteStory } = require("../controllers/StoryController");
-const jwtAuth=require("../Middlewares/jwtAuth")
+import express from "express"
+import { uploadStory,deleteStory } from "../controllers/StoryController.js";
+import jwtAuth from "../Middlewares/jwtAuth.js";
+
 const Router=express.Router();
 Router.post("/upload/:postedBy",jwtAuth,uploadStory)
 Router.delete("/delete/:storyid",jwtAuth,deleteStory)
-module.exports=Router;
+
+export default Router;

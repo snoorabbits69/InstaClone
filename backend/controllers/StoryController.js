@@ -1,9 +1,8 @@
-const Story = require("../models/StoryModel");
-const { upload } = require("../Multer/multer");
-const { bucket } = require("../firebase/firebase");
-const sharp = require("sharp");
-
-module.exports.uploadStory = async (req, res, next) => {
+ import Story from "../models/StoryModel.js";
+ import {upload} from "../Multer/multer.js";
+ import {bucket} from "../firebase/firebase.js"
+ import sharp from "sharp"
+export const uploadStory = async (req, res, next) => {
     const expirationTime = new Date();
 
     upload.single('file')(req, res, async (err) => {
@@ -49,7 +48,7 @@ setTimeout(async () => {
     }, 60*60*1000);
 }
 
-module.exports.deleteStory = async (req, res) => {
+export const deleteStory = async (req, res) => {
     try {
       const storyId = req.params.storyid;
       const storyToDelete = await Story.findById(storyId);

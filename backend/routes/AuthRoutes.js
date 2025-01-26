@@ -1,7 +1,8 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const { register,login,Google,Logout, postforgotpassword, getforgotpassword, getresetlink, postresetlink } = require("../controllers/AuthController");
-const jwtAuth=require("../Middlewares/jwtAuth")
+import { register,login,Google,Logout, postforgotpassword, getforgotpassword, getresetlink, postresetlink } from "../controllers/AuthController.js"
+import jwtAuth from "../Middlewares/jwtAuth.js";
+
 router.post("/register", register);
 router.post("/login", login);
 router.post("/google",Google);
@@ -12,4 +13,4 @@ router.post("/forgotpassword",postforgotpassword);
 router.get("/resetlink/:token",getresetlink);
 router.post("/resetlink/:token",postresetlink);
 
-module.exports = router;
+export default router;

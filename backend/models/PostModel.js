@@ -1,5 +1,4 @@
-const mongoose=require("mongoose");
-const User=require("./UserModel");
+import mongoose from "mongoose"
 const PostSchema=mongoose.Schema(
     {
 postedBy:{
@@ -20,11 +19,12 @@ privateAccount:{
 
 }
 },{timestamps:true})
-PostSchema.pre("save", async function (next) {
-    const user = await User.findById(this.postedBy);
+// PostSchema.pre("save", async function (next) {
+//     const user = await User.findById(this.postedBy);
   
-    this.privateAccount = user.Account.private;
+//     this.privateAccount = user.Account.private;
   
-    next();
-  });
-module.exports=mongoose.model("Post",PostSchema);
+
+//     next();
+//   });
+export default mongoose.model("Post",PostSchema);

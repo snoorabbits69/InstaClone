@@ -1,6 +1,6 @@
-const Post = require("../models/PostModel");
-const Comment = require("../models/CommentModel");
-const {client}=require("../config/RedisConnection")
+import Post from "../models/PostModel.js";
+import Comment from "../models/CommentModel.js";
+import { client } from "../config/RedisConnection.js";
 async function invalidatePostCache(postId) {
     try {
         const keys = await client.keys(`comments:${postId}:page:*`);
@@ -12,7 +12,7 @@ async function invalidatePostCache(postId) {
         console.error("Error invalidating cache:", error);
     }
 }
-module.exports.Comment = async (req, res, next) => {
+export const setComment = async (req, res, next) => {
     const findPost = await Post.findById(req.params.postid);
     if (!findPost) {
         return res.status(404).json({ msg: "The post doesn't exist" });
@@ -32,7 +32,7 @@ module.exports.Comment = async (req, res, next) => {
     }
 }
 
-module.exports.Reply = async (req, res, next) => {
+export const Reply = async (req, res, next) => {
     const { parentid } = req.params;
     const { text } = req.body;
 
@@ -71,7 +71,7 @@ module.exports.Reply = async (req, res, next) => {
     }
 };
 
-module.exports.DeleteComment = async (req, res, next) => {
+export const DeleteComment = async (req, res, next) => {
     try {
         console.log(req.params.commentId);
         const findComment = await Comment.findById(req.params.commentId);
@@ -95,7 +95,7 @@ module.exports.DeleteComment = async (req, res, next) => {
 
 
   
-module.exports.getComment = async (req, res, next) => {
+export const getComment = async (req, res, next) => {
  
     const limit = 10;
     const page = parseInt(req.query.page) || 1;

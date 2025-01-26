@@ -1,5 +1,5 @@
 
-const mongoose=require("mongoose");
+import mongoose from "mongoose"
 const messageschema=mongoose.Schema({
     Sender:{
 type:mongoose.Schema.Types.ObjectId,
@@ -24,4 +24,4 @@ type:mongoose.Schema.Types.ObjectId,
 }, {
     timestamps:true
 })
-module.exports=mongoose.model("message",messageschema)
+export default mongoose.model("message",messageschema)

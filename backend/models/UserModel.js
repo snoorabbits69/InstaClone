@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-const { bool } = require("sharp");
+import mongoose from "mongoose";
 const userSchema = mongoose.Schema({
   Fullname: {
     type: String,
@@ -62,4 +61,4 @@ Requests:[]
   timestamps:true
 });
 
-module.exports = mongoose.model("users", userSchema);
+export default mongoose.model("users", userSchema);
