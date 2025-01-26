@@ -1,6 +1,10 @@
-const jwt = require("jsonwebtoken");
+import jwt from 'jsonwebtoken';
+import { config } from "dotenv";
+import path from 'path';
+config({path:path.join(process.cwd(),".",".env")});
+
 const JWT_SECRET=process.env.JTOKEN;
-module.exports.generateToken = (payload,res) => {
+export const generateToken = (payload,res) => {
        try{
         const{_id,Email,Username}=payload
     const token = jwt.sign({_id,Email,Username}, JWT_SECRET, { expiresIn: '15d' });

@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-
+import mongoose from "mongoose"
 const CommentSchema = mongoose.Schema({
     postId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -33,4 +32,4 @@ default:null
 }, { timestamps: true });
 
 
-module.exports = mongoose.model("Comment", CommentSchema);
+export default mongoose.model("Comment", CommentSchema);

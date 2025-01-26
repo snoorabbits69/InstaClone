@@ -1,8 +1,9 @@
-const Chat=require("../models/ChatModel")
-const User=require("../models/UserModel")
-const Message=require("../models/MessageModel");
-const { upload } = require("../Multer/multer");
-const {client}=require("../config/RedisConnection")
+import Chat from "../models/ChatModel.js";
+import User from "../models/UserModel.js";
+import Message from "../models/MessageModel.js";
+import { upload } from "../Multer/multer.js";
+import { client } from "../config/RedisConnection.js";
+
 
 async function invalidateCache(chatId){
   try{
@@ -14,7 +15,7 @@ if(key){
     console.log(e)
   }
 }
-module.exports.GetallMessages=async(req,res,next)=>{
+export const GetallMessages=async(req,res,next)=>{
 try{
   
     let cacheKey=`messages:${req.params.chatId}`
@@ -41,7 +42,7 @@ catch(e){
 }
 }
 
-module.exports.sendMessage=async(req,res,next)=>{
+export const sendMessage=async(req,res,next)=>{
 
     const {content,chatId}=req.body;
     if (!content || !chatId) {
@@ -66,7 +67,7 @@ return res.status(200).json({status:true,message:message})
       }
     
 }
-module.exports.DeleteMessage = async (req, res, next) => {
+export const DeleteMessage = async (req, res, next) => {
   if (!req.params.msgid) {
       console.log("Invalid msg id");
       return res.status(400).json({ error: "Message ID is required" });

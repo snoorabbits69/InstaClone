@@ -1,5 +1,4 @@
-const mongoose=require("mongoose")
-
+import mongoose from "mongoose"
 const SavedSchema=mongoose.Schema({
     Post:{
 type:mongoose.Schema.Types.ObjectId,
@@ -13,4 +12,4 @@ required:true
     }
 })
 
-module.exports=mongoose.model('saved',SavedSchema)
+export default mongoose.model('saved',SavedSchema)

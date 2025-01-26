@@ -1,5 +1,5 @@
-const multer=require("multer");
-module.exports.upload = multer({
+import multer from "multer";
+export const upload = multer({
     storage: multer.memoryStorage(),
     fileFilter: (req, file, cb) => {
       if (file.mimetype.startsWith('image/')) {

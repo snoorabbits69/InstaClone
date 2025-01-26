@@ -1,5 +1,6 @@
-const User=require("../models/UserModel");
- module.exports.checkPost=async(req,res,next)=>{
+import User from "../models/UserModel.js"
+
+export const checkPost=async(req,res,next)=>{
     try{
         const findpost=await Post.findById(req.params.id);
 if(!findpost.private){

@@ -1,5 +1,4 @@
-const { mongoose } = require("mongoose");
-
+import mongoose from "mongoose"
 const StorySchema=mongoose.Schema({
     postedBy:{
         type:String,
@@ -18,4 +17,4 @@ expiresAt:{
 },{
     timestamps:true
 })
-module.exports=mongoose.model("story",StorySchema);
+export default mongoose.model("story",StorySchema);

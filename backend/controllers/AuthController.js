@@ -1,12 +1,13 @@
 
-const User = require("../models/UserModel");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const multer = require("multer");
-const path = require('path');
-const {generateToken}=require("../utils/GenerateJwt");
-const JWT_SECRET = process.env.JTOKEN;
-module.exports.register = async (req, res, next) => {
+import User from "../models/UserModel.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import path from "path";
+import { generateToken } from "../utils/GenerateJwt.js";
+import nodemailer from "nodemailer";
+const updatetoken = process.env.Updatetoken;
+
+export const register = async (req, res, next) => {
   try {
     const { Fullname, Username, Email, Password } = req.body;
     if (!Fullname || !Username || !Email || !Password) {
@@ -46,7 +47,7 @@ if(Password.length<8){
   }
 };
 
-module.exports.login = async (req, res, next) => {
+export const login = async (req, res, next) => {
  console.log(req.body)
   try {
     const { Username, Password } = req.body;
@@ -71,7 +72,7 @@ module.exports.login = async (req, res, next) => {
   }
 };
 
-module.exports.Google = async (req, res, next) => {
+export const Google = async (req, res, next) => {
   try {
     const { Username, Fullname, avatarImage, Email } = req.body;
 
@@ -103,7 +104,7 @@ module.exports.Google = async (req, res, next) => {
     return res.status(500).json({ error: "Internal Server Error", status: false });
   }
 };
-module.exports.Logout = (req, res,next) => {
+export const Logout = (req, res,next) => {
 	try {
 		res.clearCookie("uid");
 		return res.status(200).json({status:true, message: "Logged out successfully" });
@@ -112,10 +113,9 @@ module.exports.Logout = (req, res,next) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 };
-const nodemailer=require("nodemailer");
-const updatetoken=process.env.Updatetoken;
 
-module.exports.getforgotpassword=(req,res,next)=>{
+
+export const getforgotpassword=(req,res,next)=>{
 try{
 res.render(path.join(__dirname,'../file/ForgetPassword.ejs'));
 }catch(e){
@@ -123,7 +123,7 @@ res.render(path.join(__dirname,'../file/ForgetPassword.ejs'));
 
 }
 }
-module.exports.postforgotpassword = async (req, res, next) => {
+export const postforgotpassword = async (req, res, next) => {
   try {
     console.log(req.body)
     const findUser = await User.findOne({ Email: req.body.Email });
@@ -158,7 +158,7 @@ const token=jwt.sign({Username:findUser.Username,Email:findUser.Email},updatetok
 
   }
 };
-module.exports.getresetlink=async(req,res,next)=>{
+export const getresetlink=async(req,res,next)=>{
   try{
     const verify=jwt.verify(req.params.token,updatetoken);
   if(!verify){
@@ -174,7 +174,7 @@ res.render(path.join(__dirname,"../file/ResetPasssword.ejs"),{oldPassword:resetU
 res.send("Server Error");
   }
 }
-module.exports.postresetlink=async(req,res,next)=>{
+export const postresetlink=async(req,res,next)=>{
   try{
     const verify=jwt.verify(req.params.token,updatetoken);
   if(!verify){

@@ -1,5 +1,5 @@
-const User=require("../models/UserModel")
-module.exports.AcceptMiddleWare = async (req, res, next) => {
+import User from "../models/UserModel.js"
+export const AcceptMiddleWare = async (req, res, next) => {
     try {
       const followingUser = await User.findById(req.params.id);
       if (!followingUser) {

@@ -1,9 +1,11 @@
-const admin=require("firebase-admin");
-const serviceAccount = require("../Serviceaccount.json");
+import admin from "firebase-admin";
+import { config } from "dotenv";
+import path from "path";
+import ServiceAccount from "../Serviceaccount.json" assert {type:"json"}
+config({path:path.join(process.cwd(),".",".env")});
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  storageBucket:process.env.bucket_URL
+  credential: admin.credential.cert(ServiceAccount),
+  storageBucket: process.env.bucket_URL 
 });
 
-const bucket=admin.storage().bucket();
-module.exports={bucket}
+export const bucket = admin.storage().bucket();

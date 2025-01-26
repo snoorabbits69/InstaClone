@@ -1,7 +1,8 @@
-const express=require("express");
-const jwtAuth = require("../Middlewares/jwtAuth");
+import express from "express";
+import jwtAuth from "../Middlewares/jwtAuth.js";
+
+import {accessChat,fetchChat,createGroupChat,renameGroup,addtoGroup,removeFromGroup} from "../controllers/ChatController.js"
 const router=express.Router();
-const {accessChat,fetchChat,createGroupChat,renameGroup,addtoGroup,removeFromGroup, withname}=require("../controllers/ChatController")
 router.post("/",jwtAuth,accessChat);
 
 router.get("/",jwtAuth,fetchChat);
@@ -11,4 +12,4 @@ router.post("/addtogroup",jwtAuth,addtoGroup);
 router.post("/removegroup",jwtAuth,removeFromGroup)
 
 
-module.exports=router
+export default router;

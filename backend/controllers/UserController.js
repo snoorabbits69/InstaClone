@@ -1,10 +1,11 @@
-const User = require("../models/UserModel");
-const {bucket} =require("../firebase/firebase")
-const {upload}=require("../Multer/multer");
-const bcrypt=require("bcrypt")
-const sharp=require("sharp");
-const { error } = require("console");
-module.exports.profile = async(req, res, next) => {
+
+import bcrypt from "bcrypt";
+import sharp from "sharp";
+import {upload} from "../Multer/multer.js";
+import { bucket } from "../firebase/firebase.js";
+import User from "../models/UserModel.js";
+
+export const profile = async(req, res, next) => {
   const checkuser=await User.findById(req.params.id);
   upload.single('file')(req, res, async(err) => {
     if (err) {
@@ -38,7 +39,7 @@ const {Password,...rest}=checkuser.toObject()
 return res.json({status:true,user:rest})
   });
 };
-module.exports.deleteprofile=async(req,res,next)=>{
+export const deleteprofile=async(req,res,next)=>{
   try{
 let currentUser=await User.findById(req.params.id);
 const delfile=currentUser.avatarImage;
@@ -56,7 +57,7 @@ const delfile=currentUser.avatarImage;
 return res.json({error:e})
   }
 }
-module.exports.addfollowers = async (req, res, next) => {
+export const addfollowers = async (req, res, next) => {
   if (req.params.id === req.body.id) {
     return res.json({ status: false, error: "Can't follow yourself" });
   }
@@ -90,7 +91,7 @@ module.exports.addfollowers = async (req, res, next) => {
   }
 };
 
-module.exports.removefollowers = async (req, res, next) => {
+export const removefollowers = async (req, res, next) => {
   if (req.params.id === req.body.id) {
     return res.json({ status: false, error: "Invalid call" });
   }
@@ -118,7 +119,7 @@ module.exports.removefollowers = async (req, res, next) => {
   }
 };
 
-module.exports.GetUsers=async(req,res,next)=>{
+export const GetUsers=async(req,res,next)=>{
 try{
     const finduser=await User.find({Username:{ $regex: `^${req.params.id}`}}); 
     return res.status(200).json({status:true,user:finduser});
@@ -128,7 +129,7 @@ catch(e){
     return res.json({status:false,error:e})
 }
 }
-module.exports.getUser = async (req, res, next) => {
+export const getUser = async (req, res, next) => {
   try {
     const username = req.params.username; 
     const user = await User.findOne({ Username: username });
@@ -142,7 +143,7 @@ module.exports.getUser = async (req, res, next) => {
     return res.status(500).json({ status: false, error: "Internal Server Error" });
   }
 };
-module.exports.getUserfromid=async(req,res,next)=>{
+export const getUserfromid=async(req,res,next)=>{
   try{
     const user=await User.findById(req.params.id);
     const { Password, ...rest } = user._doc;
@@ -158,7 +159,7 @@ module.exports.getUserfromid=async(req,res,next)=>{
 
   }
 }
-module.exports.getRecommendation = async (req, res, next) => {
+export const getRecommendation = async (req, res, next) => {
   const limit = 5;
   const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
 
@@ -184,7 +185,7 @@ alreadyFollowing.push(currentUser._id)
     return res.status(500).json({ error: 'An error occurred while fetching recommendations' });
   }
 };
-module.exports.PrivateAccount=async(req,res,next)=>{
+export const PrivateAccount=async(req,res,next)=>{
   try{
 const currentUser=await User.findById(req.params.id)
 if(!currentUser){
@@ -197,7 +198,7 @@ return res.json({user:currentUser})
 return res.json({error:e})
   }
 }
-module.exports.UpdateUsername=async(req,res,next)=>{
+export const UpdateUsername=async(req,res,next)=>{
 try{
   const UpdatingUser=await User.findById(req.user._id)
   if(!UpdatingUser){
@@ -212,7 +213,7 @@ catch(e){
 return res.json({error:e})
 }
 }
-module.exports.UpdateFullname=async(req,res,next)=>{
+export const UpdateFullname=async(req,res,next)=>{
   try{
     const UpdatingUser=await User.findById(req.user._id)
     if(!UpdatingUser){
@@ -228,7 +229,7 @@ module.exports.UpdateFullname=async(req,res,next)=>{
   }
   }
 
-  module.exports.PasswordMiddleware=async(req,res,next)=>{
+  export const PasswordMiddleware=async(req,res,next)=>{
     try{
       const UpdatingUser=await User.findById(req.params.id)
       if(!UpdatingUser){
@@ -246,7 +247,7 @@ module.exports.UpdateFullname=async(req,res,next)=>{
     }
 
   }
-  module.exports.UpdatePassword=async(req,res,next)=>{
+  export const UpdatePassword=async(req,res,next)=>{
     try{
       const UpdatingUser=await User.findById(req.user._id)
       let oldPassword=await bcrypt.compare(req.body.Password,UpdatingUser.Password)
@@ -264,7 +265,7 @@ module.exports.UpdateFullname=async(req,res,next)=>{
     return res.json({error:e})
     }
     }
-    module.exports.cancelRequest = async (req, res, next) => {
+    export const cancelRequest = async (req, res, next) => {
       try {
         const RequestedUser = await User.findById(req.params.id);
         const requestingUser=await User.findById(req.body.id)

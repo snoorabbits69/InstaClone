@@ -1,9 +1,24 @@
-const express = require("express");
-const router = express.Router();
-const jwtAuth=require("../Middlewares/jwtAuth")
-const {GetUsers,profile,addfollowers,removefollowers,getUser,getUserfromid, getRecommendation, deleteprofile, PrivateAccount, cancelRequest, UpdateUsername, UpdateFullname, UpdatePassword}=require("../controllers/UserController");
-const { ReqMiddleWare } = require("../Middlewares/ReqMiddeWare");
-const { AcceptMiddleWare } = require("../Middlewares/AcceptMiddleWare");
+import express from "express";
+import { Router } from "express";  
+import jwtAuth from "../Middlewares/jwtAuth.js";
+import { 
+  GetUsers, 
+  profile, 
+  addfollowers, 
+  removefollowers, 
+  getUser, 
+  getUserfromid, 
+  getRecommendation, 
+  deleteprofile, 
+  PrivateAccount, 
+  cancelRequest, 
+  UpdateUsername, 
+  UpdateFullname, 
+  UpdatePassword 
+} from "../controllers/UserController.js";
+import { ReqMiddleWare } from "../Middlewares/ReqMiddeWare.js";
+import { AcceptMiddleWare } from "../Middlewares/AcceptMiddleWare.js";
+const router=Router();
 router.post("/profile/:id",profile)
 router.delete("/deleteProfilePic/:id",jwtAuth,deleteprofile) //need to change to jwt
 router.post("/addfollowers/:id",jwtAuth,ReqMiddleWare,addfollowers) //need to change with jwt
@@ -18,4 +33,5 @@ router.patch("/privateaccount/:id",jwtAuth,PrivateAccount); //need to change to 
 router.put("/updateusername",jwtAuth,UpdateUsername)
 router.put("/updateFullname",jwtAuth,UpdateFullname)
 router.put('/updatePassword',jwtAuth,UpdatePassword)
-module.exports = router;
+
+export default router;

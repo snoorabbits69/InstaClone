@@ -1,9 +1,10 @@
-const express=require("express");
-const jwtAuth = require("../Middlewares/jwtAuth");
+import express from "express"
+import jwtAuth from "../Middlewares/jwtAuth.js";
 
-const { GetallMessages, sendMessage, DeleteMessage } = require("../controllers/MessageController");
+import  { GetallMessages, sendMessage, DeleteMessage }  from "../controllers/MessageController.js";
 const router=express.Router();
 router.get("/:chatId",jwtAuth,GetallMessages)
 router.post("/",jwtAuth,sendMessage)
 router.delete("/delete/:msgid",jwtAuth,DeleteMessage)
-module.exports=router
+
+export default router;

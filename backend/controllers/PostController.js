@@ -1,11 +1,10 @@
-const multer = require("multer");
-const User=require("../models/UserModel");
-const Post=require("../models/PostModel");
-const sharp=require("sharp");
-const {bucket}=require("../firebase/firebase");
-const PostModel = require("../models/PostModel");
-const {upload}=require("../Multer/multer");
-module.exports.CreatePost = async (req, res, next) => {
+
+import User from "../models/UserModel.js"
+import Post from "../models/PostModel.js";
+import sharp from "sharp";
+import { upload } from "../Multer/multer.js";
+import { bucket } from "../firebase/firebase.js";
+export const CreatePost = async (req, res, next) => {
 
     const findUser = await User.findById(req.user._id);
     if (!findUser) {
@@ -62,7 +61,7 @@ try{
   }
 };
 
-module.exports.DeletePost = async (req, res, next) => {
+export const DeletePost = async (req, res, next) => {
   try {
     const Post_Del = await Post.findById(req.params.postid);
 
@@ -94,7 +93,7 @@ module.exports.DeletePost = async (req, res, next) => {
   }
 };
 
-module.exports.LikePost=async(req,res,next)=>{
+export const LikePost=async(req,res,next)=>{
   const Currentpost=await Post.findById(req.params.postid);
   try{
   if(!Currentpost){
@@ -121,7 +120,7 @@ catch(e){
   }
 
 
-module.exports.getPosts=async(req,res,next)=>{
+export const getPosts=async(req,res,next)=>{
   try{
     const finduser=await User.findById(req.params.id);
     if(!finduser){
@@ -137,7 +136,7 @@ module.exports.getPosts=async(req,res,next)=>{
     return res.json({error:e});
   }
   }
-  module.exports.GetPostFromId=async(req,res,next)=>{
+  export const GetPostFromId=async(req,res,next)=>{
     try{
 const findpost=await Post.findById(req.params.id).populate("postedBy","Username Fullname avatarImage _id")
 if(!findpost){
@@ -152,7 +151,7 @@ return res.json({error:e})
     }
   }
   
-  module.exports.getHomePosts=async(req,res,next)=>{
+  export const getHomePosts=async(req,res,next)=>{
     try{
       let limit=5;
       let page=req.query.page ||1;

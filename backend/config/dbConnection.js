@@ -1,4 +1,4 @@
-const mongoose=require("mongoose");
+import mongoose from "mongoose";
 const dbConnect=async()=>{
     try{
 const connect=await mongoose.connect(process.env.MONGO_URL,{dbName:"InstaClone"},{
@@ -11,4 +11,4 @@ console.log("connection sucessfull",connect.connection.host,connect.connection.n
 console.log(e)
     }
 }
-module.exports=dbConnect;
+export default dbConnect

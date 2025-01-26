@@ -1,7 +1,7 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken"
 const JWT_SECRET = process.env.JTOKEN;
 
-module.exports = (req, res, next) => {
+const jwtAuth = (req, res, next) => {
   try {
     if(!req.headers.cookie){
       console.log("no cookie")
@@ -41,3 +41,4 @@ req.headers.cookie.split(";").reduce((acc,cookie)=>{
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+export default jwtAuth;

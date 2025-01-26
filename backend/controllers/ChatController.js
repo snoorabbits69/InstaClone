@@ -1,12 +1,12 @@
-const Chat=require("../models/ChatModel")
-const User=require("../models/UserModel")
+import Chat from "../models/ChatModel.js";
+import User from "../models/UserModel.js";
 
-let {upload}=require("../Multer/multer")
-const {bucket}=require("../firebase/firebase");
-const sharp=require('sharp');
+import { upload } from "../Multer/multer.js";
+import { bucket } from "../firebase/firebase.js";
+import sharp from 'sharp';
 
 
-module.exports.accessChat = async (req, res, next) => {
+export const accessChat = async (req, res, next) => {
     try {
         const { Userid } = req.body;
 
@@ -52,7 +52,7 @@ module.exports.accessChat = async (req, res, next) => {
 };
 
 
-module.exports.fetchChat = async (req, res, next) => {
+export const fetchChat = async (req, res, next) => {
     try {
        
       const page = req.query.page || 1;
@@ -81,7 +81,7 @@ module.exports.fetchChat = async (req, res, next) => {
   };
   
 
-  module.exports.createGroupChat = async (req, res, next) => {
+  export const createGroupChat = async (req, res, next) => {
     upload.single("file")(req, res, async (err) => {
       if (err) {
         return res.status(500).json({ status: false, error: "File upload failed" });
@@ -161,7 +161,7 @@ module.exports.fetchChat = async (req, res, next) => {
   
   
 
-module.exports.renameGroup=async(req,res,next)=>{
+export const renameGroup=async(req,res,next)=>{
     try{
     const {chatId,chatName}=req.body;
     const findChat=await Chat.findById(chatId)
@@ -180,7 +180,7 @@ module.exports.renameGroup=async(req,res,next)=>{
 }
 }
 
-module.exports.addtoGroup=async(req,res,next)=>{
+export const addtoGroup=async(req,res,next)=>{
     try{
     const { chatId, userId } = req.body;
     const findChat=await Chat.findById(chatId);
@@ -197,7 +197,7 @@ module.exports.addtoGroup=async(req,res,next)=>{
   
     
 }
-module.exports.removeFromGroup=async(req,res,next)=>{
+export const removeFromGroup=async(req,res,next)=>{
     try{
     const { chatId, userId } = req.body;
     const findChat=await Chat.findById(chatId);
