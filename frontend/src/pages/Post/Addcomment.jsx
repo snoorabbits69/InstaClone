@@ -1,47 +1,53 @@
 import { useEffect, useRef, useState } from 'react';
 import { AddcommentRoute, replyCommentRoute } from '../../../utils/ApiRoutes';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import apiRequest from '../../Components/axios';
+import { commentInsert, removeParentId, resetcomment } from '../../Redux/Slice/CommentSlice';
 
-export default function Addcomment({ postid,setAllComments,parentId }) {
+export default function Addcomment({ postid}) {
+  const dispatch = useDispatch();
+  const {parentId,parentUser}=useSelector((state)=>state.comment)
   const state = useSelector((state) => state.user);
-  const [comment, setcomment] = useState('');
-const inputref=useRef()
+  const [comment, setComment] = useState('');
 
-  let sendComment = async () => {
-   let commentroute=parentId?replyCommentRoute(parentId):AddcommentRoute(postid);
+
+  const sendComment = async () => {
+    console.log(parentId)
+    let commentRoute = parentId
+      ? replyCommentRoute(parentId)
+      : AddcommentRoute(postid);
     if (comment) {
-   
-      
-        const  data  = await apiRequest('POST',commentroute, {
-          postId: postid,
-          userId: state.currentUser._id,
-          text: comment,
-          Username: state.currentUser.Username,
-          avatarImage: state.currentUser.avatarImage,
-        });
-        setAllComments((prev)=>[...prev,data.comment])
-
-        inputref.current.value=""
-      } 
-    
+      const data = await apiRequest('POST', commentRoute, {
+        postId: postid,
+        userId: state.currentUser._id,
+        text: comment.trim(),
+        Username: state.currentUser.Username,
+        avatarImage: state.currentUser.avatarImage,
+      });
+      dispatch(commentInsert(data.comment));
+      dispatch(removeParentId());
+      setComment('');
+    }
   };
 
   return (
-    <div className="flex justify-around border-1 "  onKeyDown={(e) => {
-      if (e.key === "Enter") {
-      sendComment();
-        e.preventDefault(); 
-      }
-    }}>
-      <input ref={inputref}
+    <div className="flex justify-around p-4 border-t-2 border-black border-1">
+    {parentId && <span className='text-blue-600 '>@{parentUser}</span>}
+      <input
+       
         type="text"
-        className="w-[80%] border-black outline-none border-b-2 mb-1 "
-        onChange={(e) => {
-          setcomment(e.target.value);
+value={comment}
+placeholder="add a comment"
+        className="w-[80%] border-black outline-none"
+        onChange={(e) => setComment(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault(); 
+            sendComment();
+          }
         }}
       />
-      <button onClick={sendComment}>post</button>
+      <button onClick={sendComment}>Post</button>
     </div>
   );
 }

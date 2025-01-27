@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PostImages from '../../Homepages/Create Component/PostImages'
 import Likes from './Likes'
 export default function PostCard({loading,post,setcommentbox}) {
-   
+ 
     return (
         loading?"loading":
     <div className="flex flex-col w-[25rem] md:w-[30rem] " >

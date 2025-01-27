@@ -58,7 +58,7 @@ function Sidebar({ setShowSearch, showSearch, setShowCreate, sethidebar, hidebar
 
   return (
     <section className="fixed bottom-0 z-50 flex w-screen h-12 px-2 text-2xl border-t-4 justify-evenly lg:w-auto lg:bottom-auto lg:text-3xl lg:border-t-0 lg:flex-col lg:h-auto">
-      <Link to="/home">
+      <Link to="/">
         <motion.div
           className="flex px-4 pt-2 text-center transition-all rounded-xl hover:bg-slate-100 hover:cursor-grab"
           initial={{ scale: 1 }}

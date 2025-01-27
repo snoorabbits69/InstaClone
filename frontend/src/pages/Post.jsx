@@ -4,12 +4,19 @@ import GetPostsById from '../hooks/GetPostsById';
 import Comments from './Post/Comments';
 import PostCard from './Post/PostCard';
 import gsap from 'gsap';
+import { useDispatch } from 'react-redux';
+import { resetcomment } from '../Redux/Slice/CommentSlice';
 export default function Post() {
     const {postid}=useParams();
 const {post,loading}=GetPostsById(postid);
 let [commentbox,setcommentbox]=useState(false)
-
+let dispatch=useDispatch();
 let scrollcontainerref=useRef(null);
+useEffect(()=>{
+ if( window.location.pathname.startsWith("/post/") ){
+dispatch(resetcomment())
+  }
+},[dispatch])
 useEffect(() => {
     const tl = gsap.timeline();
 

@@ -80,17 +80,23 @@ export const DeleteComment = async (req, res, next) => {
         if (!findComment) {
             return res.status(500).json({ status: false, error: "The comment doesn't exist" });
         } else {
-            findComment.isDeleted = true;
-            findComment.text = "The comment has been deleted";
-            await findComment.save();
-            await invalidatePostCache(findComment.postId)
+            if (findComment.replies && findComment.replies.length > 0) {
+                findComment.isDeleted = true;
+                findComment.text = "The comment has been deleted";
+                await findComment.save();
+            } else {
+                await findComment.deleteOne();
+            }
 
-            return res.status(200).json({ status: true, comment: findComment }); 
+            await invalidatePostCache(findComment.postId);
+
+            return res.status(200).json({ status: true, comment: findComment });
         }
     } catch (e) {
         return res.status(500).json({ status: false, error: e.message });
     }
 };
+
 
 
 
@@ -122,7 +128,12 @@ export const getComment = async (req, res, next) => {
         },
       };
   
-      let findComments = await Comment.find({ "postId": postId, parentComment: null })
+      let findComments = await Comment.find({ "postId": postId, parentComment: null,
+        $or: [
+            { "isDeleted": false }, 
+            { "isDeleted": true, "replies": { $gt: [] } } 
+          ]
+       })
         .skip(start)
         .limit(limit).populate('userId', 'Username avatarImage _id Fullname')
   

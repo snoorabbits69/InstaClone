@@ -4,20 +4,23 @@ import storage from "redux-persist/lib/storage"; // defaults to localStorage for
 import sessionStorage from "redux-persist/lib/storage/session"; // sessionStorage for specific slices
 import UserReducer from "./Slice/Userslice";
 import ChatReducer from "./Slice/ChatSlice";
-
+import CommentReducer from "./Slice/CommentSlice";
 const userPersistConfig = {
   key: "user",
   storage,
+  blacklist: ["comments"]
 };
 
 const chatPersistConfig = {
   key: "chat",
   storage: sessionStorage,
+  blacklist: ["comments"]
 };
 
 const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, UserReducer),
   chat: persistReducer(chatPersistConfig, ChatReducer),
+  comment:CommentReducer
 });
 
 export const store = configureStore({

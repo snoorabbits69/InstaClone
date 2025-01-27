@@ -2,12 +2,16 @@ import { useEffect, useState } from 'react';
 import GetComments from '../../hooks/GetComments';
 import Comment from './Comment';
 import Addcomment from './Addcomment';
+import { useSelector, useDispatch } from 'react-redux';
+import { commentAdd } from '../../Redux/Slice/CommentSlice'; // Update with the correct path to your slice
 
 export default function Comments({ postid, parentref }) {
+  const dispatch = useDispatch();
+  const Selectedcomments = useSelector((state) => state.comment.Selectedcomments);
   const [page, setPage] = useState(1);
   const { comments, loading } = GetComments(postid, page);
-  const [allComments, setAllComments] = useState([]);
-   const [parentId,setparentId]=useState();
+  const [parentId, setparentId] = useState();
+
   useEffect(() => {
     if (comments.length <= 0 || loading) return;
 
@@ -27,22 +31,10 @@ export default function Comments({ postid, parentref }) {
   }, [comments, loading]);
 
   useEffect(() => {
-    if (comments.length <= 0) return;
-
-    setAllComments((prev) => {
-      const commentIds = new Set(prev.map(comment => comment._id));
-      const updatedComments = [...prev];
-
-      comments.forEach((comment) => {
-        if (!commentIds.has(comment._id)) {
-          updatedComments.push(comment);
-          commentIds.add(comment._id); 
-        }
-      });
-
-      return updatedComments;
-    });
-  }, [comments, page]); 
+    if (comments.length > 0) {
+      dispatch(commentAdd(comments));
+    }
+  }, [comments, dispatch]);
 
   if (loading) {
     return <section>Loading comments...</section>;
@@ -50,16 +42,22 @@ export default function Comments({ postid, parentref }) {
 
   return (
     <div>
-      {allComments.length > 0 ? 
-            <Comment comment={allComments} setAllComments={setAllComments} setparentId={setparentId}/>
-         : (
+      {Selectedcomments.length > 0 ? (
+        <Comment
+          comment={Selectedcomments}
+          setparentId={setparentId}
+        />
+      ) : (
         <section>No comments</section>
       )}
       
       <div className="fixed left-0 w-full bottom-10">
-        <Addcomment postid={postid} setAllComments={setAllComments} parentId={parentId} />
+        <Addcomment
+          postid={postid}
+          parentId={parentId}
+        
+        />
       </div>
     </div>
   );
- 
 }

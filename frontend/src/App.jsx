@@ -34,8 +34,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route element={<PrivateRoute />}>
-        <Route path="/" element={<PrivateRoute/>}/>
-          <Route path="/home" element={<Home/>}>  </Route>
+        <Route path="/" element={<PrivateRoute/>}>
+          <Route path="/" element={<Home/>}>  </Route>
+          </Route>
          <Route path="explore" element={<Explore/>}></Route>
             <Route path="/message" element={<Message />} >
             <Route path=":user" element={ChatBox}/>

@@ -2,11 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import CalcDate from '../../Components/CalcDate';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import apiRequest from '../../Components/axios';
 import { DeleteCommentRoute } from '../../../utils/ApiRoutes';
+import { addParentId, commentDelete } from '../../Redux/Slice/CommentSlice';
 
 function RenderComment({ comment, navigate,id }) {
+  let dispatch=useDispatch()
+  let [commenteditable,setcommenteditable]=useState(false)
   return (
     <section className='m-4'>
       <div className="flex gap-4 ">
@@ -24,7 +27,7 @@ function RenderComment({ comment, navigate,id }) {
           </div>
           <p className="mt-1 font-bold">{comment?.userId?.Username}: </p>
         </button>
-        <div className="flex gap-2 mt-1">
+        <div className="flex gap-2 mt-1" contentEditable={commenteditable} suppressContentEditableWarning={true}>
           <p>{comment?.text}</p>
         </div>
       </div>
@@ -33,12 +36,22 @@ function RenderComment({ comment, navigate,id }) {
         <CalcDate date={comment?.createdAt} />
         <div className='flex gap-2 '>
       <button onClick={()=>{
-        console.log(comment._id)
+      console.log(comment._id)
+      dispatch(addParentId({id:comment._id,Username:comment.userId.Username}))
       }}>reply</button>
-      { id==comment.userId._id && <button onClick={async()=>{
+      { id==comment.userId._id && 
+      <div className='flex gap-2'>
+         <button onClick={async()=>{
+         setcommenteditable(!commenteditable)
+      
+      }}>edit</button>
+      <button onClick={async()=>{
 const data=await apiRequest('DELETE',DeleteCommentRoute(comment?._id))
-
-      }}>delete</button> }
+    if(data.status){
+      dispatch(commentDelete(data.comment))
+    }
+      }}>delete</button>
+      </div> }
       </div>
       </div>
 }
@@ -48,6 +61,7 @@ const data=await apiRequest('DELETE',DeleteCommentRoute(comment?._id))
 }
 
 export default function Comment({ comment}) {
+ 
   const state=useSelector((state)=>state.user)
   const navigate = useNavigate();
   const [showReplies, setShowReplies] = useState(false);
@@ -67,11 +81,11 @@ export default function Comment({ comment}) {
 
   return (
     <>
-      {comment._id && <RenderComment comment={comment} navigate={navigate} id={state?.currentUser._id}   />}
+      {comment._id && <RenderComment comment={comment} navigate={navigate} id={state?.currentUser._id}  />}
      
       {showReplies && (
         <div >
-          {comment.replies.map((reply) => (
+          {comment?.replies?.map((reply) => (
             <div key={reply._id} className='ml-4'>
               <Comment comment={reply} />
             </div>
@@ -91,3 +105,9 @@ export default function Comment({ comment}) {
     </>
   );
 }
+
+
+
+
+
+
