@@ -35,7 +35,7 @@ if(data.status){
  
 
     return (
-      <div className="flex flex-col ml-4 md:ml-96" >
+      <div className="flex flex-col ml-2 item md:ml-96" >
    
 
 {posts?.map((post,i)=>{

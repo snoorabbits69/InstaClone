@@ -84,7 +84,7 @@ console.log(data)
   };
 
   return (
-    <div className="relative py-3 sm:max-w-xl sm:mx-auto">
+    <div className="relative w-screen py-3 sm:max-w-xl sm:mx-auto">
       <div className="relative px-4 py-10 mx-8 bg-white shadow md:mx-0 rounded-3xl sm:p-10">
         <div className="max-w-md mx-auto">
           <div className="flex items-center space-x-5">

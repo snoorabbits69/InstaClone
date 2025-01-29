@@ -13,7 +13,7 @@ export default function ProfilePost({id}) {
  Post &&
   images?.map((img,i)=>{
     console.log(img.id);
-      return <div className="relative w-max h-28 lg:h-72" key={i} onClick={()=>{
+      return <div className="relative w-full h-20 p-0 m-0 mb-8 md:mb-44 lg:mb-0 lg:h-72" key={i} onClick={()=>{
       navigate(`/post/${img.id}`)
       }}>
       <img src={img.url} className="w-24 h-28 lg:w-[18rem] transition-all md:h-64 border-2 border-black peer hover:opacity-50 hover:cursor-pointer" />
