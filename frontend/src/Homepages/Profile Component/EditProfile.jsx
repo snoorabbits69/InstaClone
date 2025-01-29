@@ -108,15 +108,16 @@ newPassword:newpassword.value
                 }
             }}
         >
-            <input type="file"
+          
+            <dialog className="absolute sm:translate-x-10  md:translate-x-[-50%] " id="ProfileDialog" ref={(e) =>{
+                return dialogRef.current[0]=e
+            }}>
+                  <input type="file"
                 accept="image/png, image/gif, image/jpeg"
                 className="hidden"
                 ref={inputRef}
                 onChange={handleUpload}
             />
-            <dialog className="absolute translate-x-[-50%]" id="ProfileDialog" ref={(e) =>{
-                return dialogRef.current[0]=e
-            }}>
                 <div className="flex flex-col border-2 dialog rounded-xl">
                     <p className="p-4 px-32 text-xl text-center border-b-2">Edit Profile</p>
                     <button className="p-4 border-b-2" onClick={() => inputRef.current.click()}>
@@ -194,7 +195,7 @@ newPassword:newpassword.value
                     <button className="p-2 border-2 rounded-2xl" onClick={()=>{
                         dialogRef.current[1].showModal();
                     }}>Update</button>
-                    <dialog className="absolute translate-x-[-50%]" id="PasswordDialog" ref={(e) =>{
+                    <dialog className="absolute   md:translate-x-[-50%]" id="PasswordDialog" ref={(e) =>{
                 return dialogRef.current[1]=e
             }}>
                 <div className=''>

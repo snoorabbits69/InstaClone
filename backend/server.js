@@ -10,6 +10,7 @@ import PostRoutes from "./routes/PostRoutes.js";
 import CommentRoutes from "./routes/CommentRoutes.js";
 import ChatRoutes from "./routes/ChatRoutes.js";
 import MessageRoutes from "./routes/MessageRoutes.js";
+import SavedRoutes from "./routes/SaveRoutes.js"
 import { app, server} from "./socket/socket.js";
 import dbConnect from "./config/dbConnection.js";
 import { redisConnect } from "./config/RedisConnection.js";
@@ -45,6 +46,7 @@ app.use("/api/post",PostRoutes)
 app.use("/api/chat",ChatRoutes)
 app.use("/api/message",MessageRoutes)
 app.use("/api",CommentRoutes);
+app.use("/api",SavedRoutes);
 
 server.listen(process.env.PORT,()=>{
     console.log("Server running on ",PORT);

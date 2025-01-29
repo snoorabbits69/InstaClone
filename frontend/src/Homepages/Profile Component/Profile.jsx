@@ -68,7 +68,7 @@ navigate(`/message/${currentUser?.Username}`)
       </section>
     </div>
     {Private?"Private":
-    <section className="lg:w-[75%] w-[90%] grid-cols-3 grid gap-2 " >
+    <section className="lg:w-[75%] w-72    grid-cols-3 grid  " >
  
     <ProfilePost id={currentUser._id}/>
   

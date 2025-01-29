@@ -1,15 +1,15 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
+const SaveSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",  
+        required: true
+    },
+    savedPost: {  
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post",  
+        required: true
+    }
+}, { timestamps: true });
 
-const Saveschema=mongoose.Schema({
-UserId:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"users"
-},
-savedPosts:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"Post"
-}
-
-})
-
-export default mongoose.model("save",Saveschema)
+export default mongoose.model("Save", SaveSchema);
