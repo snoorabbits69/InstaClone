@@ -47,7 +47,7 @@ setInputValue(e.target.value)
                     
                     </div>
                 </div>
-                <dialog className="absolute mr-2 md:mr-0 md:ml-24 w-screen  md:w-72 h-96 bg-white border-2 top-[6.8rem]" ref={dialogref}>
+                <dialog className="absolute mr-2 md:mr-0 md:ml-24 w-screen  md:w-72 h-96 bg-white border-2 border-t-0 top-[7.2rem] rounded-md" ref={dialogref}>
                 {Users.User.map((user)=>{
   return <button className='z-50 w-72'
    onClick={async ()=>{

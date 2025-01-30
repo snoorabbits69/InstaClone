@@ -7,6 +7,7 @@ import { addChat, UpdateChats } from '../../Redux/Slice/ChatSlice';
 import GetMessages from '../../hooks/GetMessages';
 import { FaVideo } from "react-icons/fa6";
 import apiRequest from '../../Components/axios';
+import AddUsers from './AddUsers';
 
 export default function ChatBox() {
   
@@ -19,6 +20,7 @@ let inputref=useRef()
 const dispatch=useDispatch();
 const {socket}=useContext(Socketcontext)
 let [loading,setloading]=useState(false)
+let [adduserdialog,setadduserdialog]=useState(false)
 if(!chatState.selectedChat){
     navigate("/message")
 }
@@ -105,6 +107,7 @@ useEffect(()=>{
                   <button className="z-50 p-2 text-black rounded-full cursor-pointer hover:bg-blue-100" onClick={()=>{
                     setshowusers(!showusers)
                   }}>
+                
                       <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                       </svg>
@@ -185,6 +188,44 @@ useEffect(()=>{
                   </div>
               </div>
           </div>
+          {showusers &&
+          <section className='absolute w-screen h-screen bg-white border-2 md:w-96 right-2'>
+            <p className='mx-10 mt-12 text-xl' >Chat info</p>
+            
+            <p className='mx-10 mt-12 text-xl' >Users</p>
+        
+            <div className='flex flex-col gap-6'>
+            {
+                chatState.selectedChat.users.map((user)=>{
+                    return<button className='z-50 flex gap-2 w-80'
+                    onClick={()=>{
+                     navigate(`/profile/${user.Username}`);
+                    }} key={`${user.Username}`}> 
+                    <div className="flex gap-3 pl-10 transition-all rounded-lg hover:bg-gray-200">
+                     <img src={user.avatarImage} className="w-10 h-10 mt-2 rounded-full"/>
+                     <section>
+                     <p className="">{user.Username}</p>
+                     <p className='text-lg'>{user.Fullname}</p>
+                     </section>
+                   </div>
+                  {chatState.selectedChat.isGroupChat && <div className='px-4 py-2'>
+                    {chatState.selectedChat.groupAdmin==user._id?"Admin":"Participant"}
+                   </div>
+                }
+                   </button>
+                }
+                )
+            }
+                        <dialog open={adduserdialog}   className="absolute z-50 bg-white text-red-600 top-10 right-[50%] text-md" id="dialog">
+
+            <AddUsers setadduserdialog={setadduserdialog} chatId={chatState.selectedChat._id}/>
+            </dialog>
+          { (isGroupChat && chatState.selectedChat.groupAdmin==state.currentUser._id) && <button className='p-2 ml-10 border-2 rounded-full w-max' onClick={()=>{
+            setadduserdialog(true)
+          }}>Add users +</button> }
+            </div>
+          </section>
+}
       </div>
   )
   
