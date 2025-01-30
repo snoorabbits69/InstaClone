@@ -181,13 +181,16 @@ export const renameGroup=async(req,res,next)=>{
 }
 
 export const addtoGroup=async(req,res,next)=>{
+  console.log(req.body)
     try{
-    const { chatId, userId } = req.body;
+    const { chatId, users } = req.body;
     const findChat=await Chat.findById(chatId);
     if(req.user._id!=findChat.groupAdmin){
         return res.json({error:"not allowed"})
     }
-    findChat.users.push(userId)
+    users.forEach((user) => {
+      findChat.users.push(user.id)
+    });
     await findChat.save();
     const updatedChat=await findChat.populate("users","_id Fullname Username avatarImage")
     return res.status(200).json({status:true,chat:updatedChat})

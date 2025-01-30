@@ -17,14 +17,18 @@ export default function Mychats() {
 
     useEffect(() => {
         if (!loading && chats && chats.length > 0) {
-            const sortedChats = [...chats].sort(
+            const filteredChats = chats.filter(chat => {
+                return chat?.latestMessage && (chat?.isGroupChat || chat?.latestMessage);
+            });
+    
+            const sortedChats = [...filteredChats].sort(
                 (a, b) => new Date(b?.latestMessage?.createdAt) - new Date(a?.latestMessage?.createdAt)
             );
-            
+    
             dispatch(setChats(sortedChats));
-            
         }
     }, [chats, loading, dispatch]);
+    
 
     return (
         <div className="p-1">

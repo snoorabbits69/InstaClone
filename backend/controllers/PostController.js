@@ -1,6 +1,7 @@
 
 import User from "../models/UserModel.js"
 import Post from "../models/PostModel.js";
+import Comment from "../models/CommentModel.js"
 import sharp from "sharp";
 import { upload } from "../Multer/multer.js";
 import { bucket } from "../firebase/firebase.js";
@@ -62,33 +63,46 @@ try{
 };
 
 export const DeletePost = async (req, res, next) => {
+  console.log("Post ID:", req.params.postid);
   try {
     const Post_Del = await Post.findById(req.params.postid);
 
     if (!Post_Del) {
       return res.status(404).json({ error: "Post not found" });
     }
-
+    if (req.user._id != Post_Del.postedBy) {
+      return res.status(404).json({ error: "You are not the post's author" });
+    }
+     
     const deletePromises = Post_Del.img.map(async (image) => {
       let filename = image.substring(image.lastIndexOf("/") + 9, image.lastIndexOf("?"));
+      console.log("Deleting image:", filename);
       return bucket.file("Posts/" + filename).delete();
     });
 
     await Promise.all(deletePromises);
-    const DelUser = await User.findById(Post_Del.postedBy);
 
+    const DelUser = await User.findById(Post_Del.postedBy);
     if (!DelUser) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    
-    User.Posts = Math.max(0, User.Posts - 1); 
-  await DelUser.save();
-  await Post.findByIdAndDelete(req.params.postid);
+    DelUser.Posts = Math.max(0, DelUser.Posts - 1); 
+    await DelUser.save();
 
-    return res.json({ user: DelUser, msg: "deletion success" });
+    const DeleteComment = await Comment.deleteMany({ postId: req.params.postid });
+    console.log("Comments deleted:", DeleteComment.deletedCount);  // Log the number of deleted comments
+    
+    const deletePostResult = await Post.findByIdAndDelete(req.params.postid);
+    console.log("Post delete result:", deletePostResult);  // Log the result of the post deletion
+    
+    if (!deletePostResult) {
+      return res.status(404).json({ error: "Post deletion failed" });
+    }
+
+    return res.json({ status: true, user: DelUser, msg: "Deletion successful" });
   } catch (e) {
-    console.error(e); 
+    console.error(e);
     return res.status(500).json({ error: "An error occurred during the deletion process" });
   }
 };

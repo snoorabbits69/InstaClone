@@ -42,4 +42,16 @@ export const unSavepost=async(req,res,next)=>{
 
     }
 }
+export const GetUserSavedPost=async(req,res,next)=>{
+    try{
+const savedposts=await Saved.find({userId:req.user._id})
+return res.json({status:false,data:savedposts})
+
+
+    }
+    catch(e){
+        return res.json({status:false,error:e})
+
+    }
+}
 

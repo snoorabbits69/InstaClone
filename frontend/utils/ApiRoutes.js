@@ -30,3 +30,5 @@ export const CreateGroupRoute=`/api/chat/creategroup`
 export const UpdateUsernameRoute=`/api/user/updateusername`
 export const UpdateFullNameRoute=`/api/user/updatefullname`
 export const UpdatePasswordRoute=`/api/user/updatePassword`
+export const DeletePostRoute=(id)=>`api/post/delete/${id}`
+export const AddUserstoChatroute="api/chat/addtogroup"
