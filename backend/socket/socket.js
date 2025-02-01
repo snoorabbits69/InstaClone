@@ -35,10 +35,17 @@ socket.on('user:call',({room,offer})=>{
     console.log(room,offer)
 io.to(room).emit('incoming:call',{offer:offer,room:room})
 })
+socket.on("call:accepted", ({ room, answer }) => {
+    io.to(room).emit("call:accepted", { answer });
+});
+socket.on("ice-candidate",({room,candidate})=>{
+    io.to(room).emit(candidate)
+})
 socket.on("typing",(room)=>{
     socket.in(room).emit("typing","typing")
     console.log("typing");
 })
+
 
     socket.on("sendMessage", (newMessageRecieved) => {
     console.log(newMessageRecieved)
