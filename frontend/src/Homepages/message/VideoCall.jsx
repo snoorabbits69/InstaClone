@@ -1,56 +1,78 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import io from 'socket.io-client';
 
 export default function VideoCall() {
     const { id } = useParams();
-    const localref = useRef(null);
-    const remoteref = useRef(null);  
-    const Peer = useRef(null);
-    const socketref = useRef(null);
-    const offer = JSON.parse(sessionStorage.getItem("videoCallOffer"));
-   
+    const localRef = useRef(null);
+    const remoteRef = useRef(null);
+    const peerRef = useRef(null);
+    const socketRef = useRef(null);
+    
     useEffect(() => {
-        const accepted=window.opener.accepted
-        console.log(accepted,"accepted")
-        socketref.current = io('http://localhost:3000/');
-        socketref.current.emit('join-chat', { room: id, user: 'user' });
+        socketRef.current = io('http://localhost:3000/');
 
-        Peer.current = new RTCPeerConnection();
+        socketRef.current.emit('join-chat', { room: id });
+
+        peerRef.current = new RTCPeerConnection({
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' } // Google's STUN server
+            ]
+        });
+
+        peerRef.current.onicecandidate = (event) => {
+            if (event.candidate) {
+                socketRef.current.emit('ice-candidate', { room: id, candidate: event.candidate });
+            }
+        };
+
+        peerRef.current.ontrack = (event) => {
+            remoteRef.current.srcObject = event.streams[0];
+        };
 
         async function getLocalStream() {
-            const localstream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-            localref.current.srcObject = localstream;
+            const localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+            localRef.current.srcObject = localStream;
 
-            localstream.getTracks().forEach(track => {
-                Peer.current.addTrack(track, localstream);
+            localStream.getTracks().forEach(track => {
+                peerRef.current.addTrack(track, localStream);
             });
         }
 
         getLocalStream();
 
-   if(offer){
-    console.log(offer.offer)
-   }
+        socketRef.current.on('incoming:call', async ({ offer }) => {
+            await peerRef.current.setRemoteDescription(new RTCSessionDescription(offer));
+            const answer = await peerRef.current.createAnswer();
+            await peerRef.current.setLocalDescription(answer);
+            socketRef.current.emit('call:accepted', { room: id, answer });
+        });
+
+        socketRef.current.on('call:accepted', async ({ answer }) => {
+            await peerRef.current.setRemoteDescription(new RTCSessionDescription(answer));
+        });
+
+        socketRef.current.on('ice-candidate', async ( candidate ) => {
+            if (candidate) {
+                await peerRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+            }
+        });
 
         return () => {
-            socketref.current.disconnect();
+            socketRef.current.disconnect();
         };
-    }, [id, offer]);
+    }, [id]);
 
     async function startCall() {
-        const offer = await Peer.current.createOffer();
-        await Peer.current.setLocalDescription(offer);
-        socketref.current.emit('user:call', { room: id, offer: offer });
-
-        // Store the offer in sessionStorage for the other participant
-        sessionStorage.setItem("videoCallOffer", JSON.stringify(offer));
+        const offer = await peerRef.current.createOffer();
+        await peerRef.current.setLocalDescription(offer);
+        socketRef.current.emit('user:call', { room: id, offer });
     }
 
     return (
         <div>
-            <video ref={localref} autoPlay muted style={{ transform: 'scaleX(-1)' }} />
-            <video ref={remoteref} autoPlay />
+            <video ref={localRef} autoPlay muted style={{ transform: 'scaleX(-1)' }} />
+            <video ref={remoteRef} autoPlay />
             <button onClick={startCall}>Call</button>
         </div>
     );
