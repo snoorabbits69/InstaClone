@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import {  useNavigate } from 'react-router-dom'
 import { Socketcontext } from './../../context/Socketcontext';
 import { SendMessageRoute } from '../../../utils/ApiRoutes';
-import { addChat, UpdateChats } from '../../Redux/Slice/ChatSlice';
+import { addChat, UpdateLatestMessage } from '../../Redux/Slice/ChatSlice';
 import GetMessages from '../../hooks/GetMessages';
 import { FaVideo } from "react-icons/fa6";
 import apiRequest from '../../Components/axios';
 import AddUsers from './AddUsers';
 
 export default function ChatBox() {
-  
+  let [online,setOnline]=useState(false)
    let [input,setinput]=useState("")
  const navigate=useNavigate()
  const [showusers,setshowusers]=useState(false)
@@ -51,7 +51,7 @@ let  sendmessage=async()=>{
 const data=await apiRequest('POST',SendMessageRoute,{chatId:_id,content:input},)
 if(data.status){
 setmessages((prev)=>[...prev,data.message])
-dispatch(UpdateChats({id:_id,latestMessage:data.message}))
+dispatch(UpdateLatestMessage({id:_id,latestMessage:data.message}))
 socket.emit("sendMessage",data.message)
 setinput("")
 setloading(false)
@@ -71,12 +71,20 @@ useEffect(()=>{
 
         setmessages((prev) => [...prev, data]);
     };
-  console.log(messages[0])
+    const isOnline=(data)=>{
+      for (let key in data){
+         setOnline(Users.some((id)=>id==data[key]))
+      }
+      console.log(online)
+    }
     socket.on("message recieved",handleMessageReceived)
+    socket.on("online",isOnline)
+    
     return () => {
         socket.off("message recieved", handleMessageReceived);
+        socket.off("online", isOnline);
     };
-},[socket])
+},[socket,chatState.selectedChat])
 
     return (
       <div className="flex flex-col flex-grow h-full">
@@ -93,10 +101,17 @@ useEffect(()=>{
                   <div className="flex-grow p-2">
                       <div className="font-semibold text-md ">{isGroupChat?chatName:Users[0].Fullname} </div>
                       <div className="flex items-center">
+                      {  online ?
+                        <>
                           <div className="w-2 h-2 bg-green-300 rounded-full"></div>
                           <div className="ml-1 text-xs">
                           Online
                           </div>
+                          </>: <div className="ml-1 text-xs">
+                          Offline
+                          </div>
+
+                      }
                       </div>
                   </div>
                   <button onClick={()=>{
@@ -192,9 +207,9 @@ useEffect(()=>{
           <section className='absolute w-screen h-screen bg-white border-2 md:w-96 right-2'>
             <p className='mx-10 mt-12 text-xl' >Chat info</p>
             
-            <p className='mx-10 mt-12 text-xl' >Users</p>
+            <p className='mx-10 mt-12 text-xl' >Users({chatState.selectedChat.users.length})</p>
         
-            <div className='flex flex-col gap-6'>
+            <div className='flex flex-col gap-6 overflow-y-scroll h-72'>
             {
                 chatState.selectedChat.users.map((user)=>{
                     return<button className='z-50 flex gap-2 w-80'
@@ -216,14 +231,15 @@ useEffect(()=>{
                 }
                 )
             }
-                        <dialog open={adduserdialog}   className="absolute z-50 bg-white text-red-600 top-10 right-[50%] text-md" id="dialog">
+                        <dialog open={adduserdialog}   className="z-50 text-red-600 bg-white md:-translate-x-[40%] text-md" id="dialog">
 
             <AddUsers setadduserdialog={setadduserdialog} chatId={chatState.selectedChat._id}/>
             </dialog>
-          { (isGroupChat && chatState.selectedChat.groupAdmin==state.currentUser._id) && <button className='p-2 ml-10 border-2 rounded-full w-max' onClick={()=>{
+          
+            </div>
+            { (isGroupChat && chatState.selectedChat.groupAdmin==state.currentUser._id) && <button className='p-2 ml-10 border-2 rounded-full w-max' onClick={()=>{
             setadduserdialog(true)
           }}>Add users +</button> }
-            </div>
           </section>
 }
       </div>

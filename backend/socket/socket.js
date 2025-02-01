@@ -11,14 +11,16 @@ const io = new Server(server, {
         methods: ["GET", "POST"]
     }
 });
-let onlineUsers=[];
+
+let onlineUsers={}
+try{
 io.on("connection", (socket) => {
     socket.on("isonline",(id)=>{
- onlineUsers.push(id)
- 
+ onlineUsers[socket.id]=id
+ io.emit("online",onlineUsers)
+
     })
     
-    socket.emit("online",onlineUsers)
 socket.on("follow",(msg)=>{
      
 })
@@ -47,10 +49,12 @@ socket.on("typing",(room)=>{
     
       socket.on("disconnect", () => {
         console.log(socket.id + " disconnected");
-        onlineUsers=onlineUsers.filter((user)=>{
-            user!=socket.id
-        })
+         delete onlineUsers[socket.id]
+         io.emit("online",onlineUsers)
     });
 });
-
+}
+catch(e){
+    console.log(e)
+}
 export { app, server, io };

@@ -25,7 +25,7 @@ useEffect(()=>{
     },[dialogstatus])
     
   return (
-    <div className="">
+    <div className="w-screen overflow-x-hidden">
     <div className="flex lg:ml-20 ">
     <div className={`h-screen pl-2 border-r-2 w-screen md:w-80 dark:bg-gray-800 md:block ${params.user ? "hidden md:block" : "block"}`}>
             <div className="h-full overflow-y-auto">

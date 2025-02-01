@@ -33,7 +33,7 @@ const chatSlice = createSlice({
  newchats.push(action.payload)
  state.chats=newchats
  },
- UpdateChats: (state, action) => {
+ UpdateLatestMessage: (state, action) => {
   let updatedChats = state.chats.map((chat) => {
       if (chat._id === action.payload.id) {
           chat.latestMessage = action.payload.latestMessage;
@@ -48,11 +48,22 @@ const chatSlice = createSlice({
   });
 
   state.chats = updatedChats;
+},
+UpdateChatUsers:(state,action)=>{
+  state.selectedChat=action.payload
+  let updatedChats = state.chats.map((chat) => {
+    if (chat._id === action.payload._id) {
+        return {...chat,...action.payload}
+    }
+    return chat;
+});
+state.chats=updatedChats
+
 }
 
     
   },
 });
 
-export const { chatStart, setUser, setNotifications, setChats,UpdateChats,addChat } = chatSlice.actions;
+export const { chatStart, setUser, setNotifications, setChats,UpdateLatestMessage,addChat,UpdateChatUsers } = chatSlice.actions;
 export default chatSlice.reducer;

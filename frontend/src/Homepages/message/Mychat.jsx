@@ -1,7 +1,7 @@
 import  { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { addChat, chatStart, UpdateChats } from '../../Redux/Slice/ChatSlice';
+import { addChat, chatStart, UpdateLatestMessage } from '../../Redux/Slice/ChatSlice';
 import { Socketcontext } from '../../context/Socketcontext';
 import CalcDate from './../../Components/CalcDate';
 
@@ -14,7 +14,7 @@ export default function MyChat( {chats} ) {
 
 
     const { _id,Fullname = "", Username = "", avatarImage = "" } = 
-        chats.users.find((user) => user._id !== state.currentUser._id) || {};
+        chats?.users.find((user) => user._id !== state.currentUser._id) || {};
         
         
         const {socket}=useContext(Socketcontext);
@@ -28,7 +28,7 @@ useEffect(()=>{
              return
             }
             if(chats._id==data.chat){
-               dispatch(UpdateChats({id:data.chat,latestMessage:data}))
+               dispatch(UpdateLatestMessage({id:data.chat,latestMessage:data}))
                new Notification(data.content)
             }
     };

@@ -14,6 +14,9 @@ import SavedRoutes from "./routes/SaveRoutes.js"
 import { app, server} from "./socket/socket.js";
 import dbConnect from "./config/dbConnection.js";
 import { redisConnect } from "./config/RedisConnection.js";
+import os from "os"
+import { availableParallelism} from "os";
+import cluster from "cluster";
 
 config({path:path.join(process.cwd(),".env")});
 
@@ -26,6 +29,18 @@ const corsconfig = {
   credentials: true,
   optionsSuccessStatus: 200,
 };
+
+// let NoofCpus=availableParallelism();
+
+// if(cluster.isPrimary){
+// for (let i=0;i<NoofCpus;i++){
+//   cluster.fork();
+// }
+// cluster.on('exit',(worker,code,signal)=>{
+//   console.log(`worker ${worker.process.pid} died`);
+// })
+// }
+// else{
 
 app.use(cors(corsconfig));
 app.use(express.json());
@@ -51,3 +66,4 @@ app.use("/api",SavedRoutes);
 server.listen(process.env.PORT,()=>{
     console.log("Server running on ",PORT);
 })
+// }

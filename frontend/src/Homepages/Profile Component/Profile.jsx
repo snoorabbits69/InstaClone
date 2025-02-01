@@ -68,11 +68,26 @@ navigate(`/message/${currentUser?.Username}`)
       </section>
     </div>
     {Private?"Private":
+    <div>
+   <section className="mb-20 ">
+   <p className="w-screen lg:w-[75%] h-[0.5px] bg-black "></p>
+<div className='flex justify-center gap-10 lg:justify-start lg:translate-x-[32%] '>
+<div className="peer">
+  <button className="peer-before:h-96 peer-before:w-40 peer-before:bg-red-600">
+    Posts
+  </button>
+</div>
+
+
+<button> Saved</button>
+</div>
+   </section>
     <section className="lg:w-[75%] w-72    grid-cols-3 grid  " >
  
     <ProfilePost id={currentUser._id}/>
   
     </section>
+    </div>
   }
     </div>
   );

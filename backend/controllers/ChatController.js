@@ -188,9 +188,15 @@ export const addtoGroup=async(req,res,next)=>{
     if(req.user._id!=findChat.groupAdmin){
         return res.json({error:"not allowed"})
     }
-    users.forEach((user) => {
-      findChat.users.push(user.id)
-    });
+      
+    for (let user of users) {
+      if (findChat.users.some((chatUser) => chatUser == user)) {
+        return res.status(500).json({ status: false, error: "User already in the chat" });
+      } else {
+        findChat.users.push(user.id);
+      }
+    }
+    
     await findChat.save();
     const updatedChat=await findChat.populate("users","_id Fullname Username avatarImage")
     return res.status(200).json({status:true,chat:updatedChat})
