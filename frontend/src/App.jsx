@@ -25,8 +25,23 @@ function App() {
   
 useEffect(()=>{
   if(state.currentUser){
-    socket.emit("isonline",state.currentUser._id)
+    let handleincomingcall=(offer)=>{
+     
+      let confirmed=window.confirm("you are getting a call")
+   if(confirmed){
+    sessionStorage.setItem('videoCallOffer',JSON.stringify(offer))
+   window.open(`/video/${offer.room}`, '_blank',{width:window.innerWidth,height:window.innerHeight})
+  
   }
+      
+    }
+    socket.emit("isonline",state.currentUser._id)
+    socket.on("incoming:call",handleincomingcall)
+    return ()=>{
+      socket.off("incoming:call",handleincomingcall)
+    }
+  }
+  
 },[socket,state.currentUser])
 
   const shouldRenderSidebar = !location.pathname.startsWith("/video");

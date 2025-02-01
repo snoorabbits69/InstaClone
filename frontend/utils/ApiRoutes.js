@@ -32,3 +32,6 @@ export const UpdateFullNameRoute=`/api/user/updatefullname`
 export const UpdatePasswordRoute=`/api/user/updatePassword`
 export const DeletePostRoute=(id)=>`api/post/delete/${id}`
 export const AddUserstoChatroute="api/chat/addtogroup"
+export const SavePostRoute="api/post/save"
+export const UnsavePostRoute="api/post/unsave"
+export const GetSavedPostsRoute="api/post/getsavedposts"

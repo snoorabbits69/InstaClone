@@ -4,7 +4,7 @@ import Post from "../models/PostModel.js"
 export const SavePost = async (req, res, next) => {
     try {
         const { postid } = req.body;
-
+       
         if (!postid) {
             return res.status(400).json({ status: false, error: "There is no post ID" });
         }
@@ -44,8 +44,15 @@ export const unSavepost=async(req,res,next)=>{
 }
 export const GetUserSavedPost=async(req,res,next)=>{
     try{
-const savedposts=await Saved.find({userId:req.user._id})
-return res.json({status:false,data:savedposts})
+const savedposts=await Saved.find({userId:req.user._id}).populate({
+    path:'savedPost',
+    populate:{
+        path: 'postedBy',
+        select: 'Username avatarImage _id Fullname',
+    }
+
+}).select("_id savedposts")
+return res.json({status:true,posts:savedposts})
 
 
     }

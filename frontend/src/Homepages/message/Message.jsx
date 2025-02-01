@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Addgroup from './Addgroup';
 import gsap from 'gsap';
 import GetUsers from '../../hooks/GetUsers';
-import { chatStart } from '../../Redux/Slice/ChatSlice';
+import { addChat, chatStart } from '../../Redux/Slice/ChatSlice';
 import { useDispatch } from 'react-redux';
 import { AccessChatRoutes } from '../../../utils/ApiRoutes';
 import apiRequest from './../../Components/axios';
@@ -56,6 +56,7 @@ setInputValue(e.target.value)
       console.log(data)
       let messagingUser=data.users[0]==user._id?data.users[0]:data.users[1]
       dispatch(chatStart(data))
+      dispatch(addChat(data))
       dialogref.current.open=false;
       navigate(`/message/${messagingUser?.Username}`)
     }} key={`${user.Username}`}> <div className="flex gap-3 pl-10 transition-all rounded-lg hover:bg-gray-200">

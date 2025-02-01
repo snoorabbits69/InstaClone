@@ -30,7 +30,9 @@ const chatSlice = createSlice({
     },
  addChat:(state,action)=>{
   let newchats=[...state.chats]
+  if(!newchats.some((chat)=>chat._id==action.payload._id)){
  newchats.push(action.payload)
+  }
  state.chats=newchats
  },
  UpdateLatestMessage: (state, action) => {

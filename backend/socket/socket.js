@@ -33,7 +33,7 @@ socket.on("join-chat",({user,room})=>{
 })
 socket.on('user:call',({room,offer})=>{
     console.log(room,offer)
-io.to(room).emit('incoming:call',offer)
+io.to(room).emit('incoming:call',{offer:offer,room:room})
 })
 socket.on("typing",(room)=>{
     socket.in(room).emit("typing","typing")
