@@ -13,11 +13,14 @@ import apiRequest from './../../Components/axios';
 
 export default function Profile() {
 const {username}=useParams();
+const [saved,Setsaved]=useState(false)
 const state=useSelector((state)=>state.user)
 const dispatch=useDispatch();
 const navigate=useNavigate()
   const {currentUser,setcurrentUser}=GetUser(username);
 const myaccount=currentUser?._id==state.currentUser?._id;
+const isFollowing=state.currentUser.followingname.some((user)=>user?.id==currentUser?._id)
+
 const Private=currentUser?.Account.private && !myaccount;
 const [modal,setModel]=useState(false);
   const [Userdata,setUserdata]=useState({
@@ -31,14 +34,10 @@ setModel(true);
     setUserdata((follow)=>({...follow,user:currentUser[index],text:txt}));
   }
   }
-
-
-
- 
-
  if (!currentUser) {
     return "Loading";
 }
+
   else{
 
   return (
@@ -67,24 +66,28 @@ navigate(`/message/${currentUser?.Username}`)
         </div>
       </section>
     </div>
-    {Private?"Private":
+    {Private && !isFollowing?"Private":
     <div>
-   <section className="mb-20 ">
+   {state.currentUser._id==currentUser._id && <section className="mb-20 ">
    <p className="w-screen lg:w-[75%] h-[0.5px] bg-black "></p>
 <div className='flex justify-center gap-10 lg:justify-start lg:translate-x-[32%] '>
 <div className="peer">
-  <button className="peer-before:h-96 peer-before:w-40 peer-before:bg-red-600">
+  <button className="peer-before:h-96 peer-before:w-40 peer-before:bg-red-600" onClick={()=>{
+    Setsaved(false)
+  }}>
     Posts
   </button>
 </div>
 
 
-<button> Saved</button>
+<button onClick={()=>{
+  Setsaved(true)
+}}> Saved</button>
 </div>
-   </section>
+   </section> }
     <section className="lg:w-[75%] w-72    grid-cols-3 grid  " >
  
-    <ProfilePost id={currentUser._id}/>
+    <ProfilePost key={saved ? `saved-${currentUser._id}` : `posts-${currentUser._id}`} id={currentUser._id} saved={saved}/>
   
     </section>
     </div>
