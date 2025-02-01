@@ -114,6 +114,8 @@ console.log(data)
               </div>
 
               <div className="flex flex-col">
+           
+           { chatdata.users.length>0 &&    <>
                 <label className="leading-loose">Users</label>
                 <div className="flex w-full h-10 gap-2 px-4 py-2 text-gray-600 border border-gray-300 rounded-md focus:ring-gray-500 focus:border-gray-900 sm:text-sm focus:outline-none">
                   {chatdata.users.map((user, i) => (
@@ -127,6 +129,8 @@ console.log(data)
                     </p>
                   ))}
                 </div>
+                </>
+}
               </div>
 
               <input
@@ -134,6 +138,7 @@ console.log(data)
                 value={search}
                 className="w-full mt-2 border-2"
                 id="forsearch"
+                placeholder="Search Users"
                 onChange={handleSearchChange}
               />
 

@@ -3,15 +3,15 @@ import axios from 'axios';
 import { AddUserstoChatroute, CreateGroupRoute } from '../../../utils/ApiRoutes';
 import GetUsers from './../../hooks/GetUsers';
 import { useDispatch } from 'react-redux';
-import { addChat } from '../../Redux/Slice/ChatSlice';
+import { addChat, UpdateChatUsers } from '../../Redux/Slice/ChatSlice';
 import apiRequest from '../../Components/axios';
 
 export default function AddUsers({chatId, setadduserdialog }) {
   const [chatdata, setchatdata] = useState({ chatId:chatId, users: [] });
-  const [search, setsearch] = useState();
+  const [search, setsearch] = useState("");
   const { User } = GetUsers(search);
  
-
+let dispatch=useDispatch();
   const handleSearchChange = (e) => {
     setsearch(e.target.value);
   };
@@ -51,7 +51,13 @@ export default function AddUsers({chatId, setadduserdialog }) {
   };
 const addUser=async()=>{
 const data=await apiRequest("POST",AddUserstoChatroute,chatdata)
-console.log(data)
+if(data.status){
+  dispatch(UpdateChatUsers(data.chat))
+  setadduserdialog(false)
+  setsearch('');
+    setchatdata({ chatname: "", users: [] });
+}
+
 }
   
 
@@ -60,7 +66,8 @@ console.log(data)
       <div className="relative px-4 py-10 mx-8 bg-white shadow md:mx-0 rounded-3xl sm:p-10">
         <div className="max-w-md mx-auto">
               <div className="flex flex-col">
-                <label className="leading-loose">Users</label>
+        {   chatdata.users.length>0 &&   <>
+          <label className="leading-loose">Users</label>
                 <div className="flex w-full h-10 gap-2 px-4 py-2 text-gray-600 border border-gray-300 rounded-md focus:ring-gray-500 focus:border-gray-900 sm:text-sm focus:outline-none">
                   {chatdata.users.map((user, i) => (
                     <p key={i} className="text-sm border-2 rounded-full">
@@ -73,13 +80,16 @@ console.log(data)
                     </p>
                   ))}
                 </div>
+                </>
+}
               </div>
 
               <input
                 type="text"
                 value={search}
-                className="w-full mt-2 border-2"
+                className="w-full h-10 mt-2 border-2"
                 id="forsearch"
+                placeholder="search Users"
                 onChange={handleSearchChange}
               />
 

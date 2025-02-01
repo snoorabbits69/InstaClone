@@ -10,7 +10,7 @@ export default function ProfilePost({id}) {
   return (
 <>
            {
- Post &&
+ Post?.length>0 ?
   images?.map((img,i)=>{
     console.log(img.id);
       return <div className="relative w-full h-20 p-0 m-0 mb-8 md:mb-44 lg:mb-0 lg:h-72" key={i} onClick={()=>{
@@ -22,7 +22,7 @@ export default function ProfilePost({id}) {
         </div>
     </div>
     
-     })
+     }):"No posts"
 }
    </>
   )

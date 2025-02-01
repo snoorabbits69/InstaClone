@@ -13,7 +13,6 @@ export default function Mychats() {
     const [page, setPage] = useState(1);
 
     const { chats, loading } = GetChats(page);
-    const socket = useContext(Socketcontext);
 
     useEffect(() => {
         if (!loading && chats && chats.length > 0) {

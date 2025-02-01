@@ -1,4 +1,4 @@
-import React, { useContext }  from 'react';
+import React, { useContext, useEffect }  from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomeSidebar from './Sidebar/HomeSidebar';
 import Login from './pages/Login';
@@ -18,11 +18,16 @@ import ChatBox from './Homepages/message/ChatBox';
 import VideoCall from './Homepages/message/VideoCall';
 
 import { ToastContainer } from 'react-toastify';
+import { Socketcontext } from './context/Socketcontext';
 function App() {
   const state = useSelector((state) => state.user);
+  const {socket}=useContext(Socketcontext)
   
-  
- 
+useEffect(()=>{
+  if(state.currentUser){
+    socket.emit("isonline",state.currentUser._id)
+  }
+},[socket,state.currentUser])
 
   const shouldRenderSidebar = !location.pathname.startsWith("/video");
   
