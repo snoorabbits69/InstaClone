@@ -25,7 +25,7 @@ const apiRequest = async (method, endpoint, data = null) => {
       url: endpoint,
       headers: {}, 
     };
-
+     console.log(data instanceof FormData)
     if (data instanceof FormData) {
       config.data = data;
       config.headers["Content-Type"] = "multipart/form-data";

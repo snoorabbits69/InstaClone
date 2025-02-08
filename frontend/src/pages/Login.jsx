@@ -59,7 +59,7 @@ const data=await apiRequest('POST',loginRoute,{
 </form>
    <div className="flex gap-3 mx-10 text-center w-60"><p className="bg-gray-500 border-b-2 w-32 h-[1px] relative top-3"/>OR<p className="bg-gray-500 border-b-2 w-32 h-[1px] relative top-3"/></div>
    <OAuth/>
-   <button className='mx-24'
+   <button className='mx-24 text-sm'
    onClick={async()=>{
    window.open(ForgetPasswordRoute);
    }}

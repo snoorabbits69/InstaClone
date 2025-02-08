@@ -5,22 +5,24 @@ import sessionStorage from "redux-persist/lib/storage/session"; // sessionStorag
 import UserReducer from "./Slice/Userslice";
 import ChatReducer from "./Slice/ChatSlice";
 import CommentReducer from "./Slice/CommentSlice";
+import MessageReducer from "./Slice/MessageSlice"
 const userPersistConfig = {
   key: "user",
   storage,
-  blacklist: ["comments"]
+  blacklist: ["comments","message"]
 };
 
 const chatPersistConfig = {
   key: "chat",
   storage: sessionStorage,
-  blacklist: ["comments"]
+  blacklist: ["comments","message"]
 };
 
 const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, UserReducer),
   chat: persistReducer(chatPersistConfig, ChatReducer),
-  comment:CommentReducer
+  comment:CommentReducer,
+  message:MessageReducer
 });
 
 export const store = configureStore({

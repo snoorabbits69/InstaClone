@@ -4,7 +4,7 @@ import { FiHeart } from "react-icons/fi";
 import { IoChatboxOutline } from "react-icons/io5";
 import { FaHeart } from 'react-icons/fa6';
 import { useSelector } from 'react-redux';
-import { LikePostRoute, SavePostRoute } from '../../../utils/ApiRoutes';
+import { LikePostRoute,SavePostRoute } from '../../../utils/ApiRoutes';
 import apiRequest from '../../Components/axios';
 import { useNavigate,useLocation } from 'react-router-dom';
 import { FaRegBookmark } from 'react-icons/fa';
