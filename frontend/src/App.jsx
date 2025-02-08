@@ -1,5 +1,5 @@
 import React, { useContext, useEffect }  from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import HomeSidebar from './Sidebar/HomeSidebar';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -19,30 +19,10 @@ import VideoCall from './Homepages/message/VideoCall';
 
 import { ToastContainer } from 'react-toastify';
 import { Socketcontext } from './context/Socketcontext';
+import StartVideocall from './Homepages/message/StartVideocall';
+import Layout from './Layout';
 function App() {
   const state = useSelector((state) => state.user);
-  const {socket}=useContext(Socketcontext)
-  
-useEffect(()=>{
-  if(state.currentUser){
-    let handleincomingcall=(offer)=>{
-     
-      let confirmed=window.confirm("you are getting a call")
-   if(confirmed){
-    sessionStorage.setItem('videoCallOffer',JSON.stringify(offer))
-   window.open(`/video/${offer.room}`, '_blank',{width:window.innerWidth,height:window.innerHeight})
-  
-  }
-      
-    }
-    socket.emit("isonline",state.currentUser._id)
-    socket.on("incoming:call",handleincomingcall)
-    return ()=>{
-      socket.off("incoming:call",handleincomingcall)
-    }
-  }
-  
-},[socket,state.currentUser])
 
   const shouldRenderSidebar = !location.pathname.startsWith("/video");
   
@@ -51,6 +31,7 @@ useEffect(()=>{
     <Router>
       {state.currentUser ?shouldRenderSidebar && <HomeSidebar />: null}
       <Routes>
+        <Route element={<Layout/>}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route element={<PrivateRoute />}>
@@ -61,6 +42,7 @@ useEffect(()=>{
             <Route path="/message" element={<Message />} >
             <Route path=":user" element={ChatBox}/>
             </Route>
+            <Route path='/startvideocall/:id' element={<StartVideocall/>}  />
             <Route path='/video/:id' element={<VideoCall/>}/>
             <Route path="/reels" element={<Reels />} /> 
         <Route path="/setprofile" element={<SetProfile/>} />
@@ -68,6 +50,7 @@ useEffect(()=>{
         <Route path="/post/:postid" element={<Post/>}/>
         <Route path="/profile/:username" element={<Profile />} />
         <Route path="/editprofile" element={<EditProfile />} />
+        </Route>
       </Routes>
     </Router>
     <ToastContainer/>

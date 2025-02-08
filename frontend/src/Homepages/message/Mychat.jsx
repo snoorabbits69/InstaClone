@@ -6,7 +6,6 @@ import { Socketcontext } from '../../context/Socketcontext';
 import CalcDate from './../../Components/CalcDate';
 
 export default function MyChat( {chats} ) {
-   
     const state = useSelector((state) => state.user);
     const chatState=useSelector((state)=>state.chat)
     
@@ -22,6 +21,7 @@ const dispatch=useDispatch()
 
 useEffect(()=>{
     const handleMessageReceived = (data) => {
+        let msg=Array.isArray(data)?data[data.length-1]:data;
       let isoldChat=chatState?.chats.some((chat)=>chat._id==data.chat)
             if(!isoldChat){
              dispatch(addChat(chats))
@@ -75,7 +75,7 @@ useEffect(()=>{
                         <div className="text-xs text-gray-400 dark:text-gray-300"><CalcDate date={chats?.latestMessage?.createdAt}/></div>
                     </div>
                     <div className="w-40 text-sm text-gray-500 truncate dark:text-gray-400">
-                      {chats.latestMessage?chats.latestMessage?.content:""}
+                      {chats.latestMessage && !chats.latestMessage.isFile ?chats.latestMessage?.content:"sent a photo"}
                     </div>
                 </div>
             </div> 

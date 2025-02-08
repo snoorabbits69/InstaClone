@@ -3,7 +3,8 @@ import User from "../models/UserModel.js";
 import Message from "../models/MessageModel.js";
 import { upload } from "../Multer/multer.js";
 import { client } from "../config/RedisConnection.js";
-
+import { bucket } from "../firebase/firebase.js";
+import sharp from "sharp";
 
 async function invalidateCache(chatId){
   try{
@@ -41,7 +42,6 @@ catch(e){
     return res.status(500).json({status:false,error:e})
 }
 }
-
 export const sendMessage=async(req,res,next)=>{
 
     const {content,chatId}=req.body;
@@ -67,6 +67,70 @@ return res.status(200).json({status:true,message:message})
       }
     
 }
+
+export const sendImageMessage = async (req, res, next) => {
+  upload.array('files', 5)(req, res, async (err) => {
+    if (err) {
+      return res.status(500).json({ msg: "Error on file upload" });
+    }
+
+    const { chatId } = req.body;
+
+    if (!chatId) {
+      console.log("Invalid data passed into request");
+      return res.sendStatus(400);
+    }
+
+    try {
+      const uploadPromises = req.files.map(async (file) => {
+        const filename = `${chatId}post_${Date.now()}.webp`;
+        const fileUpload = bucket.file(`Messages/${filename}`);
+        const newImgBuffer = await sharp(file.buffer)
+          .resize(400, 800, { fit: 'cover' })
+          .webp()
+          .toBuffer();
+
+        return new Promise((resolve, reject) => {
+          const blobStream = fileUpload.createWriteStream();
+
+          blobStream.on('error', reject);
+
+          blobStream.on('finish', () => {
+            const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${process.env.storageBucket}/o/Messages%2F${filename}?alt=media`;
+            resolve(fileUrl);
+          });
+
+          blobStream.end(newImgBuffer);
+        });
+      });
+
+      const fileLinks = await Promise.all(uploadPromises);
+
+      const createdMessages = await Message.insertMany(
+        fileLinks.map((fileLink) => ({
+          Sender: req.user._id,
+          content: fileLink,
+          chat: chatId,
+          isFile: true,
+        }))
+      );
+      let chat=await Chat.findById(chatId)
+      chat.latestMessage=createdMessages[createdMessages.length - 1]._id;
+      await chat.save();
+      const populatedMessages = await Message.find({
+        _id: { $in: createdMessages.map((msg) => msg._id) },
+      }).populate("Sender", "_id Fullname Username avatarImage");
+         console.log(populatedMessages)
+         await invalidateCache(chatId)
+      return res.status(201).json({ status: true, messages: populatedMessages });
+
+    } catch (e) {
+      return res.status(500).json({ status: false, error: e.message });
+    }
+  });
+};
+
+
 export const DeleteMessage = async (req, res, next) => {
   if (!req.params.msgid) {
       console.log("Invalid msg id");

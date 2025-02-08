@@ -13,6 +13,8 @@ const io = new Server(server, {
 });
 
 let onlineUsers={}
+let UserIdtoSocketMap=new Map()
+let SocketIdToUserMap=new Map()
 try{
 io.on("connection", (socket) => {
     socket.on("isonline",(id)=>{
@@ -28,24 +30,39 @@ socket.on("join-chat",({user,room})=>{
    
     console.log(room,user)
     socket.join(room);
-  
-   
 })
-socket.on('user:call',({room,offer})=>{
-    console.log(room,offer)
-io.to(room).emit('incoming:call',{offer:offer,room:room})
+
+socket.on("start:call",({room,User})=>{
+    console.log(room,User)
+    socket.to(room).emit("call:started",{room,User})
 })
-socket.on("call:accepted", ({ room, answer }) => {
-    io.to(room).emit("call:accepted", { answer });
+
+socket.on("begin:call",({room,User})=>{
+    console.log(room,User,"begin:call")
+socket.to(room).emit("begin:call",{room,User})
+})
+socket.on('user:call',({room,offer,User})=>{
+    console.log(room,offer,User)
+    
+socket.to(room).emit('incoming:call',{offer:offer,room:room,User:User})
+})
+socket.on("call:accepted", ({ room, answer,User }) => {
+    console.log(answer,"ans")
+    socket.to(room).emit("call:answered", { answer,User });
+
 });
+socket.on("call:cancelled",({room})=>{
+    console.log(room,"cancelled")
+socket.to(room).emit("call:cancelled",{cancelled:true})
+})
 socket.on("ice-candidate",({room,candidate})=>{
-    io.to(room).emit(candidate)
+    console.log(candidate,candidate)
+    socket.to(room).emit("ice-candidate",candidate)
 })
 socket.on("typing",(room)=>{
     socket.in(room).emit("typing","typing")
     console.log("typing");
 })
-
 
     socket.on("sendMessage", (newMessageRecieved) => {
     console.log(newMessageRecieved)

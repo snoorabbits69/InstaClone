@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { AddUserstoChatroute, CreateGroupRoute } from '../../../utils/ApiRoutes';
-import GetUsers from './../../hooks/GetUsers';
+import GetUsers from '../../hooks/GetUsers';
 import { useDispatch } from 'react-redux';
 import { addChat, UpdateChatUsers } from '../../Redux/Slice/ChatSlice';
 import apiRequest from '../../Components/axios';
