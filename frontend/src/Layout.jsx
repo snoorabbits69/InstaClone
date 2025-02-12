@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Socketcontext } from "./context/Socketcontext";
 import callAudio from "./assets/audio/Call.mp3";
 import { IoCall } from "react-icons/io5";
 import { MdAddIcCall } from "react-icons/md";
-import { useSelector } from "react-redux";
-
+import {  useSelector } from "react-redux";
+import HomeSidebar from "./Sidebar/HomeSidebar";
 export default function Layout() {
   const state = useSelector((state) => state.user);
   let navigate = useNavigate();
@@ -14,6 +14,10 @@ export default function Layout() {
   let [acceptCall, setAcceptCall] = useState(false);
   let audioRef = useRef(new Audio(callAudio)); 
   const { socket } = useContext(Socketcontext);
+
+  const location=useLocation()
+  const shouldRenderSidebar=state.currentUser && !location.pathname.startsWith("/addtostory")
+
 
   useEffect(() => {
     function callStarted({ User, room }) {
@@ -30,6 +34,8 @@ export default function Layout() {
 
       return () => clearTimeout(timeout);
     }
+  
+     
 
     socket.on("call:started", callStarted);
 
@@ -40,8 +46,8 @@ export default function Layout() {
 
   async function AcceptCall() {
     socket.emit("begin:call",{room,User:{
-      username:state.currentUser.Username,
-      avatarImage:state.currentUser.avatarImage,
+      username:state?.currentUser?.Username,
+      avatarImage:state?.currentUser?.avatarImage,
      }})
     setAcceptCall(true);
 
@@ -60,6 +66,7 @@ export default function Layout() {
 
   return (
     <div>
+      {shouldRenderSidebar && <HomeSidebar/>}
       <Outlet />
       {User && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">

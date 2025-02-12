@@ -1,4 +1,5 @@
  import Story from "../models/StoryModel.js";
+ import User from "../models/UserModel.js"
  import {upload} from "../Multer/multer.js";
  import {bucket} from "../firebase/firebase.js"
  import sharp from "sharp"
@@ -23,12 +24,12 @@ export const uploadStory = async (req, res, next) => {
             await file.createWriteStream().end(optimizedFile);
 
             const newStory = await Story.create({
-                postedBy: req.params.postedBy,
+                postedBy: req.user._id,
                 image: `https://firebasestorage.googleapis.com/v0/b/${process.env.storageBucket}/o/stories%2F${filename}?alt=media`,
                 expiresAt: expirationTime
             });
-
-            DeleteFile(filename); 
+         await newStory.save()
+        
 
             return res.json({ story: newStory });
         } catch (e) {
@@ -70,3 +71,13 @@ export const deleteStory = async (req, res) => {
     }
   };
   
+  export const getStories=async(req,res,next)=>{
+   try{
+let user=await User.findById(req.user._id)
+let stories=await Story.find({ username: { $in: user.followingname } }
+)
+return res.json({stories:stories})
+   }catch(e){
+    return res.json({status:false,error:e})
+   }
+  }

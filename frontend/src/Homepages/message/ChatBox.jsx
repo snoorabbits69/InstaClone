@@ -31,7 +31,7 @@ export default function ChatBox() {
 
     useEffect(() => {
         if (!Currentchatmsg.loading) {
-            dispatch(setMessages(Currentchatmsg.messages)); // Dispatch the messages to Redux
+            dispatch(setMessages(Currentchatmsg.messages)); 
         }
     }, [Currentchatmsg.messages, Currentchatmsg.loading, dispatch]);
 
@@ -42,30 +42,7 @@ export default function ChatBox() {
         }
     }, [messages]);
 
-    useEffect(() => {
-        const handleMessageReceived = (data) => {
-            console.log(data)
-            const isOldChat = chatState?.chats.some((chat) => chat._id === data.chat);
-            if (!isOldChat) {
-                dispatch(addChat(chatState.selectedChat));
-                return ;
-            }
-            dispatch(addMessage(data)); 
-        };
-
-        const handleOnlineStatus = (data) => {
-            setOnline(Users.some((user) => data[user._id]));
-        };
-
-        socket.on("message recieved", handleMessageReceived);
-        socket.on("online", handleOnlineStatus);
-
-        return () => {
-            socket.off("message received", handleMessageReceived);
-            socket.off("online", handleOnlineStatus);
-        };
-    }, [socket, chatState.selectedChat, Users]);
-
+   
     return (
         <div className="flex flex-col flex-grow h-full">
             <Chatheader setshowusers={setshowusers} showusers={showusers} Users={Users} online={online} />

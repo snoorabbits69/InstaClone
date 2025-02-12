@@ -24,7 +24,9 @@ export default function Logout() {
              <button onClick={async()=>{
               const data= await apiRequest('GET',logoutRoute);
               if(data.status){
+                sessionStorage.clear()
                dispatch(signOutSuccess());
+               localStorage.clear()
                navigate("/login");
               }
                }}>Log Out</button>
