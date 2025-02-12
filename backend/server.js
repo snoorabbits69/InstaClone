@@ -11,9 +11,11 @@ import CommentRoutes from "./routes/CommentRoutes.js";
 import ChatRoutes from "./routes/ChatRoutes.js";
 import MessageRoutes from "./routes/MessageRoutes.js";
 import SavedRoutes from "./routes/SaveRoutes.js"
+import StoryRoutes from "./routes/StoryRoutes.js"
 import { app, server} from "./socket/socket.js";
 import dbConnect from "./config/dbConnection.js";
 import { redisConnect } from "./config/RedisConnection.js";
+import cron from "node-cron"
 import os from "os"
 import { availableParallelism} from "os";
 import cluster from "cluster";
@@ -60,8 +62,10 @@ app.use("/api/user",UserRoutes);
 app.use("/api/post",PostRoutes)
 app.use("/api/chat",ChatRoutes)
 app.use("/api/message",MessageRoutes)
+app.use("/api/story",StoryRoutes)
 app.use("/api",CommentRoutes);
 app.use("/api",SavedRoutes);
+
 
 server.listen(process.env.PORT,()=>{
     console.log("Server running on ",PORT);

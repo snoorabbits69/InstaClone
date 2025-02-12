@@ -10,12 +10,12 @@ export default function CalcDate({date}) {
     let sendTime = Math.floor((currentDate - msgDate) / 1000); 
 
     if (sendTime < 60) {
-        return "Just now"; 
+        return sendTime +'s'; 
     } else if (sendTime < 3600) {
-        return Math.floor(sendTime / 60) + 'm ago'; 
+        return Math.floor(sendTime / 60) + 'm '; 
     } else if (sendTime < 86400) {
-        return Math.floor(sendTime / 3600) + 'hrs ago'; 
+        return Math.floor(sendTime / 3600) + 'hrs '; 
     } else {
-        return Math.floor(sendTime / 86400) + 'days ago'; 
+        return Math.floor(sendTime / 86400) + 'days '; 
     }
 }

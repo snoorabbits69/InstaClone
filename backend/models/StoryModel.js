@@ -11,8 +11,9 @@ image:{
 expiresAt:{
     type:Date,
     required:true,
-    expires:'60m'
-}
+    expires:'20m'
+},
+Likes:[{type:mongoose.Schema.Types.ObjectId,ref:"users"}]
 
 },{
     timestamps:true

@@ -13,8 +13,8 @@ const io = new Server(server, {
 });
 
 let onlineUsers={}
-let UserIdtoSocketMap=new Map()
-let SocketIdToUserMap=new Map()
+const activeCalls = {}
+
 try{
 io.on("connection", (socket) => {
     socket.on("isonline",(id)=>{
@@ -26,9 +26,8 @@ io.on("connection", (socket) => {
 socket.on("follow",(msg)=>{
      
 })
-socket.on("join-chat",({user,room})=>{
+socket.on("join-chat",({User,room})=>{
    
-    console.log(room,user)
     socket.join(room);
 })
 
@@ -42,18 +41,27 @@ socket.on("begin:call",({room,User})=>{
 socket.to(room).emit("begin:call",{room,User})
 })
 socket.on('user:call',({room,offer,User})=>{
+    if (!activeCalls[room]) activeCalls[room] = [];
+    activeCalls[room].push(socket.id)
     console.log(room,offer,User)
     
 socket.to(room).emit('incoming:call',{offer:offer,room:room,User:User})
 })
 socket.on("call:accepted", ({ room, answer,User }) => {
+    activeCalls[room].push(socket.id)
     console.log(answer,"ans")
     socket.to(room).emit("call:answered", { answer,User });
+
 
 });
 socket.on("call:cancelled",({room})=>{
     console.log(room,"cancelled")
 socket.to(room).emit("call:cancelled",{cancelled:true})
+if (activeCalls[room]) {
+    activeCalls[room] = activeCalls[room].filter(id => id !== socket.id);
+    if (activeCalls[room].length === 0) delete activeCalls[room];
+}
+
 })
 socket.on("ice-candidate",({room,candidate})=>{
     console.log(candidate,candidate)
@@ -70,11 +78,26 @@ socket.on("typing",(room)=>{
       socket.to(newMessageRecieved.chat).emit("message recieved", newMessageRecieved);
        
       });
-    
+      socket.on("end:call",({room})=>{
+        console.log(room)
+        delete activeCalls[room]
+        socket.to(room).emit('call:end',{room:room})
+      })
       socket.on("disconnect", () => {
         console.log(socket.id + " disconnected");
          delete onlineUsers[socket.id]
          io.emit("online",onlineUsers)
+         for (const [room, participants] of Object.entries(activeCalls)) {
+            if (participants.includes(socket.id)) {
+                const otherUser = participants.find(id => id !== socket.id);
+                if (otherUser) {
+                    io.to(otherUser).emit("peer-disconnected", { peerId: socket.id });
+                }
+                activeCalls[room] = participants.filter(id => id !== socket.id);
+                if (activeCalls[room].length === 0) delete activeCalls[room];
+                break;
+            }
+        }
     });
 });
 }
