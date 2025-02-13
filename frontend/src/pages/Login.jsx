@@ -33,7 +33,7 @@ const data=await apiRequest('POST',loginRoute,{
 })
     if (data.status) {
       dispatch(signInSuccess(data.user));
-      Navigate("/home");
+      Navigate("/");
     } else {
       dispatch(signInFailure());
     }

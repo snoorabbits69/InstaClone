@@ -2,10 +2,14 @@ import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { IoIosAdd } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
+import GetStories from '../../hooks/GetStories';
 
 export default function StoriesList() {
     const storyRef = useRef(null);
-    
+ const {Stories,Loading}=GetStories()
+ console.log(Stories)
+
+   
     const state = useSelector((state) => state.user);
     const navigate = useNavigate();
     const handleFileChange = (e) => {
@@ -21,6 +25,7 @@ export default function StoriesList() {
     };
 
     return (
+        <>
         <button
             className='relative p-1 bg-blue-600 rounded-full'
             onClick={() => storyRef.current.click()}
@@ -42,5 +47,24 @@ export default function StoriesList() {
                 onChange={handleFileChange}
             />
         </button>
+         {
+            Stories?.map((story,key)=>{
+                return <button
+                className='relative p-1 bg-red-600 rounded-full'
+                aria-label="Add story"
+                key={key}
+                onClick={()=>{
+                    navigate(`story/${story.stories[0]}`, { state: { stories: story.stories } });
+                }}
+            >
+                 <img
+                src={story.postedBy.avatarImage}
+                alt="User Avatar"
+                className='rounded-full w-14 h-14 md:w-20 md:h-20'
+            />
+                </button>
+            })
+         }
+        </>
     );
 }

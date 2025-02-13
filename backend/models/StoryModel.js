@@ -1,7 +1,8 @@
 import mongoose from "mongoose"
 const StorySchema=mongoose.Schema({
     postedBy:{
-        type:String,
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"users",
         required:true
     },
 image:{
@@ -11,7 +12,7 @@ image:{
 expiresAt:{
     type:Date,
     required:true,
-    expires:'20m'
+    expires:'1h'
 },
 Likes:[{type:mongoose.Schema.Types.ObjectId,ref:"users"}]
 

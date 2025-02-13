@@ -4,8 +4,7 @@
  import {bucket} from "../firebase/firebase.js"
  import sharp from "sharp"
 export const uploadStory = async (req, res, next) => {
-    const expirationTime = new Date();
-
+    const expirationTime = new Date(new Date().getTime() + 60 * 60 * 1000);  // Adds 1 hour
     upload.single('file')(req, res, async (err) => {
         if (err) {
             return res.json({ error: "Error uploading file" });
@@ -31,7 +30,7 @@ export const uploadStory = async (req, res, next) => {
          await newStory.save()
         
 
-            return res.json({ story: newStory });
+            return res.json({status:true, story: newStory });
         } catch (e) {
             return res.json({ error: e.message });
         }
@@ -62,7 +61,7 @@ export const deleteStory = async (req, res) => {
           await bucket.file(imageUrl).delete()
 
   
-        return res.json({ msg: "Deletion successful" });
+        return res.json({story:true, msg: "Deletion successful" });
       } else {
         return res.status(404).json({ error: "Story not found" });
       }
@@ -74,10 +73,40 @@ export const deleteStory = async (req, res) => {
   export const getStories=async(req,res,next)=>{
    try{
 let user=await User.findById(req.user._id)
-let stories=await Story.find({ username: { $in: user.followingname } }
-)
-return res.json({stories:stories})
+const ids = user?.followingname.map(item => item.id);
+console.log(ids)
+let stories = await Story.find({ postedBy: { $in: ids } })
+  .populate("postedBy", "Username Fullname avatarImage _id")
+  .lean();
+
+  let results = stories.reduce((acc, story) => {
+    let user = acc.find(item => item.postedBy.toString() === story.postedBy.toString());
+    if (user) {
+      user.stories.push(story._id);
+    } else {
+      acc.push({
+        postedBy: story.postedBy,
+        stories: [story._id]
+      });
+    }
+    return acc;
+  }, []);
+return res.json({status:true,stories:results})
+
    }catch(e){
+    return res.json({status:false,error:e})
+   }
+  }
+
+  export const getStoriesbyId=async(req,res,next)=>{
+    try{
+        console.log(req.params.id)
+  const story=await Story.findById(req.params.id)
+  if(!story){
+    return res.json({status:false,error:"Story doesnt exist"})
+  }
+  return res.json({status:true,story:story})
+    }catch(e){
     return res.json({status:false,error:e})
    }
   }
