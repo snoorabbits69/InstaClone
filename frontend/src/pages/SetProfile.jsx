@@ -5,9 +5,11 @@ import noProfile from "../assets/noprofile.png"
 import { useDispatch, useSelector } from 'react-redux';
 import {  UpdateAvatarImage } from '../Redux/Slice/Userslice';
 import apiRequest from '../Components/axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function SetProfile() {
     const [image,SetImage]=useState();
+    let navigate=useNavigate()
     const state=useSelector((state)=>state.user);
 const dispatch=useDispatch();
     const inputRef=useRef();
@@ -51,7 +53,7 @@ window.location.href="/home";
           ref={inputRef}
         />
       </label>
-      <button onClick={()=>{navigate("/home");}}>Not now</button>
+      <button onClick={()=>{navigate("/");}}>Not now</button>
       <button onClick={handleUpload}>Upload</button>
       </section>
     </div>

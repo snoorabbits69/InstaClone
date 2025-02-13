@@ -37,3 +37,5 @@ export const UnsavePostRoute="api/post/unsave"
 export const GetSavedPostsRoute="api/post/getsavedposts"
 export const SendimagemessageRoute="api/message/sendimage"
 export const uploadStoryRoute="api/story/upload"
+export const getStoriesRoute="api/story/getstories"
+export const getStoriesbyIdRoute=(id)=>`api/story/getstoriesbyid/${id}`

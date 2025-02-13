@@ -20,6 +20,7 @@ import { ToastContainer } from 'react-toastify';
 import StartVideocall from './Homepages/message/StartVideocall';
 import Layout from './Layout';
 import AddtoStory from './pages/Stories/AddtoStory';
+import DisplayStory from './pages/Stories/DisplayStory';
 function App() { 
   return (
     <section className="h-auto text-black dark:text-white ">
@@ -43,6 +44,7 @@ function App() {
         <Route path="/setprofile" element={<SetProfile/>} />
         <Route path="/editprofile" element={<EditProfile />} />
         <Route path="addtostory" element={<AddtoStory/>}/>
+        <Route path="story/:id" element={<DisplayStory/>}/>
         </Route>
         <Route path="/post/:postid" element={<Post/>}/>
         <Route path="/profile/:username" element={<Profile />} />

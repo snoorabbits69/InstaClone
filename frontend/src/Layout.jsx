@@ -16,7 +16,8 @@ export default function Layout() {
   const { socket } = useContext(Socketcontext);
 
   const location=useLocation()
-  const shouldRenderSidebar=state.currentUser && !location.pathname.startsWith("/addtostory")
+  const shouldRenderSidebar = state.currentUser && 
+  !(location.pathname.startsWith("/addtostory") || location.pathname.startsWith("/story"));
 
 
   useEffect(() => {

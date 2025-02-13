@@ -17,7 +17,7 @@ const navigate=useNavigate();
 const data=await apiRequest('POST',GoogleRoute,{Username:displayName,Email:email,avatarImage:photoURL.replace("s96","s400"),Fullname:result._tokenResponse.fullName});
 if(data.status){
     dispatch(signInSuccess(data.user));
-    navigate("/home");
+    navigate("/");
 }
 else{
     dispatch(signInFailure);

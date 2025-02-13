@@ -19,6 +19,7 @@ const toastOptions = {
 };
 
 const apiRequest = async (method, endpoint, data = null) => {
+  console.log(data)
   try {
     const config = {
       method,
