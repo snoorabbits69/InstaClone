@@ -25,7 +25,7 @@ router.post("/addfollowers/:id",jwtAuth,ReqMiddleWare,addfollowers) //need to ch
 router.post("/acceptfollowers/:id",jwtAuth,AcceptMiddleWare,addfollowers) // need to change with jwt
 router.post("/removefollowers/:id",jwtAuth,removefollowers) //need to change to jwt
 router.get("/search/:id",jwtAuth,GetUsers);
-router.get("/getuser/:username",jwtAuth,getUser);
+router.get("/getuser/:username",getUser);
 router.get("/getuserfromid/:id",jwtAuth,getUserfromid);
 router.get("/getrecommend/:id",jwtAuth,getRecommendation);
 router.post("/cancelrequest/:id",jwtAuth,cancelRequest) //need to change to jwt

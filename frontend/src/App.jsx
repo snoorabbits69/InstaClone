@@ -1,6 +1,4 @@
-import  {  useEffect }  from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import HomeSidebar from './Sidebar/HomeSidebar';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
@@ -11,7 +9,6 @@ import Message from './Homepages/message/Message';
 import Profile from './Homepages/Profile Component/Profile';
 import './App.css';
 import PrivateRoute from './Components/PrivateRoute';
-import { useSelector } from 'react-redux';
 import EditProfile from './Homepages/Profile Component/EditProfile';
 import Post from './pages/Post';
 import ChatBox from './Homepages/message/ChatBox';

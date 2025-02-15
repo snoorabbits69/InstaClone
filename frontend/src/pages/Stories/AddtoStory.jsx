@@ -26,6 +26,9 @@ let formdata=new FormData()
 formdata.append('file',forstory)
 const data=await apiRequest('POST',uploadStoryRoute,formdata)
 console.log(data)
+if(data.status){
+  navigate("/")
+}
 }
 
 
@@ -36,8 +39,8 @@ console.log(data)
       sessionStorage.removeItem("story")
       navigate("/");
 
-    }} className='fixed text-black bg-black border-2 left-2 top-2'>go back</button>
-    <button onClick={()=>{base64ToFile(story,"formystory")}} className='fixed text-black bg-black border-2 bottom-2 right-2'>Add</button>
+    }} className='fixed text-white bg-black border-2 left-2 top-2'>go back</button>
+    <button onClick={()=>{base64ToFile(story,"formystory")}} className='fixed text-white bg-black border-2 bottom-2 right-2'>Add</button>
     </div>
   )
 }

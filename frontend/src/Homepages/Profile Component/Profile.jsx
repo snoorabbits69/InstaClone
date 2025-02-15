@@ -2,24 +2,25 @@
 import FollowButton from '../../Components/FollowButton';
 import FollowersBox from '../../Components/FollowersBox';
 import GetUser from '../../hooks/GetUser';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ProfilePost from './ProfilePost';
 import { useDispatch, useSelector } from 'react-redux';
-import { AccessChatRoutes } from '../../../utils/ApiRoutes';
+import { AccessChatRoutes, getStoriesByUserRoute } from '../../../utils/ApiRoutes';
 import { chatStart } from '../../Redux/Slice/ChatSlice';
 import apiRequest from './../../Components/axios';
 
 
 export default function Profile() {
+  let [story,setstory]=useState([])
 const {username}=useParams();
 const [saved,Setsaved]=useState(false)
 const state=useSelector((state)=>state.user)
 const dispatch=useDispatch();
 const navigate=useNavigate()
-  const {currentUser,setcurrentUser}=GetUser(username);
-const myaccount=currentUser?._id==state.currentUser?._id;
-const isFollowing=state.currentUser.followingname.some((user)=>user?.id==currentUser?._id)
+  const {currentUser,setcurrentUser,Loading}=GetUser(username);
+const myaccount=currentUser?._id==state?.currentUser?._id;
+const isFollowing=state?.currentUser?.followingname.some((user)=>user?.id==currentUser?._id)
 
 const Private=currentUser?.Account.private && !myaccount;
 const [modal,setModel]=useState(false);
@@ -34,6 +35,29 @@ setModel(true);
     setUserdata((follow)=>({...follow,user:currentUser[index],text:txt}));
   }
   }
+  useEffect(() => {
+    console.log("Loading:", Loading);
+  
+    if(Private && !isFollowing) {
+      return;
+    }
+  
+    async function getStory() {
+        const data = await apiRequest("GET", getStoriesByUserRoute(currentUser._id));
+        console.log(data, currentUser._id); 
+        if (data.status) {
+          setstory(data.story); 
+        } 
+    }
+  
+    getStory();
+  }, [Loading]);
+  
+  
+
+  
+  
+
  if (!currentUser) {
     return "Loading";
 }
@@ -45,11 +69,18 @@ setModel(true);
 <div className='ml-4 md:ml-72 lg:ml-96'>
     <div className="flex pt-10 pb-5 mb-20 ">
      {modal && <FollowersBox follower={Userdata.user} text={Userdata.text} setModel={setModel}/>}
-      <img src={currentUser.avatarImage} className='p-1 border-2 border-solid rounded-full w-14 h-14 lg:w-40 lg:h-40' alt={`${currentUser.Username}'s avatar`} />
+     <button onClick={()=>{
+      if(story.length>0 && state?.currentUser?._id){
+       navigate(`/story/${story[0]._id}`, { state: { stories: story} });
+      }
+      console.log(story)
+     }}> 
+      <img src={currentUser.avatarImage} className={`p-1 border-2 border-solid rounded-full w-14 h-14 lg:w-40 lg:h-40 ${story.length>0?"border-red-500":""}`} alt={`${currentUser.Username}'s avatar`} />
+      </button>
       <section className="flex flex-col gap-3 ml-8 lg:ml-10 lg:gap-5 lg:mt-16">
         <div className="flex gap-2 lg:gap-5">
           <p className="lg:text-2xl">{currentUser.Username}</p>
-    {state.currentUser &&  <FollowButton currentUser={currentUser} setcurrentUser={setcurrentUser}  />}
+    {state?.currentUser &&  <FollowButton currentUser={currentUser} setcurrentUser={setcurrentUser}  />}
    { (!myaccount && !currentUser.Account?.private ) && <button className="px-2 py-1 bg-blue-400 border-2" onClick={ async()=>{
 const data=await apiRequest('POST',AccessChatRoutes,{Userid:currentUser._id})
 
@@ -68,7 +99,7 @@ navigate(`/message/${currentUser?.Username}`)
     </div>
     {Private && !isFollowing?"Private":
     <div>
-   {state.currentUser._id==currentUser._id && <section className="mb-20 ">
+   {state?.currentUser?._id==currentUser._id && <section className="mb-20 ">
    <p className="w-screen lg:w-[75%] h-[0.5px] bg-black "></p>
 <div className='flex justify-center gap-10 lg:justify-start lg:translate-x-[32%] '>
 <div className="peer">

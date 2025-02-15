@@ -2,6 +2,7 @@ import GetPosts from '../../hooks/GetPosts';
 import { useNavigate } from 'react-router-dom';
 import GetsavedPosts from '../../hooks/GetSavedPosts';
 import { useEffect, useState } from 'react';
+import { FiHeart } from "react-icons/fi";
 
 export default function ProfilePost({ id, saved }) {
   const navigate = useNavigate();
@@ -37,10 +38,11 @@ export default function ProfilePost({ id, saved }) {
             src={img.url}
             className="w-24 h-28 lg:w-[18rem] transition-all md:h-64 border-2 border-black peer hover:opacity-50 hover:cursor-pointer"
           />
-          <div className="flex justify-center">
-            <p className="absolute top-0 transition-all opacity-100 text peer-hover:block">
-              {img.likes}
-            </p>
+          <div className="relative justify-center hidden peer-hover:flex">
+            <div className="absolute flex gap-2 transition-all opacity-100 md:text-2xl -top-28 text">
+           <p className="mt-1"> <FiHeart/></p>
+            <p >  {img.likes}</p>
+            </div>
           </div>
         </div>
       )):"No posts"}

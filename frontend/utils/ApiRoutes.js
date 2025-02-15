@@ -39,3 +39,4 @@ export const SendimagemessageRoute="api/message/sendimage"
 export const uploadStoryRoute="api/story/upload"
 export const getStoriesRoute="api/story/getstories"
 export const getStoriesbyIdRoute=(id)=>`api/story/getstoriesbyid/${id}`
+export const getStoriesByUserRoute=(id)=>`api/story/getstoriesbyUser/${id}`
