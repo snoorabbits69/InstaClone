@@ -74,7 +74,7 @@ export const deleteStory = async (req, res) => {
    try{
 let user=await User.findById(req.user._id)
 const ids = user?.followingname.map(item => item.id);
-console.log(ids)
+ids.push(req.user._id)
 let stories = await Story.find({ postedBy: { $in: ids } })
   .populate("postedBy", "Username Fullname avatarImage _id")
   .lean();
@@ -91,9 +91,23 @@ let stories = await Story.find({ postedBy: { $in: ids } })
     }
     return acc;
   }, []);
+  results.sort((a, b) => (a.postedBy._id.toString() === req.user._id.toString() ? -1 : 1));
 return res.json({status:true,stories:results})
 
    }catch(e){
+    return res.json({status:false,error:e})
+   }
+  }
+
+  export const getStoriesbyUser=async(req,res,next)=>{
+    
+    try{
+  const story=await Story.find({postedBy:req.params.userid})
+  if(!story){
+    return res.json({status:false,error:"Story doesnt exist"})
+  }
+  return res.json({status:true,story:story})
+    }catch(e){
     return res.json({status:false,error:e})
    }
   }
@@ -102,10 +116,12 @@ return res.json({status:true,stories:results})
     try{
         console.log(req.params.id)
   const story=await Story.findById(req.params.id)
+  const stories=await Story.find({postedBy:story.postedBy})
+  console.log(stories,"Stories")
   if(!story){
     return res.json({status:false,error:"Story doesnt exist"})
   }
-  return res.json({status:true,story:story})
+  return res.json({status:true,story:stories})
     }catch(e){
     return res.json({status:false,error:e})
    }
