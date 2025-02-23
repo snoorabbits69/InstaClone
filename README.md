@@ -41,7 +41,7 @@ Instaclone is a full-stack MERN (MongoDB, Express.js, React, Node.js) social med
 - **Image Storage**: 
   - Firebase
 - **Authentication**: 
-  - JWT and Google OAuth
+  - JWT and Google OAuth with firebase
 - **Containerization**: 
   - Docker and Docker Compose
 
