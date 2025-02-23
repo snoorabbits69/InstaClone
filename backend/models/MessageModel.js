@@ -9,10 +9,13 @@ ref:"users"
         type:String
     },
     chat: { type: mongoose.Schema.Types.ObjectId, ref: "chat" },
-    readBy:{
-type:mongoose.Schema.Types.ObjectId,
-
-    },
+    readBy:[
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "users",
+        },
+      ],
+      default:[],
    isDeleted:{
     type:Boolean,
     default:false

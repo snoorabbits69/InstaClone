@@ -65,7 +65,7 @@ export default function StoriesList() {
                 storyRef.current.click();
             }
         }}
-        className='absolute z-20 text-2xl bg-white border-2 rounded-full left-8 top-8 md:left-14 md:top-14'
+        className='absolute z-20 text-2xl text-black bg-white border-2 rounded-full left-8 top-8 md:left-14 md:top-14'
     >
         <IoIosAdd />
     </button>

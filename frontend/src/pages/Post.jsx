@@ -53,12 +53,12 @@ if(data.status){
  }}>delete</button>}
 
   <PostCard loading={loading} post={post} setcommentbox={setcommentbox} />
-  <div className="absolute inset-0 hidden h-0 p-2 bg-white border-2 border-black " id='commentbox'>
+  <div className="absolute inset-0 hidden h-0 p-2 bg-white border-2 border-black dark:bg-gray-900 " id='commentbox'>
     <button className='fixed right-0 mr-2 ' onClick={()=>{
         setcommentbox(false)
     }} >close</button>
-   <h1 className='mt-5 overflow-scroll text-center '> Comments:</h1>
- <div className='w-full overflow-hidden overflow-y-scroll  h-[75%]' ref={scrollcontainerref}>
+   <h1 className='mt-5 text-center '> Comments:</h1>
+ <div className='w-full overflow-x-hidden overflow-y-scroll  h-[75%] scrollable-div' ref={scrollcontainerref}>
     <Comments postid={postid}  parentref={scrollcontainerref} />
     </div>
 

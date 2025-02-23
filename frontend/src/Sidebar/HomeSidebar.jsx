@@ -80,7 +80,7 @@ const sidebarProps = {
   setShowCreate,
 };
   return (
-    <div className="fixed z-50 overflow-hidden lg:h-full lg:w-60 lg:pr-2 lg:border-r-2 lg:border-b-0 Bar border-black-500"  >
+    <div className="fixed z-50 overflow-hidden dark:bg-black lg:h-full lg:w-60 lg:pr-2 lg:border-r-2 lg:border-b-0 Bar border-black-500"  >
        <div className="fixed hidden h-screen border-r-2 opacity-0 w-82 "  id="Search" > 
       <Search setShowSearch={setShowSearch}  /> 
         </div>

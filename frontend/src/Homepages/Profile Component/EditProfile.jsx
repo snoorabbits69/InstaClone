@@ -8,6 +8,10 @@ import Darkmode from './Darkmode';
 import{toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import apiRequest from './../../Components/axios';
+import { signOutSuccess } from '../../Redux/Slice/Userslice';
+import { logoutRoute } from '../../../utils/ApiRoutes';
+import { useNavigate } from 'react-router-dom';
+
 const toastOptions = {
     position: "bottom-right",
     autoClose: 8000,
@@ -15,8 +19,8 @@ const toastOptions = {
     draggable: true,
     theme: "dark",
   };
- 
 export default function EditProfile() {
+    let navigate=useNavigate()
     const state = useSelector((state) => state.user);
     const [username, setUsername] = useState(state?.currentUser.Username);
     const [fullname, setFullname] = useState(state?.currentUser.Fullname);
@@ -228,6 +232,17 @@ newPassword:newpassword.value
                 <div className="flex pl-3">
                     <p className="pt-3">DarkMode:</p>
                     <Darkmode />
+                </div>
+                <div>
+                <button onClick={async()=>{
+              const data= await apiRequest('GET',logoutRoute);
+              if(data.status){
+                sessionStorage.clear()
+               dispatch(signOutSuccess());
+               localStorage.clear()
+               navigate("/login");
+              }
+               }}>Log Out</button>
                 </div>
             </section>
         </div>

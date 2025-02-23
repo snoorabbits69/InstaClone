@@ -5,7 +5,11 @@ import jwt from "jsonwebtoken";
 import path from "path";
 import { generateToken } from "../utils/GenerateJwt.js";
 import nodemailer from "nodemailer";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 const updatetoken = process.env.Updatetoken;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export const register = async (req, res, next) => {
   try {
@@ -115,49 +119,63 @@ export const Logout = (req, res,next) => {
 };
 
 
-export const getforgotpassword=(req,res,next)=>{
-try{
-res.render(path.join(__dirname,'../file/ForgetPassword.ejs'));
-}catch(e){
-  return res.json({ status: false, error: e.message });
 
-}
-}
+export const getforgotpassword = (req, res, next) => {
+  try {
+    res.render(path.join(__dirname, '../file/ForgetPassword.ejs'));
+  } catch (e) {
+    return res.json({ status: false, error: e.message });
+  }
+};
+
 export const postforgotpassword = async (req, res, next) => {
   try {
-    console.log(req.body)
+    console.log(req.body);
+
+    // Check if the user exists
     const findUser = await User.findOne({ Email: req.body.Email });
+    console.log(findUser)
     if (!findUser) {
-      return res.json({ status: false, error: "User doesn't exist" });
+      return res.status(400).json({ status: false, error: "User doesn't exist" });
     }
 
-const token=jwt.sign({Username:findUser.Username,Email:findUser.Email},updatetoken,{expiresIn:"15min"});
+    // Generate JWT token with expiration of 15 minutes
+    const token = jwt.sign(
+      { Username: findUser.Username, Email: findUser.Email },
+      process.env.UPDATETOKEN, 
+      { expiresIn: "15m" }
+    );
 
+    // Configure nodemailer transporter
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.Email,
-        pass: process.env.PASS,
+        user: process.env.Email, // Your email
+        pass: process.env.PASS,  // Your email password or app password
       },
     });
 
+    // Define the email options
     const mailOptions = {
-      from: process.env.Email,
-      to: req.body.Email,
+      from: process.env.Email,   //=
+      to: req.body.Email,        // Recipient email
       subject: 'Password Reset Request',
-      text: `Hello, please use the following link to reset your password:http://localhost:3000/api/auth/resetlink/${token} `,
+      text: `Hello, please use the following link to reset your password: http://localhost:3000/api/auth/resetlink/${token}`,
     };
 
+    // Send the email
     const result = await transporter.sendMail(mailOptions);
-    res.send("reset link send to your Email");
-    // return res.json({ status: true,error:"reset link send to your Email" });
+    
+    // Send success response
+    return res.json({ status: true, message: "Reset link sent to your email" });
 
   } catch (e) {
     console.error(e);
-    res.send("User doesnt exist");
-
+    // Return a structured error response
+    return res.status(500).json({ status: false, error: "Something went wrong. Please try again later." });
   }
 };
+
 export const getresetlink=async(req,res,next)=>{
   try{
     const verify=jwt.verify(req.params.token,updatetoken);

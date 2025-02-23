@@ -85,7 +85,7 @@ console.log(data)
 
   return (
     <div className="relative w-screen py-3 sm:max-w-xl sm:mx-auto">
-      <div className="relative px-4 py-10 mx-8 bg-white shadow md:mx-0 rounded-3xl sm:p-10">
+      <div className="relative px-4 py-10 mx-8 bg-white shadow dark:bg-black dark:text-white md:mx-0 rounded-3xl sm:p-10">
         <div className="max-w-md mx-auto">
           <div className="flex items-center space-x-5">
             <div className="self-start block pl-2 text-xl font-semibold text-gray-700">
@@ -171,7 +171,7 @@ console.log(data)
 
               <div className="flex items-center pt-4 space-x-4 text-sm">
                 <button
-                  className="flex items-center justify-center w-full px-4 py-3 text-gray-900 rounded-md focus:outline-none"
+                  className="flex items-center justify-center w-full px-4 py-3 text-gray-900 rounded-md dark:text-white focus:outline-none"
                   onClick={handleCancel}
                 >
                   Cancel

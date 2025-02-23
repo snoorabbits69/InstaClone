@@ -27,10 +27,14 @@ config({path:path.join(process.cwd(),".env")});
 const PORT = process.env.PORT;
 
 const corsconfig = {
-  origin: "http://localhost:5173",
+  origin: [
+    "http://localhost:5173",
+    "https://tribes-equipment-tower-hostel.trycloudflare.com"
+  ],
   credentials: true,
   optionsSuccessStatus: 200,
 };
+
 
 // let NoofCpus=availableParallelism();
 

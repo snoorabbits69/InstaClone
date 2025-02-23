@@ -10,7 +10,7 @@ export const AcceptMiddleWare = async (req, res, next) => {
       followingUser.Account.Requests = updatedRequests;
   
       await followingUser.save();
-  
+     
       next();
     } catch (e) {
       return res.status(500).json({ error: e.message });

@@ -30,7 +30,7 @@ const [modal,setModel]=useState(false);
   });
  
 const ModalData=(index,txt)=>{
-  if(!Private){
+  if(!Private || isFollowing){
 setModel(true); 
     setUserdata((follow)=>({...follow,user:currentUser[index],text:txt}));
   }
@@ -43,8 +43,8 @@ setModel(true);
     }
   
     async function getStory() {
-        const data = await apiRequest("GET", getStoriesByUserRoute(currentUser._id));
-        console.log(data, currentUser._id); 
+        const data = await apiRequest("GET", getStoriesByUserRoute(currentUser?._id));
+        console.log(data, currentUser?._id); 
         if (data.status) {
           setstory(data.story); 
         } 
@@ -66,7 +66,7 @@ setModel(true);
 
   return (
 
-<div className='ml-4 md:ml-72 lg:ml-96'>
+<div className='ml-4 md:ml-72 lg:ml-96 overflow-clip'>
     <div className="flex pt-10 pb-5 mb-20 ">
      {modal && <FollowersBox follower={Userdata.user} text={Userdata.text} setModel={setModel}/>}
      <button onClick={()=>{
@@ -81,7 +81,8 @@ setModel(true);
         <div className="flex gap-2 lg:gap-5">
           <p className="lg:text-2xl">{currentUser.Username}</p>
     {state?.currentUser &&  <FollowButton currentUser={currentUser} setcurrentUser={setcurrentUser}  />}
-   { (!myaccount && !currentUser.Account?.private ) && <button className="px-2 py-1 bg-blue-400 border-2" onClick={ async()=>{
+   { (!myaccount && isFollowing ) && 
+   <button className="px-2 py-1 bg-blue-400 border-2" onClick={ async()=>{
 const data=await apiRequest('POST',AccessChatRoutes,{Userid:currentUser._id})
 
 
@@ -89,7 +90,9 @@ dispatch(chatStart(data))
 
 navigate(`/message/${currentUser?.Username}`)
    }}>message</button>}
+
         </div>
+
         <div className="z-50 flex gap-3 text-sm lg:text-lg lg:gap-12">
           <p>{currentUser.Posts} Posts</p>
           <button onClick={()=>{ModalData("followersname","No followers")}}>{currentUser.followercount} Followers</button>
@@ -97,6 +100,7 @@ navigate(`/message/${currentUser?.Username}`)
         </div>
       </section>
     </div>
+
     {Private && !isFollowing?"Private":
     <div>
    {state?.currentUser?._id==currentUser._id && <section className="mb-20 ">

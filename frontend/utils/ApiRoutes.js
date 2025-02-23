@@ -7,6 +7,8 @@ export const uploadRoute=(id)=>{return `/api/user/profile/${id}`};
 export const getUserRoute=(id)=>{return `/api/user/getUser/${id}`};
 export const SearchRoute=(id)=>{return `${host}/api/user/search/${id}`};
 export const AddFollowerRoute=(id)=>{return `/api/user/addfollowers/${id}`}
+export const cancelFollowerRoute=(id)=>{return `/api/user/cancelrequest/${id}`}
+export const acceptFollowerRoute=(id)=>{return `/api/user/acceptfollowers/${id}`}
 export const RemoveFollowerRoute=(id)=>{return `/api/user/removefollowers/${id}`}
 export const GetUserfromIdRoute=(id)=>{return `/api/user/getuserfromid/${id}`}
 export const ForgetPasswordRoute=`/api/auth/forgotpassword`;

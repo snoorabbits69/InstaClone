@@ -18,9 +18,12 @@ import StartVideocall from './Homepages/message/StartVideocall';
 import Layout from './Layout';
 import AddtoStory from './pages/Stories/AddtoStory';
 import DisplayStory from './pages/Stories/DisplayStory';
+import Notifications from './Homepages/Notifications';
+
 function App() { 
+
   return (
-    <section className="h-auto text-black dark:text-white ">
+    <section className="h-screen text-black dark:text-white dark:bg-black">
     <Router>
       <Routes>
         <Route element={<Layout/>}>
@@ -28,9 +31,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route element={<PrivateRoute />}>
 
-        <Route path="/" element={<PrivateRoute/>}>
           <Route path="/" element={<Home/>}>  </Route>
-          </Route>
+          <Route path="/notifications" element={<Notifications/>}/>
          <Route path="explore" element={<Explore/>}></Route>
             <Route path="/message" element={<Message />} >
             <Route path=":user" element={ChatBox}/>

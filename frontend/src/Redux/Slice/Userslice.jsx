@@ -45,7 +45,27 @@ state.currentUser.Username=action.payload
           },
     updatePrivateAccount:(state,action)=>{
       state.currentUser.Account.private=!state.currentUser.Account.private
-      }
+      },
+    updateUserRequests: (state, action) => {
+    let currentUserRequests = [...state.currentUser.Account.Requests];
+
+    currentUserRequests = currentUserRequests.filter(request => request.id !== action.payload);
+
+    console.log(currentUserRequests);
+
+    return {
+        ...state,
+        currentUser: {
+            ...state.currentUser,
+            Account: {
+                ...state.currentUser.Account,
+                Requests: currentUserRequests,
+            },
+        },
+    };
+},
+
+
   },
 });
 
@@ -59,7 +79,8 @@ export const {
   UpdateAvatarImage,
   updatePrivateAccount,
   updateUserName,
-  updateFullName
+  updateFullName,
+ updateUserRequests,
 } = userSlice.actions;
 
 export default userSlice.reducer;

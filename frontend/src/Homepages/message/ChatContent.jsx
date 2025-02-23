@@ -4,9 +4,11 @@ import { useSelector } from 'react-redux';
 export default function ChatContent() {
     const state = useSelector((state) => state.user);
   const {messages}=useSelector((state)=>state.message)
+  let [fullimg,setfullimg]=useState()
   
 
     return (
+      
         <>
             {messages?.map((msg, i) => (
                 msg.Sender._id !== state.currentUser._id ? (
@@ -16,7 +18,10 @@ export default function ChatContent() {
                             <div className="hidden text-xs text-gray-100 dark:text-gray-200">
                                 {msg.Sender.Username}
                             </div>
-                            {msg.isFile ? (<button>
+                            {msg.isFile ? (<button onClick={()=>{
+                                console.log(msg)
+                                setfullimg(msg.content)
+                            }}>
                                 <img src={msg.content} className="w-64 h-28" />
                                 </button>
                             ) : (
@@ -39,10 +44,37 @@ export default function ChatContent() {
                                     </div>
                                 </div>
                             )}
+                            
                         </div>
+                        <button
+          className="z-50 p-2 text-black rounded-full cursor-pointer hover:bg-blue-100"
+          onClick={() => {
+           console.log("options")
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+          </svg>
+        </button>
                     </div>
                 )
             ))}
+            
+         {fullimg &&   <div className="fixed flex justify-center   align-center w-screen h-screen bg-gray-200  left-2 top-1 z-[54]">
+               <img className='h-full w-96' src={fullimg} />
+
+        
+               <button className="fixed right-2" onClick={()=>{
+                setfullimg()
+               }}>close</button>
+                </div>
+}
         </>
     );
 }

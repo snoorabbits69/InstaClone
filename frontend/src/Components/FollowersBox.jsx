@@ -34,7 +34,7 @@ export default function FollowersBox({ follower, text, setModel }) {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
-            <div className="relative flex flex-col overflow-y-scroll bg-white border-2 rounded-md w-80 h-96">
+            <div className="relative flex flex-col overflow-y-scroll bg-white border-2 rounded-md dark:bg-black w-80 h-96">
                 <button onClick={() => setModel(false)} className="absolute top-2 right-2">
                     <RxCross2 className="text-xl" />
                 </button>
