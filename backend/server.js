@@ -35,8 +35,8 @@ const corsconfig = {
   optionsSuccessStatus: 200,
 };
 
-
-// let NoofCpus=availableParallelism();
+//use this if you want to run multiple instances of the server
+// let NoofCpus=availableParallelism();                     
 
 // if(cluster.isPrimary){
 // for (let i=0;i<NoofCpus;i++){
