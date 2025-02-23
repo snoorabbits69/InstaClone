@@ -14,6 +14,9 @@ Instaclone is a full-stack MERN (MongoDB, Express.js, React, Node.js) social med
   - Add and view stories that disappear after 1 hour.
 - **Messaging**: 
   - Real-time chat between users with Redis caching for speed.
+  - Also allows user to send images in the messages.
+  - You can create groupchat and chat with more than two users at a time
+    
 - **Follow/Unfollow**: 
   - Follow and unfollow users to control your feed.
 - **Video Calls**: 
