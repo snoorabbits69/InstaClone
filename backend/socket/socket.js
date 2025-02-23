@@ -1,30 +1,39 @@
 import express from "express";
 import { Server } from "socket.io";
 import http from "http";
-
+import Message from "../models/MessageModel.js"
 const app = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173",
+        origin: [
+            "http://localhost:5173",
+            "https://tribes-equipment-tower-hostel.trycloudflare.com"
+        ],
         methods: ["GET", "POST"]
     }
 });
 
-let onlineUsers={}
-const activeCalls = {}
-
+let onlineUsersfromsocket={}
+let onlineUsersfromid={}
+let activeCalls={}
 try{
 io.on("connection", (socket) => {
     socket.on("isonline",(id)=>{
- onlineUsers[socket.id]=id
- io.emit("online",onlineUsers)
+        console.log(id)
+ onlineUsersfromsocket[socket.id]=id
+ onlineUsersfromid[id]=socket.id
+ console.log(onlineUsersfromid)
+ io.emit("online",onlineUsersfromid)
 
     })
     
-socket.on("follow",(msg)=>{
-     
+socket.on("followrequest",(msg)=>{
+    console.log("follow",msg,msg,onlineUsersfromid[msg.id])
+    if(onlineUsersfromid[msg.id]){
+     socket.to(onlineUsersfromid[msg.id]).emit('follow:request',{id:msg.id})
+    }
 })
 socket.on("join-chat",({User,room})=>{
    
@@ -78,20 +87,40 @@ socket.on("typing",(room)=>{
       socket.to(newMessageRecieved.chat).emit("message recieved", newMessageRecieved);
        
       });
+      socket.on("messageRead", async ({ messageId, userId, chatId }) => {
+        await Message.findByIdAndUpdate(
+          messageId,
+          { $addToSet: { readBy: userId } },
+          { new: true }
+        );
+          io.to(chatId).emit("messageReadUpdate", { messageId, userId });
+      });
       socket.on("end:call",({room})=>{
         console.log(room)
-        delete activeCalls[room]
         socket.to(room).emit('call:end',{room:room})
+        delete activeCalls[room]
       })
       socket.on("disconnect", () => {
         console.log(socket.id + " disconnected");
-         delete onlineUsers[socket.id]
-         io.emit("online",onlineUsers)
-         for (const [room, participants] of Object.entries(activeCalls)) {
+    
+        // Remove the user from onlineUsersfromsocket by socket.id
+        delete onlineUsersfromsocket[socket.id];
+    
+        // Also remove the user from onlineUsersfromid where the socket.id matches
+        for (const [id, socketId] of Object.entries(onlineUsersfromid)) {
+            if (socketId === socket.id) {
+                delete onlineUsersfromid[id];  // Remove the user by their ID
+                break;  // No need to continue once we find the match
+            }
+        }
+    
+        io.emit("online", onlineUsersfromsocket);
+    
+        for (const [room, participants] of Object.entries(activeCalls)) {
             if (participants.includes(socket.id)) {
                 const otherUser = participants.find(id => id !== socket.id);
                 if (otherUser) {
-                    io.to(otherUser).emit("peer-disconnected", { peerId: socket.id });
+                    io.to(room).emit("peer-disconnected", { peerId: socket.id });
                 }
                 activeCalls[room] = participants.filter(id => id !== socket.id);
                 if (activeCalls[room].length === 0) delete activeCalls[room];
@@ -99,6 +128,7 @@ socket.on("typing",(room)=>{
             }
         }
     });
+    
 });
 }
 catch(e){

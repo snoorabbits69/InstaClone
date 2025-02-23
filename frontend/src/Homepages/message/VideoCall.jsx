@@ -80,6 +80,7 @@ export default function VideoCall() {
             }
         });
         function endCall() {
+          
           console.log(CalcDate({date:callStart}))
           const stream = localRef.current.srcObject; 
           stream.getTracks().forEach(track => track.stop());
@@ -88,6 +89,7 @@ export default function VideoCall() {
               peerConnection.current.close();
               peerConnection.current = null;
           }
+         
           setCallended(true)
       
       
@@ -172,6 +174,7 @@ const endCall=()=>{
       peerConnection.current.close();
       peerConnection.current = null;
   }
+  socket.emit("end:call",{room:id})
   setCallended(true)
 
 }
@@ -179,7 +182,7 @@ const endCall=()=>{
       <>
       {!Callended?
         <div >
-         <div className="relative flex items-center justify-center min-h-screen p-4 bg-neutral-50">
+         <div className="relative flex items-center justify-center min-h-screen p-4 bg-neutral-50 dark:bg-slate-900">
      
       <div className="relative w-full h-screen max-w-6xl overflow-hidden border-2 shadow-lg aspect-video rounded-2xl">
         <video

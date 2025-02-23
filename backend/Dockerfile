@@ -1,22 +1,23 @@
-FROM node:18
+# Use a smaller Node.js image for production
+FROM node:18-slim
 
+# Set the working directory
 WORKDIR /app
 
+# Copy package files first to leverage Docker cache for dependencies
 COPY package*.json ./
 
-RUN npm install
+# Install production dependencies only
+RUN npm install --omit=dev
 
-COPY server.js ./
-COPY config ./config
-COPY controllers ./controllers
-COPY file ./file
-COPY middleware ./middleware
-COPY models ./models
-COPY routes ./routes
-COPY socket ./socket
-COPY Serviceaccount.json ./
-COPY .env ./
+# Copy only necessary files
+COPY . .
 
+# Ensure correct file permissions
+RUN chmod -R 755 /app
+
+# Expose the port
 EXPOSE 3000
 
+# Command to run the app
 CMD ["node", "server.js"]

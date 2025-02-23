@@ -80,7 +80,7 @@ export default function Comment({ comment}) {
   }
 
   return (
-    <>
+    <div className=''>
       {comment._id && <RenderComment comment={comment} navigate={navigate} id={state?.currentUser._id}  />}
      
       {showReplies && (
@@ -102,7 +102,7 @@ export default function Comment({ comment}) {
       { showReplies? "Hide Replies": `View replies (${comment.replies.length})` }
         </button>
       )}
-    </>
+    </div>
   );
 }
 

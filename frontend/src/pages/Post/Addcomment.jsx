@@ -42,7 +42,7 @@ export default function Addcomment({ postid}) {
         type="text"
 value={comment}
 placeholder="add a comment"
-        className="w-[80%] border-black outline-none"
+        className="w-[80%] border-black outline-none dark:bg-slate-900"
         onChange={(e) => setComment(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {

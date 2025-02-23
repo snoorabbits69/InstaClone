@@ -4,12 +4,13 @@ import Likes from './Likes'
 import { useNavigate } from 'react-router-dom'
 export default function PostCard({loading,post,setcommentbox}) {
  const navigate=useNavigate()
+ let [likes,setlikes]=useState()
     return (
         loading?"loading":
     <div className="flex flex-col w-[25rem] md:w-[30rem] " >
            
     <div className="p-4">
-      <div className="max-w-md bg-white border rounded-sm">
+      <div className="max-w-md bg-white border rounded-sm dark:bg-gray-800 ">
        
         <div onClick={()=>{
           navigate(`/profile/${post.postedBy?.Username}`)

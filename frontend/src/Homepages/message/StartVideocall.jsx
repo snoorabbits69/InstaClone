@@ -68,7 +68,7 @@ export default function StartVideocall() {
   };
 
   return (
-    <div className="w-full max-w-sm p-8 mx-auto bg-white shadow-lg rounded-xl">
+    <div className="w-full max-w-sm p-8 mx-auto bg-white shadow-lg dark:bg-slate-900 rounded-xl">
       <div className="flex flex-col items-center space-y-4">
         <div className="relative">
           <img

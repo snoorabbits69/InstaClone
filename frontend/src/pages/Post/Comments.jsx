@@ -41,7 +41,7 @@ export default function Comments({ postid, parentref }) {
   }
 
   return (
-    <div>
+    <div className="">
       {Selectedcomments.length > 0 ? (
         <Comment
           comment={Selectedcomments}

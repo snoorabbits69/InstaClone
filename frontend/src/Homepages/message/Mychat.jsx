@@ -41,11 +41,7 @@ useEffect(()=>{
     };
 },[socket])
 useEffect(()=>{
-    socket.emit("join-chat",{User:state.currentUser,room:chats._id})
-    socket.emit("isonline",state.currentUser._id)
-     
-     
-      
+    socket.emit("join-chat",{User:state.currentUser,room:chats._id}) 
         const handleTyping = (message) => {
             console.log(message);
         };

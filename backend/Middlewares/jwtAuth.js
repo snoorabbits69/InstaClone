@@ -1,5 +1,6 @@
-import jwt from "jsonwebtoken"
-const JWT_SECRET = process.env.JTOKEN;
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JTOKEN; // Secret for JWT
 
 const jwtAuth = (req, res, next) => {
   try {
@@ -24,10 +25,13 @@ req.headers.cookie.split(";").reduce((acc,cookie)=>{
       return res.status(401).json({ error: "Token missing or not provided" });
     }
 
+    // Verify the token
     const verified = jwt.verify(token, JWT_SECRET);
 
+    // Attach the verified user data to the request
     req.user = verified;
 
+    // Proceed to the next middleware or route handler
     next();
   } catch (e) {
     console.error("JWT verification error:", e.message);
@@ -40,5 +44,5 @@ req.headers.cookie.split(";").reduce((acc,cookie)=>{
 
     return res.status(500).json({ error: "Internal Server Error" });
   }
-};
+}
 export default jwtAuth;

@@ -13,7 +13,6 @@ import apiRequest from '../Components/axios';
 function Login() {
   const dispatch=useDispatch();
 
- 
   
   const Navigate=useNavigate();
   const [Logo,setLogo]=useState(Logo1);
@@ -61,7 +60,7 @@ const data=await apiRequest('POST',loginRoute,{
    <OAuth/>
    <button className='mx-24 text-sm'
    onClick={async()=>{
-   window.open(ForgetPasswordRoute);
+   window.open("http://localhost:3000/api/auth/forgotpassword");
    }}
    >Forgot Password?</button>
 

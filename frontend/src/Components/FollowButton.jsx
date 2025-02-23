@@ -40,8 +40,8 @@ export default function FollowButton({ currentUser, setcurrentUser }) {
         route = AddFollowerRoute(currentUser?._id);
         if (currentUser.Account.private && socket) {
           socket.emit(
-            'follow',
-            `${state.currentUser.Username} wants to follow ${currentUser?.Username}`
+            'followrequest',
+           {id:currentUser._id}
           );
         }
       }

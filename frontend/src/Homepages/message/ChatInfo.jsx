@@ -10,7 +10,7 @@ export default function ChatInfo() {
     const state=useSelector((state)=>state.user)
  
   return (
-    <section className='absolute w-screen h-screen bg-white border-2 md:w-96 right-2'>
+    <section className='absolute w-screen h-screen bg-white border-2 dark:bg-slate-900 md:w-96 right-2'>
             <p className='mx-10 mt-12 text-xl' >Chat info</p>
             
             <p className='mx-10 mt-12 text-xl' >Users({chatState.selectedChat.users.length})</p>

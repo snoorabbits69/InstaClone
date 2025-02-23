@@ -4,8 +4,9 @@ import { Socketcontext } from "./context/Socketcontext";
 import callAudio from "./assets/audio/Call.mp3";
 import { IoCall } from "react-icons/io5";
 import { MdAddIcCall } from "react-icons/md";
-import {  useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import HomeSidebar from "./Sidebar/HomeSidebar";
+
 export default function Layout() {
   const state = useSelector((state) => state.user);
   let navigate = useNavigate();
@@ -14,11 +15,25 @@ export default function Layout() {
   let [acceptCall, setAcceptCall] = useState(false);
   let audioRef = useRef(new Audio(callAudio)); 
   const { socket } = useContext(Socketcontext);
-
-  const location=useLocation()
+const dispatch=useDispatch()
+  const location = useLocation();
   const shouldRenderSidebar = state.currentUser && 
-  !(location.pathname.startsWith("/addtostory") || location.pathname.startsWith("/story"));
+    !(location.pathname.startsWith("/addtostory") || location.pathname.startsWith("/story"));
 
+ 
+    useEffect(() => {
+      const mode = localStorage.getItem("dark");
+      if (mode === "true") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    }, []);
+  useEffect(() => {
+    if (state.currentUser) {
+      socket.emit("isonline", state.currentUser._id);
+    }
+  }, [state.currentUser, socket]);
 
   useEffect(() => {
     function callStarted({ User, room }) {
@@ -35,43 +50,47 @@ export default function Layout() {
 
       return () => clearTimeout(timeout);
     }
-  
-     
 
+    socket.on("follow:request", ({id}) => {
+      dispatch(addUserRequests(id))
+    });
     socket.on("call:started", callStarted);
 
     return () => {
-      socket.off("call:started",callStarted );
+      socket.off("call:started", callStarted);
     };
   }, [socket]);
 
   async function AcceptCall() {
-    socket.emit("begin:call",{room,User:{
-      username:state?.currentUser?.Username,
-      avatarImage:state?.currentUser?.avatarImage,
-     }})
+    socket.emit("begin:call", { 
+      room, 
+      User: { 
+        username: state?.currentUser?.Username, 
+        avatarImage: state?.currentUser?.avatarImage 
+      }
+    });
+
     setAcceptCall(true);
-
-    
-
     audioRef.current.pause();
-  
+
     const queryString = new URLSearchParams({
       username: User.username,
       avatarImage: User.avatarImage,
     }).toString();
-   console.log(queryString,"query")
+
     navigate(`video/${room}?${queryString}`);
-    setUser("");
+    
+    // Reset user state before navigation
+    setUser(null);
   }
 
   return (
-    <div>
-      {shouldRenderSidebar && <HomeSidebar/>}
+    <div className="dark:bg-black dark:text-white">
+      {shouldRenderSidebar && <HomeSidebar />}
       <Outlet />
       {User && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-full max-w-sm p-8 mx-auto bg-white shadow-lg rounded-xl">
+          <div className="w-full max-w-sm p-8 mx-auto bg-white shadow-lg dark:bg-black rounded-xl">
             <div className="flex flex-col items-center space-y-4">
               <div className="relative">
                 <img
@@ -82,9 +101,7 @@ export default function Layout() {
                 <div className="absolute w-4 h-4 bg-green-400 border-2 border-white rounded-full bottom-2 right-2"></div>
               </div>
 
-              <h2 className="text-2xl font-semibold text-gray-800">
-                {User.username}
-              </h2>
+              <h2 className="text-2xl font-semibold text-gray-800">{User.username}</h2>
               <p className="text-gray-500">Online</p>
 
               <div className="flex items-center gap-4 mt-6">

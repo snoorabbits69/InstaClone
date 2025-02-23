@@ -15,9 +15,11 @@ useEffect(()=>{
         if (isChecked) {
           lottieRef.current.playSegments([0, 100], true);
           localStorage.setItem("dark",isChecked)
+          document.documentElement.classList.add('dark');
         } else {
           lottieRef.current.playSegments([100, 200], true);
           localStorage.setItem("dark",isChecked);
+          document.documentElement.classList.remove('dark');
 
         }
       
